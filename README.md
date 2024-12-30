@@ -1,2 +1,3 @@
-# swift-simple-snapshot-testing
+# SimpleSnapshotTesting
+
 Snapshot and tests your views

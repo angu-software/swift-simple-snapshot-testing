@@ -14,14 +14,6 @@ final class Snapshot {
     let image: SnapshotImage?
     let fileName: String
 
-    private static func makeFileName(testName: String,
-                                     snapshotIdentifier: String) -> String {
-        return [testName.replacingOccurrences(of: "()", with: ""),
-                snapshotIdentifier]
-            .filter { !$0.isEmpty }
-            .joined(separator: "_")
-    }
-
     private init(image: SnapshotImage?,
                  fileName: String) {
         self.image = image
@@ -37,5 +29,13 @@ extension Snapshot {
         self.init(image: SnapshotImageRenderer.makeImage(view: view),
                   fileName: Self.makeFileName(testName: "\(testName)",
                                               snapshotIdentifier: identifier))
+    }
+
+    private static func makeFileName(testName: String,
+                                     snapshotIdentifier: String) -> String {
+        return [testName.replacingOccurrences(of: "()", with: ""),
+                snapshotIdentifier]
+            .filter { !$0.isEmpty }
+            .joined(separator: "_")
     }
 }

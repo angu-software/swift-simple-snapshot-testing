@@ -22,17 +22,20 @@ final class Snapshot {
             .joined(separator: "_")
     }
 
-    convenience init<SwiftUIView: SwiftUI.View>(_ view: SwiftUIView,
+    private init(image: SnapshotImage?,
+                 fileName: String) {
+        self.image = image
+        self.fileName = fileName
+    }
+}
+
+extension Snapshot {
+
+    convenience init<SwiftUIView: SwiftUI.View>(from view: SwiftUIView,
                                                 testName: StaticString = #function,
                                                 identifier: String = "") {
         self.init(image: SnapshotImageRenderer.makeImage(view: view),
                   fileName: Self.makeFileName(testName: "\(testName)",
                                               snapshotIdentifier: identifier))
-    }
-
-    private init(image: SnapshotImage?,
-                 fileName: String) {
-        self.image = image
-        self.fileName = fileName
     }
 }

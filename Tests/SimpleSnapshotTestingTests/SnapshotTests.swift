@@ -38,4 +38,19 @@ struct SnapshotTests {
 
         #expect(snapshot.fileName.hasSuffix("_someIdentifier"))
     }
+
+    @Test
+    func snapshot_file_path_should_equal_path_of_test_file() async throws {
+        let snapshot = Snapshot(from: Rectangle())
+
+        var expectedPath = FilePath("\(#filePath)")
+        expectedPath.removeLastSegment()
+        expectedPath.addSegment("__Snapshots__")
+        expectedPath.addSegment("SimpleSnapshotTestingTests")
+        expectedPath.addSegment("snapshot_file_path_should_equal_path_of_test_file")
+        expectedPath.addExtension("png")
+
+
+        #expect(snapshot.filePath == expectedPath.stringValue)
+    }
 }

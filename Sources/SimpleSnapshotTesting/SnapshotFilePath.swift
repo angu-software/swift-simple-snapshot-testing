@@ -5,7 +5,7 @@
 //  Created by Andreas Guenther on 22.01.25.
 //
 
-struct SnapshotFilePath {
+struct SnapshotFilePath: Equatable {
 
     let fileName: String
     private let testSourcePath: String

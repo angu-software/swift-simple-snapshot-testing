@@ -35,9 +35,9 @@ extension Snapshot {
             image: SnapshotImageRenderer.makeImage(view: view),
             filePath: SnapshotFilePath(
                 test: SnapshotTest(
-                    methodSignature: testMethod,
-                    sourcePath: testSourcePath,
-                    tag: testTag
+                    testFunction: testMethod,
+                    testFilePath: testSourcePath,
+                    testTag: testTag
                 )
             )
         )

@@ -5,33 +5,48 @@
 //  Created by Andreas Guenther on 22.01.25.
 //
 
+import UniformTypeIdentifiers
+
 struct SnapshotFilePath: Equatable {
 
     let fileName: String
-    private let testSourcePath: String
-    private let fileExtension = "png"
+    private let testSourceFile: FilePath
+    private let fileExtension = UTType.png
     private let rootFolderName = "__Snapshots__"
 
-    var basePath: FilePath {
-        var filePath = FilePath("\(testSourcePath)")
-        filePath.removeLastSegment()
-        filePath.addSegment(rootFolderName)
-
-        return filePath
+    var testTargetSnapshotsDir: FilePath {
+        return testTargetDir
+            .appending(component: rootFolderName,
+                       directoryHint: .isDirectory)
     }
 
-    var filePath: FilePath {
-        var filePath = FilePath("\(testSourcePath)")
-        filePath.removeLastSegment()
-        filePath.addSegment("\(rootFolderName)/\(filePath.lastPathComponent)")
-        filePath.addSegment(fileName)
-        filePath.addExtension(fileExtension)
+    var testSuiteSnapshotsDir: FilePath {
+        testTargetSnapshotsDir
+            .appending(component: testSourceFileName,
+                       directoryHint: .isDirectory)
+    }
 
-        return filePath
+    var testSnapshotsFile: FilePath {
+        return testSuiteSnapshotsDir
+            .appending(component: fileName)
+            .appendingPathExtension(for: fileExtension)
+    }
+
+    var testTargetDir: FilePath {
+        return testSourceFile
+            .deletingLastPathComponent()
+    }
+
+    var testTargetName: String {
+        return testTargetDir.lastPathComponent
+    }
+
+    var testSourceFileName: String {
+        return testSourceFile.deletingPathExtension().lastPathComponent
     }
 
     init(test: SnapshotTest) {
         self.fileName = test.id
-        self.testSourcePath = "\(test.sourcePath)"
+        self.testSourceFile = FilePath("\(test.testFilePath)")
     }
 }

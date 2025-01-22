@@ -4,6 +4,7 @@
 
 ## Backlog
 
+- [ ] Use #fileID to construct snapshot folder for the respective tests
 - [ ] snapshot name from test function with parameters
 - [ ] root path for storing snapshot reference and diffs
 - [ ] load reference image (if exists)

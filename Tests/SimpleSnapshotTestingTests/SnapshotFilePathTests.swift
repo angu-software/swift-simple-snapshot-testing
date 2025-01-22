@@ -13,7 +13,7 @@ struct SnapshotFilePathTests {
 
     @Test
     func should_resolve_test_target_snapshot_dir() {
-        let path = SnapshotFilePath(test: SnapshotTest())
+        let path = SnapshotFilePath(test: .fixture())
 
         #expect(
             path.testTargetSnapshotsDir.path()
@@ -25,7 +25,7 @@ struct SnapshotFilePathTests {
 
     @Test
     func should_resolve_test_suite_dir() {
-        let path = SnapshotFilePath(test: SnapshotTest())
+        let path = SnapshotFilePath(test: .fixture())
 
         #expect(
             path.testSuiteSnapshotsDir.path()
@@ -35,7 +35,7 @@ struct SnapshotFilePathTests {
 
     @Test
     func should_resolve_test_snapshot_reference_file() {
-        let snapshotTest = SnapshotTest()
+        let snapshotTest = SnapshotTestLocation.fixture()
         let path = SnapshotFilePath(test: snapshotTest)
 
         #expect(

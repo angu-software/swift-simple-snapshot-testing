@@ -45,7 +45,7 @@ struct SnapshotFilePath: Equatable {
         return testSourceFile.deletingPathExtension().lastPathComponent
     }
 
-    init(test: SnapshotTest) {
+    init(test: SnapshotTestLocation) {
         self.fileName = test.id
         self.testSourceFile = FilePath("\(test.testFilePath)")
     }

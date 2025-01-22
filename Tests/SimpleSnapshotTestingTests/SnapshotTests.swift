@@ -42,7 +42,7 @@ struct SnapshotTests {
     @Test
     func snapshot_file_path_should_equal_path_of_test_file() async throws {
         let snapshot = Snapshot(from: Rectangle())
-        let expectedPath = SnapshotFilePath(test: SnapshotTest())
+        let expectedPath = SnapshotFilePath(test: .fixture())
 
         #expect(snapshot.filePath == expectedPath)
     }

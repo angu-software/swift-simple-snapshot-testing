@@ -30,13 +30,15 @@ extension Snapshot {
     convenience init<SwiftUIView: SwiftUI.View>(from view: SwiftUIView,
                                                 testMethod: StaticString = #function,
                                                 testSourcePath: StaticString = #filePath,
+                                                testFileID: StaticString = #fileID,
                                                 testTag: String = "") {
         self.init(
             image: SnapshotImageRenderer.makeImage(view: view),
             filePath: SnapshotFilePath(
-                test: SnapshotTest(
+                test: SnapshotTestLocation(
                     testFunction: testMethod,
                     testFilePath: testSourcePath,
+                    testFileID: testFileID,
                     testTag: testTag
                 )
             )

@@ -35,7 +35,7 @@ extension Snapshot {
         self.init(
             image: SnapshotImageRenderer.makeImage(view: view),
             filePath: SnapshotFilePath(
-                test: SnapshotTestLocation(
+                testLocation: SnapshotTestLocation(
                     testFunction: testMethod,
                     testFilePath: testSourcePath,
                     testFileID: testFileID,

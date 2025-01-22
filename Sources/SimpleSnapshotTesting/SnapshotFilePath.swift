@@ -14,6 +14,8 @@ struct SnapshotFilePath: Equatable {
     private let fileExtension = UTType.png
     private let rootFolderName = "__Snapshots__"
 
+    private let testLocation: SnapshotTestLocation
+
     var testTargetSnapshotsDir: FilePath {
         return testTargetDir
             .appending(component: rootFolderName,
@@ -45,8 +47,9 @@ struct SnapshotFilePath: Equatable {
         return testSourceFile.deletingPathExtension().lastPathComponent
     }
 
-    init(test: SnapshotTestLocation) {
-        self.fileName = test.id
-        self.testSourceFile = FilePath("\(test.testFilePath)")
+    init(testLocation: SnapshotTestLocation) {
+        self.testLocation = testLocation
+        self.fileName = testLocation.id
+        self.testSourceFile = FilePath("\(testLocation.testFilePath)")
     }
 }

@@ -34,7 +34,7 @@ struct SnapshotTests {
     @Test
     func snapshot_should_append_identifier_to_filename_when_specified() async throws {
         let snapshot = Snapshot(from: Rectangle(),
-                                identifier: "someIdentifier")
+                                testTag: "someIdentifier")
 
         #expect(snapshot.fileName.hasSuffix("_someIdentifier"))
     }

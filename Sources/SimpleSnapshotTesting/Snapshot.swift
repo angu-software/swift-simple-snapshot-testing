@@ -27,28 +27,16 @@ final class Snapshot {
 extension Snapshot {
 
     convenience init<SwiftUIView: SwiftUI.View>(from view: SwiftUIView,
-                                                testName: StaticString = #function,
+                                                testMethod: StaticString = #function,
                                                 testSourcePath: StaticString = #filePath,
-                                                identifier: String = "") {
+                                                testTag: String = "") {
 
-        let fileName = Self.makeFileName(testName: "\(testName)",
-                                         snapshotIdentifier: identifier)
-        var filePath = FilePath("\(testSourcePath)")
-        filePath.removeLastSegment()
-        filePath.addSegment("__Snapshots__/\(filePath.lastPathComponent)")
-        filePath.addSegment("\(fileName)")
-        filePath.addExtension("png")
+        let filePath = SnapshotFilePath(test: SnapshotTest(methodSignature: testMethod,
+                                                           sourcePath: testSourcePath,
+                                                           tag: testTag))
 
         self.init(image: SnapshotImageRenderer.makeImage(view: view),
-                  fileName: fileName,
-                  filePath: filePath.path())
-    }
-
-    private static func makeFileName(testName: String,
-                                     snapshotIdentifier: String) -> String {
-        return [testName.replacingOccurrences(of: "()", with: ""),
-                snapshotIdentifier]
-            .filter { !$0.isEmpty }
-            .joined(separator: "_")
+                  fileName: filePath.fileName,
+                  filePath: filePath.filePath.path())
     }
 }

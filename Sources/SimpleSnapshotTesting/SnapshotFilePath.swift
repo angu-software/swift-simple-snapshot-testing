@@ -9,7 +9,10 @@ import UniformTypeIdentifiers
 
 struct SnapshotFilePath: Equatable {
 
-    let fileName: String
+    var fileName: String {
+        return testLocation.id
+    }
+
     private let testSourceFile: FilePath
     private let fileExtension = UTType.png
     private let rootFolderName = "__Snapshots__"
@@ -49,7 +52,6 @@ struct SnapshotFilePath: Equatable {
 
     init(testLocation: SnapshotTestLocation) {
         self.testLocation = testLocation
-        self.fileName = testLocation.id
         self.testSourceFile = FilePath("\(testLocation.testFilePath)")
     }
 }

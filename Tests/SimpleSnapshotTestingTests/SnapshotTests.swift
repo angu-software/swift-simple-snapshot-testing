@@ -21,7 +21,7 @@ struct SnapshotTests {
     func snapshot_file_path_should_equal_path_of_test_file() async throws {
         let location = SnapshotTestLocation.fixture()
 
-        let snapshot = try Snapshot(Rectangle(),
+        let snapshot = try Snapshot(view: Rectangle(),
                                     testLocation: location)
 
         #expect(snapshot.filePath == SnapshotFilePath(testLocation: location))

@@ -13,6 +13,12 @@ final class Snapshot {
     let image: SnapshotImage
     let filePath: SnapshotFilePath
 
+    private convenience init(image: SnapshotImage,
+                     testLocation: SnapshotTestLocation) {
+        self.init(image: image,
+                  filePath: SnapshotFilePath(testLocation: testLocation))
+    }
+
     private init(image: SnapshotImage,
                  filePath: SnapshotFilePath) {
         self.image = image
@@ -26,14 +32,13 @@ extension Snapshot {
         case snapshotImageRenderingFailed
     }
 
-    convenience init<SwiftUIView: SwiftUI.View>(_ view: SwiftUIView,
+    convenience init<SwiftUIView: SwiftUI.View>(view: SwiftUIView,
                                                 testLocation: SnapshotTestLocation) throws {
         guard let image = SnapshotImageRenderer.makeImage(view: view) else {
             throw Error.snapshotImageRenderingFailed
         }
 
         self.init(image: image,
-                  filePath: SnapshotFilePath(testLocation: testLocation)
-        )
+                  testLocation: testLocation)
     }
 }

@@ -14,10 +14,6 @@ final class Snapshot {
     let image: SnapshotImage?
     let filePath: SnapshotFilePath
 
-    var fileName: String {
-        filePath.fileName
-    }
-
     private init(image: SnapshotImage?,
                  filePath: SnapshotFilePath) {
         self.image = image

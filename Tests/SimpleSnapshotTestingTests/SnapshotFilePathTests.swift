@@ -49,4 +49,19 @@ struct SnapshotFilePathTests {
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/\(fileName)/\(testName).png")
         )
     }
+
+    @Test
+    func should_have_file_name_according_to_test_method_name() async throws {
+        let path = SnapshotFilePath(testLocation: .fixture())
+
+        #expect(path.fileName == "should_have_file_name_according_to_test_method_name")
+    }
+
+    @Test
+    func snapshot_should_append_identifier_to_filename_when_specified() async throws {
+        let path = SnapshotFilePath(testLocation: .fixture(testTag: "someIdentifier"))
+
+        #expect(path.fileName == "snapshot_should_append_identifier_to_filename_when_specified_someIdentifier")
+    }
+
 }

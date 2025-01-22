@@ -18,17 +18,12 @@ import Testing
 struct SnapshotTests {
 
     @Test
-    func snapshot_should_render_an_image_of_the_evaluated_view() async throws {
-        let snapshot = Snapshot(from: Rectangle())
-
-        #expect(snapshot.image != nil)
-    }
-
-    @Test
     func snapshot_file_path_should_equal_path_of_test_file() async throws {
-        let snapshot = Snapshot(from: Rectangle())
-        let expectedPath = SnapshotFilePath(testLocation: .fixture())
+        let location = SnapshotTestLocation.fixture()
 
-        #expect(snapshot.filePath == expectedPath)
+        let snapshot = try Snapshot(Rectangle(),
+                                    testLocation: location)
+
+        #expect(snapshot.filePath == SnapshotFilePath(testLocation: location))
     }
 }

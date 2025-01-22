@@ -10,11 +10,10 @@ import SwiftUI
 @MainActor
 final class Snapshot {
 
-    // TODO: make non-optional in favor of fail-able init
-    let image: SnapshotImage?
+    let image: SnapshotImage
     let filePath: SnapshotFilePath
 
-    private init(image: SnapshotImage?,
+    private init(image: SnapshotImage,
                  filePath: SnapshotFilePath) {
         self.image = image
         self.filePath = filePath
@@ -23,21 +22,18 @@ final class Snapshot {
 
 extension Snapshot {
 
-    convenience init<SwiftUIView: SwiftUI.View>(from view: SwiftUIView,
-                                                testMethod: StaticString = #function,
-                                                testSourcePath: StaticString = #filePath,
-                                                testFileID: StaticString = #fileID,
-                                                testTag: String = "") {
-        self.init(
-            image: SnapshotImageRenderer.makeImage(view: view),
-            filePath: SnapshotFilePath(
-                testLocation: SnapshotTestLocation(
-                    testFunction: testMethod,
-                    testFilePath: testSourcePath,
-                    testFileID: testFileID,
-                    testTag: testTag
-                )
-            )
+    enum Error: Swift.Error {
+        case snapshotImageRenderingFailed
+    }
+
+    convenience init<SwiftUIView: SwiftUI.View>(_ view: SwiftUIView,
+                                                testLocation: SnapshotTestLocation) throws {
+        guard let image = SnapshotImageRenderer.makeImage(view: view) else {
+            throw Error.snapshotImageRenderingFailed
+        }
+
+        self.init(image: image,
+                  filePath: SnapshotFilePath(testLocation: testLocation)
         )
     }
 }

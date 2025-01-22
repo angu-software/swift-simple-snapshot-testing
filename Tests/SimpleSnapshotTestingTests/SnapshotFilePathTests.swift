@@ -33,14 +33,20 @@ struct SnapshotFilePathTests {
         )
     }
 
-    @Test
+    @Test(.tags(.acceptanceTest))
     func should_resolve_test_snapshot_reference_file() {
-        let snapshotTest = SnapshotTestLocation.fixture()
-        let path = SnapshotFilePath(testLocation: snapshotTest)
+        let location = SnapshotTestLocation.fixture()
+        let path = SnapshotFilePath(testLocation: location)
+
+        let moduleName = location.moduleName
+        let fileName = location.fileName
+            .replacingOccurrences(of: ".swift",
+                                  with: "")
+        let testName = location.testIdentifier
 
         #expect(
             path.testSnapshotsFile.path()
-                .hasSuffix("swift-simple-snapshot-testing/Tests/SimpleSnapshotTestingTests/__Snapshots__/SnapshotFilePathTests/\(snapshotTest.id).png")
+                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/\(fileName)/\(testName).png")
         )
     }
 }

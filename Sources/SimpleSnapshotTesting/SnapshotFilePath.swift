@@ -10,7 +10,7 @@ import UniformTypeIdentifiers
 struct SnapshotFilePath: Equatable {
 
     var fileName: String {
-        return testLocation.id
+        return testLocation.testIdentifier
     }
 
     private let testSourceFile: FilePath

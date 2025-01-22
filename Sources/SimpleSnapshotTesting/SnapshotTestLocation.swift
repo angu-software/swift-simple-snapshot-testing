@@ -5,20 +5,14 @@
 //  Created by Andreas Guenther on 22.01.25.
 //
 
-struct SnapshotTestLocation: Equatable, Identifiable {
+struct SnapshotTestLocation: Equatable {
 
-    // MARK: Identifiable
-
-    var id: String {
-        return [testName,
+    var testIdentifier: String {
+        return [testFunction.replacingOccurrences(of: "()",
+                                                  with: ""),
                 testTag]
             .filter { !$0.isEmpty }
             .joined(separator: idSeparator)
-    }
-
-    var testName: String {
-        return testFunction.replacingOccurrences(of: "()",
-                                                 with: "")
     }
 
     var moduleName: String {

@@ -40,7 +40,7 @@ struct SnapshotManagerTests {
 
     @Test
     func should_throw_error_when_failing_to_save_reference_snapshot() async throws {
-        fileManager.shouldThrowError = true
+        fileManager.shouldThrowWriteFileError = true
 
         #expect(performing: {
             try snapshotManager.saveSnapshot(snapshot)
@@ -64,5 +64,16 @@ struct SnapshotManagerTests {
         try snapshotManager.saveSnapshot(snapshot)
 
         #expect(fileManager.createdDirectories == [snapshotFilePath.testSuiteSnapshotsDir.path()])
+    }
+
+    @Test
+    func should_throw_error_if_directory_could_not_be_created() async throws {
+        fileManager.shouldThrowCreateDirError = true
+
+        #expect(performing: {
+            try snapshotManager.saveSnapshot(snapshot)
+        }, throws: { _ in
+            return true
+        })
     }
 }

@@ -15,6 +15,8 @@ extension FileManaging where Self == Foundation.FileManager {
 
 extension FileManager: FileManaging {
 
+    // MARK: - FileManaging
+
     func isDirectoryExisting(at directoryPath: FilePath) -> Bool {
         var isDir: ObjCBool = false
         let isExisting = fileExists(atPath: directoryPath.path(),
@@ -22,9 +24,9 @@ extension FileManager: FileManaging {
         return isExisting && isDir.boolValue
     }
     
-    func createDirectory(at directoryPath: FilePath) {
-        try? createDirectory(at: directoryPath,
-                             withIntermediateDirectories: true)
+    func createDirectory(at directoryPath: FilePath) throws {
+        try createDirectory(at: directoryPath,
+                            withIntermediateDirectories: true)
     }
     
     func write(_ data: Data, to filePath: FilePath) throws {

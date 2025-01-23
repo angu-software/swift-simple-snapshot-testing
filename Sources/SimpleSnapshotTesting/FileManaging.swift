@@ -9,6 +9,6 @@ import Foundation
 
 protocol FileManaging {
     func isDirectoryExisting(at directoryPath: FilePath) -> Bool
-    func createDirectory(at directoryPath: FilePath)
+    func createDirectory(at directoryPath: FilePath) throws
     func write(_ data: Data, to filePath: FilePath) throws
 }

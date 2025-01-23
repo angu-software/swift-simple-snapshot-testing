@@ -13,7 +13,8 @@ final class FileManagerDouble: FileManaging {
 
     typealias Path = String
 
-    var shouldThrowError = false
+    var shouldThrowCreateDirError = false
+    var shouldThrowWriteFileError = false
     private(set) var createdDirectories: [Path] = []
     private(set) var writtenData: [Path: Data] = [:]
 
@@ -23,12 +24,15 @@ final class FileManagerDouble: FileManaging {
         return false
     }
 
-    func createDirectory(at directoryPath: SimpleSnapshotTesting.FilePath) {
+    func createDirectory(at directoryPath: SimpleSnapshotTesting.FilePath) throws {
+        if shouldThrowCreateDirError {
+            throw .dummy()
+        }
         createdDirectories.append(directoryPath.path())
     }
 
     func write(_ data: Data, to filePath: FilePath) throws {
-        if shouldThrowError {
+        if shouldThrowWriteFileError {
             throw .dummy()
         }
         writtenData[filePath.path()] = data

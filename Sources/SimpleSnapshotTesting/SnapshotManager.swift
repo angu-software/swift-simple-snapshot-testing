@@ -25,15 +25,15 @@ final class SnapshotManager {
             throw Error.failedToConvertImageToData
         }
 
-        createSnapshotDirectory(snapshot)
+        try createSnapshotDirectory(snapshot)
 
         try fileManager.write(imageData,
                               to: snapshot.filePath.snapshotFilePath)
     }
 
-    private func createSnapshotDirectory(_ snapshot: Snapshot) {
+    private func createSnapshotDirectory(_ snapshot: Snapshot) throws {
         if !fileManager.isDirectoryExisting(at: snapshot.filePath.testSuiteSnapshotsDir) {
-            fileManager.createDirectory(at: snapshot.filePath.testSuiteSnapshotsDir)
+            try fileManager.createDirectory(at: snapshot.filePath.testSuiteSnapshotsDir)
         }
     }
 }

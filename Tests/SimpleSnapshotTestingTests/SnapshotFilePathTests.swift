@@ -45,7 +45,7 @@ struct SnapshotFilePathTests {
         let testName = location.testIdentifier
 
         #expect(
-            path.testSnapshotsFile.path()
+            path.snapshotFilePath.path()
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/\(fileName)/\(testName).png")
         )
     }

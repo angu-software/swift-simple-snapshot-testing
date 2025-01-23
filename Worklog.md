@@ -12,6 +12,7 @@
 - [ ] create a diff image
 - [ ] store diff image in repo
 - [ ] fail test viewSnapshot is not matching reference snapshot
+- [ ] Image (snapshot) renderer type that can handle different platforms (iOS, MacOS, ...)
 
 ## Done
 

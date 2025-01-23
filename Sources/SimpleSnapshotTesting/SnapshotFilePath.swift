@@ -31,7 +31,7 @@ struct SnapshotFilePath: Equatable {
                        directoryHint: .isDirectory)
     }
 
-    var testSnapshotsFile: FilePath {
+    var snapshotFilePath: FilePath {
         return testSuiteSnapshotsDir
             .appending(component: fileName)
             .appendingPathExtension(for: fileExtension)

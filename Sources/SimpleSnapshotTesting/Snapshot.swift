@@ -14,13 +14,13 @@ final class Snapshot {
     let filePath: SnapshotFilePath
 
     private convenience init(image: SnapshotImage,
-                     testLocation: SnapshotTestLocation) {
+                             testLocation: SnapshotTestLocation) {
         self.init(image: image,
                   filePath: SnapshotFilePath(testLocation: testLocation))
     }
 
-    private init(image: SnapshotImage,
-                 filePath: SnapshotFilePath) {
+    init(image: SnapshotImage,
+         filePath: SnapshotFilePath) {
         self.image = image
         self.filePath = filePath
     }

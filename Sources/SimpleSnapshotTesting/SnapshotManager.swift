@@ -7,13 +7,6 @@
 
 import Foundation
 
-protocol FileManaging {
-
-    func isDirectoryExisting(at directoryPath: FilePath) -> Bool
-    func createDirectory(at directoryPath: FilePath)
-    func write(_ data: Data, to filePath: FilePath) throws
-}
-
 @MainActor
 final class SnapshotManager {
 
@@ -23,7 +16,7 @@ final class SnapshotManager {
 
     private let fileManager: FileManaging
 
-    init(fileManager: FileManaging) {
+    init(fileManager: FileManaging = .default) {
         self.fileManager = fileManager
     }
 

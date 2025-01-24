@@ -28,7 +28,7 @@ final class SnapshotManager {
         try createSnapshotDirectory(snapshot)
 
         try fileManager.write(imageData,
-                              to: snapshot.filePath.snapshotFilePath)
+                              to: snapshot.filePath.referenceSnapshotFile)
     }
 
     private func createSnapshotDirectory(_ snapshot: Snapshot) throws {

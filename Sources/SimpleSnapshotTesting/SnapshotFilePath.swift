@@ -9,15 +9,19 @@ import UniformTypeIdentifiers
 
 struct SnapshotFilePath: Equatable {
 
-    var fileName: String {
-        return testLocation.testIdentifier
-    }
-
     private let testSourceFile: FilePath
     private let fileExtension = UTType.png
     private let rootFolderName = "__Snapshots__"
 
     private let testLocation: SnapshotTestLocation
+
+    var snapshotImageFileName: String {
+        return testLocation.testIdentifier
+    }
+
+    private var diffOriginalImageFileName: String {
+        return "ORIG_\(snapshotImageFileName)"
+    }
 
     var testTargetSnapshotsDir: FilePath {
         return testTargetDir
@@ -26,14 +30,32 @@ struct SnapshotFilePath: Equatable {
     }
 
     var testSuiteSnapshotsDir: FilePath {
-        testTargetSnapshotsDir
+        return testTargetSnapshotsDir
             .appending(component: testSourceFileName,
                        directoryHint: .isDirectory)
     }
 
-    var snapshotFilePath: FilePath {
+    var referenceSnapshotFile: FilePath {
         return testSuiteSnapshotsDir
-            .appending(component: fileName)
+            .appending(component: snapshotImageFileName)
+            .appendingPathExtension(for: fileExtension)
+    }
+
+    var failureDiffsDir: FilePath {
+        return testTargetSnapshotsDir
+            .appending(component: "FailureDiffs",
+                       directoryHint: .isDirectory)
+    }
+
+    var testSuiteFailureDiffsDir: FilePath {
+        return failureDiffsDir
+            .appending(component: testSourceFileName,
+                       directoryHint: .isDirectory)
+    }
+
+    var failureOriginalSnapshotFile: FilePath {
+        return testSuiteFailureDiffsDir
+            .appending(component: diffOriginalImageFileName)
             .appendingPathExtension(for: fileExtension)
     }
 

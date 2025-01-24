@@ -34,7 +34,7 @@ struct SnapshotManagerTests {
         try snapshotManager.saveSnapshot(snapshot)
 
         #expect(
-            fileManager.writtenData == [snapshotFilePath.snapshotFilePath.path(): SnapshotImage.dummy().pngData()]
+            fileManager.writtenData == [snapshotFilePath.referenceSnapshotFile.path(): SnapshotImage.dummy().pngData()]
         )
     }
 

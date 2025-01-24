@@ -11,7 +11,8 @@ struct SnapshotFilePath: Equatable {
 
     private let testSourceFile: FilePath
     private let fileExtension = UTType.png
-    private let rootFolderName = "__Snapshots__"
+    private let snapshotsRootFolderName = "__Snapshots__"
+    private let failureDiffsRootFolderName = "FailureDiffs"
 
     private let testLocation: SnapshotTestLocation
 
@@ -24,39 +25,33 @@ struct SnapshotFilePath: Equatable {
     }
 
     var testTargetSnapshotsDir: FilePath {
-        return testTargetDir
-            .appending(component: rootFolderName,
-                       directoryHint: .isDirectory)
+        return makeDirPath(basePath: testTargetDir,
+                           snapshotsRootFolderName)
+    }
+
+    var testTargetFailureDiffsDir: FilePath {
+        return makeDirPath(basePath: testTargetSnapshotsDir,
+                           failureDiffsRootFolderName)
     }
 
     var testSuiteSnapshotsDir: FilePath {
-        return testTargetSnapshotsDir
-            .appending(component: testSourceFileName,
-                       directoryHint: .isDirectory)
-    }
-
-    var referenceSnapshotFile: FilePath {
-        return testSuiteSnapshotsDir
-            .appending(component: snapshotImageFileName)
-            .appendingPathExtension(for: fileExtension)
-    }
-
-    var failureDiffsDir: FilePath {
-        return testTargetSnapshotsDir
-            .appending(component: "FailureDiffs",
-                       directoryHint: .isDirectory)
+        return makeDirPath(basePath: testTargetSnapshotsDir,
+                           testSourceFileName)
     }
 
     var testSuiteFailureDiffsDir: FilePath {
-        return failureDiffsDir
-            .appending(component: testSourceFileName,
-                       directoryHint: .isDirectory)
+        return makeDirPath(basePath: testTargetFailureDiffsDir,
+                           testSourceFileName)
+    }
+
+    var referenceSnapshotFile: FilePath {
+        return appendFile(named: snapshotImageFileName,
+                          on: testSuiteSnapshotsDir)
     }
 
     var failureOriginalSnapshotFile: FilePath {
-        return testSuiteFailureDiffsDir
-            .appending(component: diffOriginalImageFileName)
-            .appendingPathExtension(for: fileExtension)
+        return appendFile(named: diffOriginalImageFileName,
+                          on: testSuiteFailureDiffsDir)
     }
 
     var testTargetDir: FilePath {
@@ -76,4 +71,24 @@ struct SnapshotFilePath: Equatable {
         self.testLocation = testLocation
         self.testSourceFile = FilePath("\(testLocation.testFilePath)")
     }
+
+    private func makeDirPath(basePath: FilePath, _ subPathSegments: String...) -> FilePath {
+        var path = basePath
+        for segment in subPathSegments {
+            path.append(path: segment,
+                        directoryHint: .isDirectory)
+        }
+
+        return path
+    }
+
+    private func appendFile(named fileName: String, on dirPath: FilePath) -> FilePath {
+        return dirPath
+            .appending(component: fileName)
+            .appendingPathExtension(for: fileExtension)
+    }
+}
+
+private enum PathBuilder {
+
 }

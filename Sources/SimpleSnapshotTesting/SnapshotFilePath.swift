@@ -20,50 +20,68 @@ struct SnapshotFilePath: Equatable {
         return testLocation.testIdentifier
     }
 
-    private var diffOriginalImageFileName: String {
-        return "ORIG_\(snapshotImageFileName)"
-    }
-
     var testTargetSnapshotsDir: FilePath {
-        return makeDirPath(basePath: testTargetDir,
-                           snapshotsRootFolderName)
+        return appendDir(named: snapshotsRootFolderName,
+                         at: testTargetDir)
     }
 
     var testTargetFailureDiffsDir: FilePath {
-        return makeDirPath(basePath: testTargetSnapshotsDir,
-                           failureDiffsRootFolderName)
+        return appendDir(named: failureDiffsRootFolderName,
+                         at: testTargetSnapshotsDir)
     }
 
     var testSuiteSnapshotsDir: FilePath {
-        return makeDirPath(basePath: testTargetSnapshotsDir,
-                           testSourceFileName)
+        return appendDir(named: testSourceFileName,
+                         at: testTargetSnapshotsDir)
     }
 
     var testSuiteFailureDiffsDir: FilePath {
-        return makeDirPath(basePath: testTargetFailureDiffsDir,
-                           testSourceFileName)
+        return appendDir(named: testSourceFileName,
+                         at: testTargetFailureDiffsDir)
     }
 
     var referenceSnapshotFile: FilePath {
         return appendFile(named: snapshotImageFileName,
-                          on: testSuiteSnapshotsDir)
+                          at: testSuiteSnapshotsDir)
     }
 
     var failureOriginalSnapshotFile: FilePath {
-        return appendFile(named: diffOriginalImageFileName,
-                          on: testSuiteFailureDiffsDir)
+        return appendFile(named: failureOriginalImageFileName,
+                          at: testSuiteFailureDiffsDir)
     }
 
-    var testTargetDir: FilePath {
+    var failureFailingSnapshotFile: FilePath {
+        return appendFile(named: failureFailingImageFileName,
+                          at: testSuiteFailureDiffsDir)
+    }
+
+    var failureDiffSnapshotFile: FilePath {
+        return appendFile(named: failureDiffImageFileName,
+                          at: testSuiteFailureDiffsDir)
+    }
+
+    private var failureOriginalImageFileName: String {
+        return "ORIG_\(snapshotImageFileName)"
+    }
+
+    private var failureFailingImageFileName: String {
+        return "FAIL_\(snapshotImageFileName)"
+    }
+
+    private var failureDiffImageFileName: String {
+        return "DIFF_\(snapshotImageFileName)"
+    }
+
+    private var testTargetDir: FilePath {
         return testSourceFile
             .deletingLastPathComponent()
     }
 
-    var testTargetName: String {
+    private var testTargetName: String {
         return testTargetDir.lastPathComponent
     }
 
-    var testSourceFileName: String {
+    private var testSourceFileName: String {
         return testSourceFile.deletingPathExtension().lastPathComponent
     }
 
@@ -72,23 +90,16 @@ struct SnapshotFilePath: Equatable {
         self.testSourceFile = FilePath("\(testLocation.testFilePath)")
     }
 
-    private func makeDirPath(basePath: FilePath, _ subPathSegments: String...) -> FilePath {
-        var path = basePath
-        for segment in subPathSegments {
-            path.append(path: segment,
-                        directoryHint: .isDirectory)
-        }
-
-        return path
+    private func appendDir(named dirName: String,
+                           at dirPath: FilePath) -> FilePath {
+        return dirPath.appending(path: dirName,
+                                 directoryHint: .isDirectory)
     }
 
-    private func appendFile(named fileName: String, on dirPath: FilePath) -> FilePath {
+    private func appendFile(named fileName: String,
+                            at dirPath: FilePath) -> FilePath {
         return dirPath
             .appending(component: fileName)
             .appendingPathExtension(for: fileExtension)
     }
-}
-
-private enum PathBuilder {
-
 }

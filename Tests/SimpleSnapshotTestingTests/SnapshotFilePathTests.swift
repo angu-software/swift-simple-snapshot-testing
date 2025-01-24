@@ -64,6 +64,32 @@ struct SnapshotFilePathTests {
     }
 
     @Test
+    func should_resolve_failure_diff_failing_snapshot_file_path() {
+        let location = SnapshotTestLocation.fixture()
+        let testName = location.testIdentifier
+
+        let path = SnapshotFilePath(testLocation: location)
+
+        #expect(
+            path.failureFailingSnapshotFile.path()
+                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/FailureDiffs/\(testSourceFileName)/FAIL_\(testName).png")
+        )
+    }
+
+    @Test
+    func should_resolve_failure_diff_diffed_snapshot_file_path() {
+        let location = SnapshotTestLocation.fixture()
+        let testName = location.testIdentifier
+
+        let path = SnapshotFilePath(testLocation: location)
+
+        #expect(
+            path.failureDiffSnapshotFile.path()
+                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/FailureDiffs/\(testSourceFileName)/DIFF_\(testName).png")
+        )
+    }
+
+    @Test
     func should_have_file_name_according_to_test_method_name() async throws {
         let path = SnapshotFilePath(testLocation: .fixture())
 

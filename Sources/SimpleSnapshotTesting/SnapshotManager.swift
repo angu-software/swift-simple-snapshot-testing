@@ -21,9 +21,12 @@ final class SnapshotManager {
         case snapshotImageRenderingFailed
     }
 
+    private let testLocation: SnapshotTestLocation
     private let fileManager: FileManaging
 
-    init(fileManager: FileManaging = .default) {
+    init(testLocation: SnapshotTestLocation,
+         fileManager: FileManaging = .default) {
+        self.testLocation = testLocation
         self.fileManager = fileManager
     }
 

@@ -22,7 +22,7 @@ struct SnapshotTests {
     @Test
     func snapshot_file_path_should_equal_path_of_test_file() async throws {
         let location = SnapshotTestLocation.fixture()
-        let manager = SnapshotManager()
+        let manager = SnapshotManager(testLocation: location)
 
         let snapshot = try manager.makeSnapshot(view: Rectangle(),
                                                 testLocation: location)

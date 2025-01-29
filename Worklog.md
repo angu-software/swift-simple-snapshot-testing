@@ -6,6 +6,7 @@
 
 ## Backlog
 
+- [ ] take the scale of the rendered/stored image into consideration
 - [ ] snapshot name from test function with parameters
 - [ ] load reference image (if exists)
 - [ ] create a diff image

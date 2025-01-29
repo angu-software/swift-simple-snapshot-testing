@@ -28,7 +28,6 @@ struct SnapshotManagerTests {
 
         let snapshot = try manager.makeSnapshot(view: Rectangle())
 
-        #expect(snapshot.image != nil)
         #expect(snapshot.imageFilePath == pathFactory.referenceSnapshotFile)
     }
 
@@ -90,6 +89,19 @@ struct SnapshotManagerTests {
         }, throws: { _ in
             return true
         })
+    }
+
+    // MARK: Load snapshot from file
+
+    @Test
+    func should_load_snapshot_from_ref_file() async throws {
+        let refFilePath = FilePath.dummy()
+        fileManager.stubbedFileData = [refFilePath.path(): SnapshotImage.dummy().pngData()!]
+        let snapshotManager = makeSnapshotManager(testLocation: .fixture())
+
+        let snapshot = try snapshotManager.makeSnapshot(filePath: refFilePath)
+
+        #expect(snapshot.imageFilePath == refFilePath)
     }
 
     // MARK: Compare snapshots

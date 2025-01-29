@@ -7,6 +7,7 @@
 
 import UniformTypeIdentifiers
 
+@available(*, deprecated, renamed: "SnapshotFilePathFactory")
 typealias SnapshotFilePath = SnapshotFilePathFactory
 
 struct SnapshotFilePathFactory: Equatable {

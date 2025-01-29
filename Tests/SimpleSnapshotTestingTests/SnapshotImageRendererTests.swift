@@ -35,7 +35,6 @@ struct SnapshotImageRendererTests {
         let image = try #require(makeSnapshotImage(view: Text("Hello World")))
 
         #expect(image.scale == 1)
-
     }
 
     private func makeSnapshotImage<SwiftUIView: SwiftUI.View>(view: SwiftUIView) -> SnapshotImage? {

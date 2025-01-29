@@ -41,6 +41,10 @@ final class SnapshotManager {
                         imageFilePath: pathFactory.referenceSnapshotFile)
     }
 
+    func makeSnapshot(filePath: FilePath) throws -> Snapshot {
+        throw Error.failedToConvertImageToData
+    }
+
     func saveSnapshot(_ snapshot: Snapshot) throws {
         guard let imageData = snapshot.imageData else {
             throw Error.failedToConvertImageToData
@@ -65,12 +69,5 @@ final class SnapshotManager {
         if !fileManager.isDirectoryExisting(at: testSuiteSnapshotsDir) {
             try fileManager.createDirectory(at: testSuiteSnapshotsDir)
         }
-    }
-}
-
-extension Snapshot {
-
-    var imageData: Data? {
-        return image.pngData()
     }
 }

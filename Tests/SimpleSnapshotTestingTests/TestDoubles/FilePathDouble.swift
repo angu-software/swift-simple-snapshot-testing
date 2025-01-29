@@ -10,6 +10,6 @@
 extension FilePath {
 
     static func dummy() -> Self {
-        return Self(filePath: "/foo/bar")
+        return Self(filePath: "/foo/bar/file.png")
     }
 }

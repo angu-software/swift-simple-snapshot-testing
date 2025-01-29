@@ -15,6 +15,7 @@ final class FileManagerDouble: FileManaging {
 
     var shouldThrowCreateDirError = false
     var shouldThrowWriteFileError = false
+    var stubbedFileData: [String: Data] = [:]
     private(set) var createdDirectories: [Path] = []
     private(set) var writtenData: [Path: Data] = [:]
 

@@ -18,6 +18,7 @@ final class SnapshotManager {
 
     enum Error: Swift.Error {
         case failedToConvertImageToData
+        case snapshotImageRenderingFailed
     }
 
     private let fileManager: FileManaging
@@ -29,8 +30,15 @@ final class SnapshotManager {
     @MainActor
     func makeSnapshot<SwiftUIView: SwiftUI.View>(view: SwiftUIView,
                                                  testLocation: SnapshotTestLocation) throws -> Snapshot {
-        return try Snapshot(view: view,
-                            testLocation: testLocation)
+        guard let image = SnapshotImageRenderer.makeImage(view: view) else {
+            throw Error.snapshotImageRenderingFailed
+        }
+
+        let pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
+
+        return Snapshot(image: image,
+                        imageFilePath: pathFactory.referenceSnapshotFile,
+                        filePath: pathFactory)
     }
 
     func saveSnapshot(_ snapshot: Snapshot) throws {

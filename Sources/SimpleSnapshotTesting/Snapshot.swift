@@ -35,22 +35,3 @@ extension Snapshot {
                   filePath: pathFactory)
     }
 }
-
-extension Snapshot {
-
-    enum Error: Swift.Error {
-        case snapshotImageRenderingFailed
-    }
-
-    @available(*, deprecated, renamed: "SnapshotManager.makeSnapshot")
-    @MainActor
-    init<SwiftUIView: SwiftUI.View>(view: SwiftUIView,
-                                    testLocation: SnapshotTestLocation) throws {
-        guard let image = SnapshotImageRenderer.makeImage(view: view) else {
-            throw Error.snapshotImageRenderingFailed
-        }
-
-        self.init(image: image,
-                  testLocation: testLocation)
-    }
-}

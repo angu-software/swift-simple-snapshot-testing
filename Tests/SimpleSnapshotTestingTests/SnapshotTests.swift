@@ -13,6 +13,8 @@ import Testing
 
 @testable import SimpleSnapshotTesting
 
+// TODO: Move to Manager tests
+
 @MainActor
 @Suite(.tags(.acceptanceTest))
 struct SnapshotTests {

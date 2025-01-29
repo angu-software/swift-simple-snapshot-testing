@@ -23,10 +23,12 @@ final class SnapshotManager {
 
     private let testLocation: SnapshotTestLocation
     private let fileManager: FileManaging
+    private let pathFactory: SnapshotFilePathFactory
 
     init(testLocation: SnapshotTestLocation,
          fileManager: FileManaging = .default) {
         self.testLocation = testLocation
+        self.pathFactory = SnapshotFilePath(testLocation: testLocation)
         self.fileManager = fileManager
     }
 
@@ -35,8 +37,6 @@ final class SnapshotManager {
         guard let image = SnapshotImageRenderer.makeImage(view: view) else {
             throw Error.snapshotImageRenderingFailed
         }
-
-        let pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
 
         return Snapshot(image: image,
                         imageFilePath: pathFactory.referenceSnapshotFile,
@@ -63,8 +63,9 @@ final class SnapshotManager {
     }
 
     private func createSnapshotDirectory(_ snapshot: Snapshot) throws {
-        if !fileManager.isDirectoryExisting(at: snapshot.filePath.testSuiteSnapshotsDir) {
-            try fileManager.createDirectory(at: snapshot.filePath.testSuiteSnapshotsDir)
+        let testSuiteSnapshotsDir = pathFactory.testSuiteSnapshotsDir
+        if !fileManager.isDirectoryExisting(at: testSuiteSnapshotsDir) {
+            try fileManager.createDirectory(at: testSuiteSnapshotsDir)
         }
     }
 }

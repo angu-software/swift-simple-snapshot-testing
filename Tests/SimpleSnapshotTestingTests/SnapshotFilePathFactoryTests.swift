@@ -1,5 +1,5 @@
 //
-//  SnapshotFilePathTests.swift
+//  SnapshotFilePathFactoryTests.swift
 //  SimpleSnapshotTesting
 //
 //  Created by Andreas Guenther on 22.01.25.
@@ -9,14 +9,14 @@ import Testing
 
 @testable import SimpleSnapshotTesting
 
-struct SnapshotFilePathTests {
+struct SnapshotFilePathFactoryTests {
 
     private let moduleName = "SimpleSnapshotTestingTests"
-    private let testSourceFileName = "SnapshotFilePathTests"
+    private let testSourceFileName = "SnapshotFilePathFactoryTests"
 
     @Test
     func should_resolve_test_target_snapshot_dir() {
-        let path = SnapshotFilePath(testLocation: .fixture())
+        let path = SnapshotFilePathFactory(testLocation: .fixture())
 
         #expect(
             path.testTargetSnapshotsDir.stringValue
@@ -28,7 +28,7 @@ struct SnapshotFilePathTests {
 
     @Test
     func should_resolve_test_suite_dir() {
-        let path = SnapshotFilePath(testLocation: .fixture())
+        let path = SnapshotFilePathFactory(testLocation: .fixture())
 
         #expect(
             path.testSuiteSnapshotsDir.stringValue
@@ -41,7 +41,7 @@ struct SnapshotFilePathTests {
         let location = SnapshotTestLocation.fixture()
         let testName = location.testIdentifier
 
-        let path = SnapshotFilePath(testLocation: location)
+        let path = SnapshotFilePathFactory(testLocation: location)
 
         #expect(
             path.referenceSnapshotFile.stringValue
@@ -55,7 +55,7 @@ struct SnapshotFilePathTests {
         let location = SnapshotTestLocation.fixture()
         let testName = location.testIdentifier
 
-        let path = SnapshotFilePath(testLocation: location)
+        let path = SnapshotFilePathFactory(testLocation: location)
 
         #expect(
             path.failureOriginalSnapshotFile.stringValue
@@ -68,7 +68,7 @@ struct SnapshotFilePathTests {
         let location = SnapshotTestLocation.fixture()
         let testName = location.testIdentifier
 
-        let path = SnapshotFilePath(testLocation: location)
+        let path = SnapshotFilePathFactory(testLocation: location)
 
         #expect(
             path.failureFailingSnapshotFile.stringValue
@@ -81,7 +81,7 @@ struct SnapshotFilePathTests {
         let location = SnapshotTestLocation.fixture()
         let testName = location.testIdentifier
 
-        let path = SnapshotFilePath(testLocation: location)
+        let path = SnapshotFilePathFactory(testLocation: location)
 
         #expect(
             path.failureDiffSnapshotFile.stringValue
@@ -91,14 +91,14 @@ struct SnapshotFilePathTests {
 
     @Test
     func should_have_file_name_according_to_test_method_name() async throws {
-        let path = SnapshotFilePath(testLocation: .fixture())
+        let path = SnapshotFilePathFactory(testLocation: .fixture())
 
         #expect(path.snapshotImageFileName == "should_have_file_name_according_to_test_method_name")
     }
 
     @Test
     func snapshot_should_append_identifier_to_filename_when_specified() async throws {
-        let path = SnapshotFilePath(testLocation: .fixture(testTag: "someIdentifier"))
+        let path = SnapshotFilePathFactory(testLocation: .fixture(testTag: "someIdentifier"))
 
         #expect(path.snapshotImageFileName == "snapshot_should_append_identifier_to_filename_when_specified_someIdentifier")
     }

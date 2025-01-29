@@ -30,7 +30,7 @@ final class SnapshotManager {
     init(testLocation: SnapshotTestLocation,
          fileManager: FileManaging = .default) {
         self.testLocation = testLocation
-        self.pathFactory = SnapshotFilePath(testLocation: testLocation)
+        self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
         self.fileManager = fileManager
     }
 

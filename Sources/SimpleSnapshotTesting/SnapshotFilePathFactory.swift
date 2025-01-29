@@ -1,14 +1,11 @@
 //
-//  SnapshotFilePath.swift
+//  SnapshotFilePathFactory.swift
 //  SimpleSnapshotTesting
 //
 //  Created by Andreas Guenther on 22.01.25.
 //
 
 import UniformTypeIdentifiers
-
-@available(*, deprecated, renamed: "SnapshotFilePathFactory")
-typealias SnapshotFilePath = SnapshotFilePathFactory
 
 struct SnapshotFilePathFactory: Equatable {
 

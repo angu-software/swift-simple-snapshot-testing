@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum SnapshotComparisonResult {
+    case matching
+    case different
+}
+
 @MainActor
 final class SnapshotManager {
 
@@ -29,6 +34,14 @@ final class SnapshotManager {
 
         try fileManager.write(imageData,
                               to: snapshot.filePath.referenceSnapshotFile)
+    }
+
+    func compareSnapshot(_ snapshot: Snapshot, with referenceSnapshot: Snapshot) -> SnapshotComparisonResult {
+        if snapshot.imageData == referenceSnapshot.imageData {
+            return .matching
+        } else {
+            return .different
+        }
     }
 
     private func createSnapshotDirectory(_ snapshot: Snapshot) throws {

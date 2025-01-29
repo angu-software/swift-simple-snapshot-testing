@@ -2,17 +2,17 @@
 
 ## In Progress
 
+- [ ] compare viewSnapshot with reference snapshot
+
 ## Backlog
 
 - [ ] snapshot name from test function with parameters
-- [ ] reliable root path for storing snapshot reference and diffs
-- [ ] store recorded snapshot in repo
 - [ ] load reference image (if exists)
-- [ ] compare viewSnapshot with reference snapshot
 - [ ] create a diff image
 - [ ] store diff image in repo
 - [ ] fail test viewSnapshot is not matching reference snapshot
 - [ ] Image (snapshot) renderer type that can handle different platforms (iOS, MacOS, ...)
+- [ ] Config to define stored/compared image format
 
 ### PublicAPI
 
@@ -25,4 +25,6 @@
 ## Done
 
 - [x] Use #fileID to construct snapshot folder for the respective tests
+- [x] store recorded snapshot in repo
+- [x] reliable root path for storing snapshot reference and diffs
 

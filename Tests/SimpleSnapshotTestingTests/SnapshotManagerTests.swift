@@ -76,4 +76,14 @@ struct SnapshotManagerTests {
             return true
         })
     }
+
+    @Test
+    func should_report_match_for_equal_snapshots() throws {
+        let refSnap = try Snapshot(view: Rectangle(), testLocation: .fixture())
+        let takenSnap = try Snapshot(view: Rectangle(), testLocation: .fixture())
+
+        let result = snapshotManager.compareSnapshot(takenSnap, with: refSnap)
+
+        #expect(result == .matching)
+    }
 }

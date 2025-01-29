@@ -31,7 +31,7 @@ struct SnapshotManagerTests {
         #expect(snapshot.imageFilePath == pathFactory.referenceSnapshotFile)
     }
 
-   // MARK: Saving snapshot
+    // MARK: Saving snapshot
 
     @Test
     func should_save_reference_snapshot_as_image_on_file_system() async throws {
@@ -95,8 +95,7 @@ struct SnapshotManagerTests {
 
     @Test
     func should_load_snapshot_from_ref_file() async throws {
-        let refFilePath = FilePath.dummy()
-        fileManager.stubbedFileData = [refFilePath.stringValue: SnapshotImage.dummy().pngData()!]
+        let refFilePath = try createRefImage()
         let snapshotManager = makeSnapshotManager(testLocation: .fixture())
 
         let snapshot = try snapshotManager.makeSnapshot(filePath: refFilePath)
@@ -117,10 +116,11 @@ struct SnapshotManagerTests {
     // MARK: Compare snapshots
 
     @Test
-    func should_report_match_for_equal_snapshots() throws {
+    func should_report_match_for_matching_taken_and_reference_snapshot() throws {
         let snapshotManager = makeSnapshotManager(testLocation: .fixture())
-        let refSnap = try snapshotManager.makeSnapshot(view: Rectangle())
         let takenSnap = try snapshotManager.makeSnapshot(view: Rectangle())
+        let refFilePath = try setSnapshotAsReference(takenSnap)
+        let refSnap = try snapshotManager.makeSnapshot(filePath: refFilePath)
 
         let result = snapshotManager.compareSnapshot(takenSnap, with: refSnap)
 
@@ -132,5 +132,16 @@ struct SnapshotManagerTests {
     private func makeSnapshotManager(testLocation: SnapshotTestLocation) -> SnapshotManager {
         return SnapshotManager(testLocation: testLocation,
                                fileManager: fileManager)
+    }
+
+    private func setSnapshotAsReference(_ snapshot: Snapshot) throws -> FilePath {
+        let imageData = try #require(snapshot.imageData)
+        fileManager.stubbedFileData = [snapshot.imageFilePath.stringValue: imageData]
+        return snapshot.imageFilePath
+    }
+
+    private func createRefImage() throws -> FilePath {
+        return try setSnapshotAsReference(Snapshot(image: .dummy(),
+                                                   imageFilePath: .dummy()))
     }
 }

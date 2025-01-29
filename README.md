@@ -8,4 +8,4 @@ Snapshot and tests your views
 * Only diff image on disc
 * Concise
 * Fast
-
+* Device agnostic; decoupled from running simulator device

@@ -2,19 +2,18 @@
 
 ## In Progress
 
-- [ ] compare viewSnapshot with reference snapshot
+- [ ] create a diff image
 
 ## Backlog
 
 - [ ] take the scale of the rendered/stored image into consideration
 - [ ] snapshot name from test function with parameters
-- [ ] create a diff image
 - [ ] store diff image in repo
 - [ ] fail test viewSnapshot is not matching reference snapshot
 - [ ] Image (snapshot) renderer type that can handle different platforms (iOS, MacOS, ...)
 - [ ] Config to define stored/compared image format
 
-### PublicAPI
+### PublicAPI Acceptance tests
 
 - [ ] should fail when ref image not found
 - [ ] should succeed when ref image and view image is equal
@@ -28,4 +27,5 @@
 - [x] store recorded snapshot in repo
 - [x] reliable root path for storing snapshot reference and diffs
 - [x] load reference image (if exists)
+- [x] compare viewSnapshot with reference snapshot
 

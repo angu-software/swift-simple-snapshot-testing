@@ -7,7 +7,9 @@
 
 import UniformTypeIdentifiers
 
-struct SnapshotFilePath: Equatable {
+typealias SnapshotFilePath = SnapshotFilePathFactory
+
+struct SnapshotFilePathFactory: Equatable {
 
     private let testSourceFile: FilePath
     private let fileExtension = UTType.png

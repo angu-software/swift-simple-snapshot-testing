@@ -7,22 +7,32 @@
 
 import SwiftUI
 
-@MainActor
-final class Snapshot {
+struct Snapshot {
 
     let image: SnapshotImage
+    let imageFilePath: FilePath
+
+    @available(*, deprecated, renamed: "imageFilePath")
     let filePath: SnapshotFilePath
+}
 
-    private convenience init(image: SnapshotImage,
-                             testLocation: SnapshotTestLocation) {
-        self.init(image: image,
-                  filePath: SnapshotFilePath(testLocation: testLocation))
-    }
+extension Snapshot {
 
+    @available(*, deprecated)
     init(image: SnapshotImage,
          filePath: SnapshotFilePath) {
-        self.image = image
-        self.filePath = filePath
+        self.init(image: image,
+                  imageFilePath: filePath.referenceSnapshotFile,
+                  filePath: filePath)
+    }
+
+    private init(image: SnapshotImage,
+                 testLocation: SnapshotTestLocation) {
+        let pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
+
+        self.init(image: image,
+                  imageFilePath: pathFactory.referenceSnapshotFile,
+                  filePath: pathFactory)
     }
 }
 
@@ -32,8 +42,9 @@ extension Snapshot {
         case snapshotImageRenderingFailed
     }
 
-    convenience init<SwiftUIView: SwiftUI.View>(view: SwiftUIView,
-                                                testLocation: SnapshotTestLocation) throws {
+    @MainActor
+    init<SwiftUIView: SwiftUI.View>(view: SwiftUIView,
+                                    testLocation: SnapshotTestLocation) throws {
         guard let image = SnapshotImageRenderer.makeImage(view: view) else {
             throw Error.snapshotImageRenderingFailed
         }

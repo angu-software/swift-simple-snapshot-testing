@@ -16,9 +16,10 @@ struct SimpleSnapshotTests {
     @Test
     func playing_arround() async throws {
         let testLocation = SnapshotTestLocation(testFunction: #function,
-                                           testFilePath: #filePath,
-                                           testFileID: #fileID,
-                                           testTag: "SomeTag")
+                                                testFilePath: #filePath,
+                                                testFileID: #fileID,
+                                                testTag: "SomeTag")
+        let pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
 
         let snapshot = try Snapshot(view: Rectangle(),
                                     testLocation: testLocation)
@@ -26,8 +27,6 @@ struct SimpleSnapshotTests {
 
         try manager.saveSnapshot(snapshot)
 
-        let snapshotFilePath = SnapshotFilePath(testLocation: testLocation)
-
-        try FileManager.default.removeItem(at: snapshotFilePath.testTargetSnapshotsDir)
+        try FileManager.default.removeItem(at: pathFactory.testTargetSnapshotsDir)
     }
 }

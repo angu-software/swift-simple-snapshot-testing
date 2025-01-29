@@ -31,8 +31,7 @@ final class SnapshotManager {
     }
 
     @MainActor
-    func makeSnapshot<SwiftUIView: SwiftUI.View>(view: SwiftUIView,
-                                                 testLocation: SnapshotTestLocation) throws -> Snapshot {
+    func makeSnapshot<SwiftUIView: SwiftUI.View>(view: SwiftUIView) throws -> Snapshot {
         guard let image = SnapshotImageRenderer.makeImage(view: view) else {
             throw Error.snapshotImageRenderingFailed
         }

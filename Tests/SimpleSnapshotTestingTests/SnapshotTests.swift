@@ -24,8 +24,7 @@ struct SnapshotTests {
         let location = SnapshotTestLocation.fixture()
         let manager = SnapshotManager(testLocation: location)
 
-        let snapshot = try manager.makeSnapshot(view: Rectangle(),
-                                                testLocation: location)
+        let snapshot = try manager.makeSnapshot(view: Rectangle())
 
         #expect(snapshot.imageFilePath == SnapshotFilePathFactory(testLocation: location).referenceSnapshotFile)
     }

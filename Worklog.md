@@ -8,7 +8,6 @@
 
 - [ ] take the scale of the rendered/stored image into consideration
 - [ ] snapshot name from test function with parameters
-- [ ] load reference image (if exists)
 - [ ] create a diff image
 - [ ] store diff image in repo
 - [ ] fail test viewSnapshot is not matching reference snapshot
@@ -28,4 +27,5 @@
 - [x] Use #fileID to construct snapshot folder for the respective tests
 - [x] store recorded snapshot in repo
 - [x] reliable root path for storing snapshot reference and diffs
+- [x] load reference image (if exists)
 

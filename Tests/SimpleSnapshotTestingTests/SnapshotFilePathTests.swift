@@ -19,7 +19,7 @@ struct SnapshotFilePathTests {
         let path = SnapshotFilePath(testLocation: .fixture())
 
         #expect(
-            path.testTargetSnapshotsDir.path()
+            path.testTargetSnapshotsDir.stringValue
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/")
         )
     }
@@ -31,7 +31,7 @@ struct SnapshotFilePathTests {
         let path = SnapshotFilePath(testLocation: .fixture())
 
         #expect(
-            path.testSuiteSnapshotsDir.path()
+            path.testSuiteSnapshotsDir.stringValue
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/\(testSourceFileName)/")
         )
     }
@@ -44,7 +44,7 @@ struct SnapshotFilePathTests {
         let path = SnapshotFilePath(testLocation: location)
 
         #expect(
-            path.referenceSnapshotFile.path()
+            path.referenceSnapshotFile.stringValue
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/\(testSourceFileName)/\(testName).png")
         )
     }
@@ -58,7 +58,7 @@ struct SnapshotFilePathTests {
         let path = SnapshotFilePath(testLocation: location)
 
         #expect(
-            path.failureOriginalSnapshotFile.path()
+            path.failureOriginalSnapshotFile.stringValue
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/FailureDiffs/\(testSourceFileName)/ORIG_\(testName).png")
         )
     }
@@ -71,7 +71,7 @@ struct SnapshotFilePathTests {
         let path = SnapshotFilePath(testLocation: location)
 
         #expect(
-            path.failureFailingSnapshotFile.path()
+            path.failureFailingSnapshotFile.stringValue
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/FailureDiffs/\(testSourceFileName)/FAIL_\(testName).png")
         )
     }
@@ -84,7 +84,7 @@ struct SnapshotFilePathTests {
         let path = SnapshotFilePath(testLocation: location)
 
         #expect(
-            path.failureDiffSnapshotFile.path()
+            path.failureDiffSnapshotFile.stringValue
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/FailureDiffs/\(testSourceFileName)/DIFF_\(testName).png")
         )
     }

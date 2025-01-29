@@ -40,7 +40,7 @@ struct SnapshotManagerTests {
         try snapshotManager.saveSnapshot(snapshot)
 
         #expect(
-            fileManager.writtenData == [snapshot.imageFilePath.path(): snapshot.imageData]
+            fileManager.writtenData == [snapshot.imageFilePath.stringValue: snapshot.imageData]
         )
     }
 
@@ -76,7 +76,7 @@ struct SnapshotManagerTests {
 
         try snapshotManager.saveSnapshot(snapshot)
 
-        #expect(fileManager.createdDirectories == [pathFactory.testSuiteSnapshotsDir.path()])
+        #expect(fileManager.createdDirectories == [pathFactory.testSuiteSnapshotsDir.stringValue])
     }
 
     @Test
@@ -96,7 +96,7 @@ struct SnapshotManagerTests {
     @Test
     func should_load_snapshot_from_ref_file() async throws {
         let refFilePath = FilePath.dummy()
-        fileManager.stubbedFileData = [refFilePath.path(): SnapshotImage.dummy().pngData()!]
+        fileManager.stubbedFileData = [refFilePath.stringValue: SnapshotImage.dummy().pngData()!]
         let snapshotManager = makeSnapshotManager(testLocation: .fixture())
 
         let snapshot = try snapshotManager.makeSnapshot(filePath: refFilePath)

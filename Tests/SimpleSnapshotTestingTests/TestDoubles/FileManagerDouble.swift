@@ -22,7 +22,7 @@ final class FileManagerDouble: FileManaging {
     // MARK: - FileManaging
 
     func isFileExisting(at filePath: SimpleSnapshotTesting.FilePath) -> Bool {
-        stubbedFileData.keys.contains(filePath.path())
+        stubbedFileData.keys.contains(filePath.stringValue)
     }
 
     func isDirectoryExisting(at directoryPath: FilePath) -> Bool {
@@ -33,17 +33,17 @@ final class FileManagerDouble: FileManaging {
         if shouldThrowCreateDirError {
             throw .dummy()
         }
-        createdDirectories.append(directoryPath.path())
+        createdDirectories.append(directoryPath.stringValue)
     }
 
     func write(_ data: Data, to filePath: FilePath) throws {
         if shouldThrowWriteFileError {
             throw .dummy()
         }
-        writtenData[filePath.path()] = data
+        writtenData[filePath.stringValue] = data
     }
 
     func load(contentsOf file: FilePath) throws -> Data {
-        return stubbedFileData[file.path()] ?? Data()
+        return stubbedFileData[file.stringValue] ?? Data()
     }
 }

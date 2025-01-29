@@ -19,14 +19,14 @@ extension FileManager: FileManaging {
 
     func isFileExisting(at filePath: FilePath) -> Bool {
         var isDir: ObjCBool = false
-        let isExisting = fileExists(atPath: filePath.path(),
+        let isExisting = fileExists(atPath: filePath.stringValue,
                                     isDirectory: &isDir)
         return isExisting && !isDir.boolValue
     }
 
     func isDirectoryExisting(at directoryPath: FilePath) -> Bool {
         var isDir: ObjCBool = false
-        let isExisting = fileExists(atPath: directoryPath.path(),
+        let isExisting = fileExists(atPath: directoryPath.stringValue,
                    isDirectory: &isDir)
         return isExisting && isDir.boolValue
     }

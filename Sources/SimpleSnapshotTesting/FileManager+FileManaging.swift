@@ -32,4 +32,9 @@ extension FileManager: FileManaging {
     func write(_ data: Data, to filePath: FilePath) throws {
         try data.write(to: filePath)
     }
+
+    func load(contentsOf file: FilePath) throws -> Data {
+        return try Data(contentsOf: file,
+                        options: .uncached)
+    }
 }

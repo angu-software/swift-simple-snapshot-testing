@@ -10,7 +10,6 @@ import Foundation
 @testable import SimpleSnapshotTesting
 
 final class FileManagerDouble: FileManaging {
-
     typealias Path = String
 
     var shouldThrowCreateDirError = false
@@ -37,5 +36,9 @@ final class FileManagerDouble: FileManaging {
             throw .dummy()
         }
         writtenData[filePath.path()] = data
+    }
+
+    func load(contentsOf file: FilePath) throws -> Data {
+        return stubbedFileData[file.path()] ?? Data()
     }
 }

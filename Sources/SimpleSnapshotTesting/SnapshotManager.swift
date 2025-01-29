@@ -18,6 +18,7 @@ final class SnapshotManager {
 
     enum Error: Swift.Error {
         case failedToConvertImageToData
+        case failedToLoadSnapshotFromFile
         case snapshotImageRenderingFailed
     }
 
@@ -42,7 +43,13 @@ final class SnapshotManager {
     }
 
     func makeSnapshot(filePath: FilePath) throws -> Snapshot {
-        throw Error.failedToConvertImageToData
+        let data = try fileManager.load(contentsOf: filePath)
+        guard let snapshot =  Snapshot(imageData: data,
+                                       imageFilePath: filePath) else {
+            throw Error.failedToLoadSnapshotFromFile
+        }
+
+        return snapshot
     }
 
     func saveSnapshot(_ snapshot: Snapshot) throws {

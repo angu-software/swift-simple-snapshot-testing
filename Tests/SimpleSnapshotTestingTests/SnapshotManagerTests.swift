@@ -14,17 +14,9 @@ import Testing
 @MainActor
 struct SnapshotManagerTests {
 
-    private let fileManager: FileManagerDouble
-    private let snapshotFilePath: SnapshotFilePath
-    private let snapshotImage: SnapshotImage
-    private let snapshot: Snapshot
-
-    init() {
-        self.fileManager = FileManagerDouble()
-        self.snapshotFilePath = SnapshotFilePath(testLocation: .fixture())
-        self.snapshotImage = SnapshotImage.dummy()
-        self.snapshot = Snapshot(image: snapshotImage, filePath: snapshotFilePath)
-    }
+    private let fileManager = FileManagerDouble()
+    private let snapshot = Snapshot(image: .dummy(),
+                                   imageFilePath: .dummy())
 
     @Test
     func should_save_reference_snapshot_as_image_on_file_system() async throws {
@@ -33,7 +25,7 @@ struct SnapshotManagerTests {
         try snapshotManager.saveSnapshot(snapshot)
 
         #expect(
-            fileManager.writtenData == [snapshotFilePath.referenceSnapshotFile.path(): SnapshotImage.dummy().pngData()]
+            fileManager.writtenData == [snapshot.imageFilePath.path(): snapshot.imageData]
         )
     }
 
@@ -52,7 +44,8 @@ struct SnapshotManagerTests {
     @Test
     func should_throw_error_when_image_conversion_to_data_fails() async throws {
         let brokenImage = SnapshotImage.fixture(size: .zero)
-        let brokenSnapshot = Snapshot(image: brokenImage, filePath: snapshotFilePath)
+        let brokenSnapshot = Snapshot(image: brokenImage,
+                                      imageFilePath: .dummy())
         let snapshotManager = makeSnapshotManager(testLocation: .fixture())
 
         #expect(throws: SnapshotManager.Error.failedToConvertImageToData, performing: {
@@ -62,11 +55,13 @@ struct SnapshotManagerTests {
 
     @Test
     func should_create_directory_if_not_existing_before_saving_snapshot() async throws {
-        let snapshotManager = makeSnapshotManager(testLocation: .fixture())
+        let testLocation = SnapshotTestLocation.fixture()
+        let pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
+        let snapshotManager = makeSnapshotManager(testLocation: testLocation)
 
         try snapshotManager.saveSnapshot(snapshot)
 
-        #expect(fileManager.createdDirectories == [snapshotFilePath.testSuiteSnapshotsDir.path()])
+        #expect(fileManager.createdDirectories == [pathFactory.testSuiteSnapshotsDir.path()])
     }
 
     @Test

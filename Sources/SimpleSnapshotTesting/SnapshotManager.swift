@@ -32,15 +32,13 @@ final class SnapshotManager {
         self.fileManager = fileManager
     }
 
-    @MainActor
     func makeSnapshot<SwiftUIView: SwiftUI.View>(view: SwiftUIView) throws -> Snapshot {
         guard let image = SnapshotImageRenderer.makeImage(view: view) else {
             throw Error.snapshotImageRenderingFailed
         }
 
         return Snapshot(image: image,
-                        imageFilePath: pathFactory.referenceSnapshotFile,
-                        filePath: pathFactory)
+                        imageFilePath: pathFactory.referenceSnapshotFile)
     }
 
     func saveSnapshot(_ snapshot: Snapshot) throws {

@@ -16,7 +16,23 @@ struct SnapshotManagerTests {
 
     private let fileManager = FileManagerDouble()
     private let snapshot = Snapshot(image: .dummy(),
-                                   imageFilePath: .dummy())
+                                    imageFilePath: .dummy())
+
+    // MARK: Create snapshot from view
+
+    @Test(.tags(.acceptanceTest))
+    func should_create_snapshot_from_view() async throws {
+        let testLocation = SnapshotTestLocation.fixture()
+        let pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
+        let manager = makeSnapshotManager(testLocation: testLocation)
+
+        let snapshot = try manager.makeSnapshot(view: Rectangle())
+
+        #expect(snapshot.image != nil)
+        #expect(snapshot.imageFilePath == pathFactory.referenceSnapshotFile)
+    }
+
+   // MARK: Saving snapshot
 
     @Test
     func should_save_reference_snapshot_as_image_on_file_system() async throws {
@@ -75,6 +91,8 @@ struct SnapshotManagerTests {
             return true
         })
     }
+
+    // MARK: Compare snapshots
 
     @Test
     func should_report_match_for_equal_snapshots() throws {

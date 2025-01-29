@@ -42,6 +42,7 @@ extension Snapshot {
         case snapshotImageRenderingFailed
     }
 
+    @available(*, deprecated, renamed: "SnapshotManager.makeSnapshot")
     @MainActor
     init<SwiftUIView: SwiftUI.View>(view: SwiftUIView,
                                     testLocation: SnapshotTestLocation) throws {

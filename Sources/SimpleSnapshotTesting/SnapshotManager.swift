@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum SnapshotComparisonResult {
     case matching
@@ -25,6 +26,13 @@ final class SnapshotManager {
         self.fileManager = fileManager
     }
 
+    @MainActor
+    func makeSnapshot<SwiftUIView: SwiftUI.View>(view: SwiftUIView,
+                                                 testLocation: SnapshotTestLocation) throws -> Snapshot {
+        return try Snapshot(view: view,
+                            testLocation: testLocation)
+    }
+
     func saveSnapshot(_ snapshot: Snapshot) throws {
         guard let imageData = snapshot.imageData else {
             throw Error.failedToConvertImageToData
@@ -33,7 +41,7 @@ final class SnapshotManager {
         try createSnapshotDirectory(snapshot)
 
         try fileManager.write(imageData,
-                              to: snapshot.filePath.referenceSnapshotFile)
+                              to: snapshot.imageFilePath)
     }
 
     func compareSnapshot(_ snapshot: Snapshot, with referenceSnapshot: Snapshot) -> SnapshotComparisonResult {

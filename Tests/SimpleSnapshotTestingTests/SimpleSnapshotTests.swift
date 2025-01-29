@@ -21,9 +21,9 @@ struct SimpleSnapshotTests {
                                                 testTag: "SomeTag")
         let pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
 
-        let snapshot = try Snapshot(view: Rectangle(),
-                                    testLocation: testLocation)
         let manager = SnapshotManager()
+        let snapshot = try manager.makeSnapshot(view: Rectangle(),
+                                                testLocation: testLocation)
 
         try manager.saveSnapshot(snapshot)
 

@@ -20,6 +20,7 @@ final class SnapshotManager {
         case failedToConvertImageToData
         case failedToLoadSnapshotFromFile
         case snapshotImageRenderingFailed
+        case fileDoesNotExist
     }
 
     private let testLocation: SnapshotTestLocation
@@ -43,6 +44,10 @@ final class SnapshotManager {
     }
 
     func makeSnapshot(filePath: FilePath) throws -> Snapshot {
+        guard fileManager.isFileExisting(at: filePath) else {
+            throw Error.fileDoesNotExist
+        }
+
         let data = try fileManager.load(contentsOf: filePath)
         guard let snapshot =  Snapshot(imageData: data,
                                        imageFilePath: filePath) else {

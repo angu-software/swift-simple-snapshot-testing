@@ -10,6 +10,7 @@ import Foundation
 @testable import SimpleSnapshotTesting
 
 final class FileManagerDouble: FileManaging {
+
     typealias Path = String
 
     var shouldThrowCreateDirError = false
@@ -19,6 +20,10 @@ final class FileManagerDouble: FileManaging {
     private(set) var writtenData: [Path: Data] = [:]
 
     // MARK: - FileManaging
+
+    func isFileExisting(at filePath: SimpleSnapshotTesting.FilePath) -> Bool {
+        stubbedFileData.keys.contains(filePath.path())
+    }
 
     func isDirectoryExisting(at directoryPath: FilePath) -> Bool {
         return false

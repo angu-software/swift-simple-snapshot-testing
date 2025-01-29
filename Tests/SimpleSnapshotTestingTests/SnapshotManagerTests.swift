@@ -104,6 +104,16 @@ struct SnapshotManagerTests {
         #expect(snapshot.imageFilePath == refFilePath)
     }
 
+    @Test
+    func should_fail_loading_snapshot_if_file_does_not_exist() {
+        let snapshotManager = makeSnapshotManager(testLocation: .fixture())
+
+        #expect(throws: SnapshotManager.Error.fileDoesNotExist,
+                performing: {
+            _ = try snapshotManager.makeSnapshot(filePath: .dummy())
+        })
+    }
+
     // MARK: Compare snapshots
 
     @Test

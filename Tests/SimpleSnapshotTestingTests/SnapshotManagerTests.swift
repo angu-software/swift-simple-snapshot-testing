@@ -79,8 +79,8 @@ struct SnapshotManagerTests {
 
     @Test
     func should_report_match_for_equal_snapshots() throws {
-        let refSnap = try Snapshot(view: Rectangle(), testLocation: .fixture())
-        let takenSnap = try Snapshot(view: Rectangle(), testLocation: .fixture())
+        let refSnap = try snapshotManager.makeSnapshot(view: Rectangle(), testLocation: .fixture())
+        let takenSnap = try snapshotManager.makeSnapshot(view: Rectangle(), testLocation: .fixture())
 
         let result = snapshotManager.compareSnapshot(takenSnap, with: refSnap)
 

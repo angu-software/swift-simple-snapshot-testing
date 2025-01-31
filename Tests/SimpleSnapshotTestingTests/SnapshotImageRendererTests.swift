@@ -37,7 +37,6 @@ struct SnapshotImageRendererTests {
         #expect(image.scale == 1)
     }
 
-
     @Test
     func should_create_diff_image() throws {
         let refDiffImage = try #require(TestFixtures.image(named: "fixture_image_diff"))
@@ -46,12 +45,36 @@ struct SnapshotImageRendererTests {
 
         let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(image1, image2))
 
-        #expect(diffImage.scale == 2) // TODO: should be scale 1, same as all other images
+        try recordFixtureImage(diffImage)
+
+        #expect(diffImage.scale == 1)
         #expect(diffImage.scale == refDiffImage.scale)
         #expect(diffImage.pngData() == refDiffImage.pngData())
     }
 
     private func makeSnapshotImage<SwiftUIView: SwiftUI.View>(view: SwiftUIView) -> SnapshotImage? {
         return SnapshotImageRenderer.makeImage(view: view)
+    }
+
+    private func recordFixtureImage(_ image: UIImage) throws {
+        let location = SnapshotTestLocation.fixture()
+        let path = SnapshotFilePathFactory(testLocation: location)
+        let diffSnapshot = Snapshot(image: image,
+                                    imageFilePath: path.testFixtureImagePath(for: "fixture_image_diff"))
+        let manager = SnapshotManager(testLocation: location)
+        try manager.saveSnapshot(diffSnapshot)
+    }
+}
+
+extension SnapshotFilePathFactory {
+
+    func testFixtureImagePath(for imageName: String) -> FilePath {
+        return testTargetSnapshotsDir
+            .deletingLastPathComponent()
+            .appending(path: "Fixtures",
+                       directoryHint: .isDirectory)
+            .appending(path: imageName,
+                       directoryHint: .notDirectory)
+            .appendingPathExtension("png")
     }
 }

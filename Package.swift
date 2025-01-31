@@ -20,6 +20,6 @@ let package = Package(
         .testTarget(
             name: "SimpleSnapshotTestingTests",
             dependencies: ["SimpleSnapshotTesting"],
-            resources: [.process("Fixtures/fixture_image_diff@2x.png")]),
+            resources: [.process("Fixtures/fixture_image_diff.png")]),
     ]
 )

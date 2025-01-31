@@ -25,7 +25,9 @@ enum SnapshotImageRenderer {
         let canvasHeight = max(image1.size.height, image2.size.height)
         let size = CGSize(width: canvasWidth, height: canvasHeight)
 
-        let renderer = UIGraphicsImageRenderer(size: size)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
 
         let image = renderer.image { context in
             image1.draw(at: .zero)

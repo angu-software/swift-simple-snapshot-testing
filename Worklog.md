@@ -2,15 +2,16 @@
 
 ## In Progress
 
-- [ ] make and store FailureSnapshot containing diff, original and failed Snapshot
+- [ ] fail test viewSnapshot is not matching reference snapshot
+- [ ] store diff image in repo
 
 ## Backlog
 
 - [ ] snapshot name from test function with parameters
-- [ ] store diff image in repo
-- [ ] fail test viewSnapshot is not matching reference snapshot
+- [ ] make and store FailureSnapshot containing diff, original and failed Snapshot
 - [ ] Image (snapshot) renderer type that can handle different platforms (iOS, MacOS, ...)
 - [ ] Config to define stored/compared image format
+- [ ] Base Snapshot on ImageData
 
 ### PublicAPI Acceptance tests
 

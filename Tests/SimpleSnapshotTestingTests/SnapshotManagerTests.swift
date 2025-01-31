@@ -138,6 +138,27 @@ struct SnapshotManagerTests {
         #expect(result == .different)
     }
 
+    // MARK: Failure Snapshots
+
+    @Test
+    func should_create_failure_snapshot() async throws {
+        let testLocation = SnapshotTestLocation.fixture()
+        let path = SnapshotFilePathFactory(testLocation: testLocation)
+        let snapshotManager = makeSnapshotManager(testLocation: testLocation)
+        let refSnap = try snapshotManager.makeSnapshot(view: Rectangle())
+        let takenSnap = try snapshotManager.makeSnapshot(view: Text("Hello"))
+        let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(takenSnap.image, refSnap.image))
+
+        let failureSnapshot = snapshotManager.makeFailureSnapshot(taken: takenSnap, reference: refSnap)
+
+        #expect(failureSnapshot.original.imageData == refSnap.imageData)
+        #expect(failureSnapshot.original.imageFilePath == path.failureOriginalSnapshotFile)
+        #expect(failureSnapshot.failed.imageData == takenSnap.imageData)
+        #expect(failureSnapshot.failed.imageFilePath == path.failureFailedSnapshotFile)
+        #expect(failureSnapshot.diff.imageData == diffImage.pngData())
+        #expect(failureSnapshot.diff.imageFilePath == path.failureDiffSnapshotFile)
+    }
+
     // MARK: Testing DSL
 
     private func makeSnapshotManager(testLocation: SnapshotTestLocation) -> SnapshotManager {

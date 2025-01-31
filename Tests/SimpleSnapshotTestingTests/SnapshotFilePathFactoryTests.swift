@@ -71,7 +71,7 @@ struct SnapshotFilePathFactoryTests {
         let path = SnapshotFilePathFactory(testLocation: location)
 
         #expect(
-            path.failureFailingSnapshotFile.stringValue
+            path.failureFailedSnapshotFile.stringValue
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/FailureDiffs/\(testSourceFileName)/FAIL_\(testName).png")
         )
     }

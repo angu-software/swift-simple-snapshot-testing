@@ -76,6 +76,18 @@ final class SnapshotManager {
         }
     }
 
+    func makeFailureSnapshot(taken: Snapshot, reference: Snapshot) -> FailureSnapshot {
+        let originalSnapshot = Snapshot(image: reference.image,
+                                        imageFilePath: pathFactory.failureOriginalSnapshotFile)
+        let failedSnapshot = Snapshot(image: taken.image,
+                                      imageFilePath: pathFactory.failureFailedSnapshotFile)
+        let diffSnapshot = Snapshot(image: SnapshotImageRenderer.makeDiffImage(taken.image, reference.image)!,
+                                    imageFilePath: pathFactory.failureDiffSnapshotFile)
+        return FailureSnapshot(original: originalSnapshot,
+                               failed: failedSnapshot,
+                               diff: diffSnapshot)
+    }
+
     private func createSnapshotDirectory(_ snapshot: Snapshot) throws {
         let testSuiteSnapshotsDir = pathFactory.testSuiteSnapshotsDir
         if !fileManager.isDirectoryExisting(at: testSuiteSnapshotsDir) {

@@ -50,7 +50,7 @@ struct SnapshotFilePathFactory: Equatable {
                           at: testSuiteFailureDiffsDir)
     }
 
-    var failureFailingSnapshotFile: FilePath {
+    var failureFailedSnapshotFile: FilePath {
         return appendFile(named: failureFailingImageFileName,
                           at: testSuiteFailureDiffsDir)
     }

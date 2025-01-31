@@ -15,6 +15,10 @@ import Testing
 @Suite
 struct SnapshotImageRendererTests {
 
+    private var defaultScale: CGFloat {
+        return SnapshotImageRenderer.defaultImageScale
+    }
+
     @Test
     func should_create_an_image_from_a_view() throws {
         #expect(makeSnapshotImage(view: Text("Hello World")) != nil)
@@ -34,7 +38,7 @@ struct SnapshotImageRendererTests {
     func should_create_image_with_default_scale() throws {
         let image = try #require(makeSnapshotImage(view: Text("Hello World")))
 
-        #expect(image.scale == 1)
+        #expect(image.scale == defaultScale)
     }
 
     @Test
@@ -45,12 +49,11 @@ struct SnapshotImageRendererTests {
 
         let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(image1, image2))
 
-        try recordFixtureImage(diffImage)
-
-        #expect(diffImage.scale == 1)
-        #expect(diffImage.scale == refDiffImage.scale)
+        #expect(diffImage.scale == defaultScale)
         #expect(diffImage.pngData() == refDiffImage.pngData())
     }
+
+    // MARK: Test DSL
 
     private func makeSnapshotImage<SwiftUIView: SwiftUI.View>(view: SwiftUIView) -> SnapshotImage? {
         return SnapshotImageRenderer.makeImage(view: view)
@@ -63,18 +66,5 @@ struct SnapshotImageRendererTests {
                                     imageFilePath: path.testFixtureImagePath(for: "fixture_image_diff"))
         let manager = SnapshotManager(testLocation: location)
         try manager.saveSnapshot(diffSnapshot)
-    }
-}
-
-extension SnapshotFilePathFactory {
-
-    func testFixtureImagePath(for imageName: String) -> FilePath {
-        return testTargetSnapshotsDir
-            .deletingLastPathComponent()
-            .appending(path: "Fixtures",
-                       directoryHint: .isDirectory)
-            .appending(path: imageName,
-                       directoryHint: .notDirectory)
-            .appendingPathExtension("png")
     }
 }

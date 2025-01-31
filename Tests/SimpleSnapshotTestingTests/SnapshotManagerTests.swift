@@ -61,10 +61,10 @@ struct SnapshotManagerTests {
 
     @Test
     func should_throw_error_when_image_conversion_to_data_fails() async throws {
-        let brokenImage = SnapshotImage.fixture(size: .zero)
-        let brokenSnapshot = Snapshot.fixture(image: brokenImage)
+        let brokenImage = SnapshotImageData.fixture(size: .zero)
+        let brokenSnapshot = Snapshot.fixture(imageData: brokenImage)
 
-        #expect(throws: SnapshotManager.Error.failedToConvertImageToData, performing: {
+        #expect(throws: SnapshotManager.Error.malformedSnapshotImage, performing: {
             try manager.saveSnapshot(brokenSnapshot)
         })
     }
@@ -119,7 +119,7 @@ struct SnapshotManagerTests {
     @Test
     func should_report_no_match_for_not_equal_snapshots() throws {
         let result = manager.compareSnapshot(.fixture(),
-                                             with: .fixture(image: .fixture(color: .blue)))
+                                             with: .fixture(imageData: .fixture(color: .blue)))
 
         #expect(result == .different)
     }
@@ -129,8 +129,8 @@ struct SnapshotManagerTests {
     @Test
     func should_create_failure_snapshot() async throws {
         let refSnap = Snapshot.fixture()
-        let takenSnap = Snapshot.fixture(image: .fixture(color: .blue))
-        let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(takenSnap.image, refSnap.image))
+        let takenSnap = Snapshot.fixture(imageData: .fixture(color: .blue))
+        let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(takenSnap.image!, refSnap.image!))
 
         let failureSnapshot = manager.makeFailureSnapshot(taken: takenSnap, reference: refSnap)
 
@@ -159,5 +159,4 @@ struct SnapshotManagerTests {
         return try setSnapshotAsReference(.fixture())
     }
 }
-
 

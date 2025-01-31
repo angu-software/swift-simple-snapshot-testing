@@ -9,6 +9,8 @@
 - [ ] Image (snapshot) renderer type that can handle different platforms (iOS, MacOS, ...)
 - [ ] Config to define stored/compared image format
 - [ ] Base Snapshot on ImageData (Conformance to Equatable)
+- [ ] Ensure we always use png data
+- [ ] take scale from filename when loading ref image
 
 ### PublicAPI Acceptance tests
 

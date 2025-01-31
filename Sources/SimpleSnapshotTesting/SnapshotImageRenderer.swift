@@ -25,6 +25,11 @@ enum SnapshotImageRenderer {
     }
 
     @MainActor
+    static func makePNGData<SwiftUIView: View>(view: SwiftUIView) -> SnapshotImageData? {
+        return makeImage(view: view)?.pngData()
+    }
+
+    @MainActor
     static func makeDiffImage(_ image1: SnapshotImage, _ image2: SnapshotImage) -> SnapshotImage? {
         let size = makeCanvasSize(size1: image1.size, size2: image2.size)
 

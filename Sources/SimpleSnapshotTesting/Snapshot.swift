@@ -7,27 +7,30 @@
 
 import SwiftUI
 
+typealias SnapshotImageData = Data
+
 struct Snapshot {
 
-    let image: SnapshotImage
+    let imageData: SnapshotImageData
+    let scale: CGFloat
     let imageFilePath: FilePath
 }
 
 extension Snapshot {
 
-    var imageData: Data? {
-        return image.pngData()
+    var image: SnapshotImage? {
+        return UIImage(data: imageData,
+                       scale: scale)
     }
 
-    init?(imageData: Data,
-          scale: CGFloat = 1,
+    init?(image: UIImage,
           imageFilePath: FilePath) {
-        guard let image = SnapshotImage(data: imageData,
-                                        scale: scale) else {
+        guard let imageData = image.pngData() else {
             return nil
         }
 
-        self.init(image: image,
+        self.init(imageData: imageData,
+                  scale: image.scale,
                   imageFilePath: imageFilePath)
     }
 }

@@ -28,3 +28,23 @@ extension SnapshotImage {
         }
     }
 }
+
+extension SnapshotImageData {
+
+    static func dummy() -> SnapshotImageData {
+        return fixture()
+    }
+
+    static func fixture(size: CGSize = CGSize(width: 100, height: 100),
+                        scale: CGFloat = 1.0,
+                        color: UIColor = .white) -> SnapshotImageData {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = scale
+        let renderer = UIGraphicsImageRenderer(size: size,
+                                               format: format)
+        return renderer.pngData { ctx in
+            color.setFill()
+            ctx.fill(CGRect(origin: .zero, size: size))
+        }
+    }
+}

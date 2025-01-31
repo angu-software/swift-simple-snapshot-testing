@@ -17,7 +17,7 @@ enum SnapshotComparisonResult {
 final class SnapshotManager {
 
     enum Error: Swift.Error {
-        case failedToConvertImageToData
+        case malformedSnapshotImage
         case failedToLoadSnapshotFromFile
         case snapshotImageRenderingFailed
         case fileDoesNotExist
@@ -35,11 +35,12 @@ final class SnapshotManager {
     }
 
     func makeSnapshot<SwiftUIView: SwiftUI.View>(view: SwiftUIView) throws -> Snapshot {
-        guard let image = SnapshotImageRenderer.makeImage(view: view) else {
+        guard let imageData = SnapshotImageRenderer.makePNGData(view: view) else {
             throw Error.snapshotImageRenderingFailed
         }
 
-        return Snapshot(image: image,
+        return Snapshot(imageData: imageData,
+                        scale: SnapshotImageRenderer.defaultImageScale,
                         imageFilePath: pathFactory.referenceSnapshotFile)
     }
 
@@ -49,8 +50,10 @@ final class SnapshotManager {
         }
 
         let data = try fileManager.load(contentsOf: filePath)
-        guard let snapshot =  Snapshot(imageData: data,
-                                       imageFilePath: filePath) else {
+        let snapshot =  Snapshot(imageData: data,
+                                 scale: 1,
+                                 imageFilePath: filePath)
+        guard snapshot.image != nil else {
             throw Error.failedToLoadSnapshotFromFile
         }
 
@@ -58,13 +61,13 @@ final class SnapshotManager {
     }
 
     func saveSnapshot(_ snapshot: Snapshot) throws {
-        guard let imageData = snapshot.imageData else {
-            throw Error.failedToConvertImageToData
+        guard snapshot.image != nil else {
+            throw Error.malformedSnapshotImage
         }
 
         try createSnapshotDirectory(snapshot)
 
-        try fileManager.write(imageData,
+        try fileManager.write(snapshot.imageData,
                               to: snapshot.imageFilePath)
     }
 
@@ -77,15 +80,18 @@ final class SnapshotManager {
     }
 
     func makeFailureSnapshot(taken: Snapshot, reference: Snapshot) -> FailureSnapshot {
-        let originalSnapshot = Snapshot(image: reference.image,
+        let originalSnapshot = Snapshot(imageData: reference.imageData,
+                                        scale: reference.scale,
                                         imageFilePath: pathFactory.failureOriginalSnapshotFile)
-        let failedSnapshot = Snapshot(image: taken.image,
+        let failedSnapshot = Snapshot(imageData: taken.imageData,
+                                      scale: taken.scale,
                                       imageFilePath: pathFactory.failureFailedSnapshotFile)
-        let diffSnapshot = Snapshot(image: SnapshotImageRenderer.makeDiffImage(taken.image, reference.image)!,
+        let diffImage = SnapshotImageRenderer.makeDiffImage(taken.image!, reference.image!)!
+        let diffSnapshot = Snapshot(image: diffImage,
                                     imageFilePath: pathFactory.failureDiffSnapshotFile)
         return FailureSnapshot(original: originalSnapshot,
                                failed: failedSnapshot,
-                               diff: diffSnapshot)
+                               diff: diffSnapshot!)
     }
 
     private func createSnapshotDirectory(_ snapshot: Snapshot) throws {

@@ -127,6 +127,17 @@ struct SnapshotManagerTests {
         #expect(result == .matching)
     }
 
+    @Test
+    func should_report_no_match_for_not_equal_snapshots() throws {
+        let snapshotManager = makeSnapshotManager(testLocation: .fixture())
+        let refSnap = try snapshotManager.makeSnapshot(view: Rectangle())
+        let takenSnap = try snapshotManager.makeSnapshot(view: Text("Hello"))
+
+        let result = snapshotManager.compareSnapshot(takenSnap, with: refSnap)
+
+        #expect(result == .different)
+    }
+
     // MARK: Testing DSL
 
     private func makeSnapshotManager(testLocation: SnapshotTestLocation) -> SnapshotManager {

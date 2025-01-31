@@ -37,6 +37,20 @@ struct SnapshotImageRendererTests {
         #expect(image.scale == 1)
     }
 
+
+    @Test
+    func should_create_diff_image() throws {
+        let refDiffImage = try #require(TestFixtures.image(named: "fixture_image_diff"))
+        let image1 = try #require(makeSnapshotImage(view: FixtureView()))
+        let image2 = try #require(makeSnapshotImage(view: FixtureView(isChanged: true)))
+
+        let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(image1, image2))
+
+        #expect(diffImage.scale == 2) // TODO: should be scale 1, same as all other images
+        #expect(diffImage.scale == refDiffImage.scale)
+        #expect(diffImage.pngData() == refDiffImage.pngData())
+    }
+
     private func makeSnapshotImage<SwiftUIView: SwiftUI.View>(view: SwiftUIView) -> SnapshotImage? {
         return SnapshotImageRenderer.makeImage(view: view)
     }

@@ -41,10 +41,6 @@ extension Snapshot {
 
 extension Snapshot {
 
-    func with(imageFilePath: FilePath) -> Self {
-        return with(imageFilePath: SnapshotFilePath(fullPath: imageFilePath.path()))
-    }
-
     func with(imageFilePath: SnapshotFilePath) -> Self {
         return Self(imageData: imageData,
                     scale: scale,

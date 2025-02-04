@@ -14,28 +14,6 @@ struct SnapshotFilePathFactoryTests {
     private let moduleName = "SimpleSnapshotTestingTests"
     private let testSourceFileName = "SnapshotFilePathFactoryTests"
 
-    @Test
-    func should_resolve_test_target_snapshot_dir() {
-        let path = SnapshotFilePathFactory(testLocation: .fixture())
-
-        #expect(
-            path.testTargetSnapshotsDir.stringValue
-                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/")
-        )
-    }
-
-    // testDeviceDir
-
-    @Test
-    func should_resolve_test_suite_dir() {
-        let path = SnapshotFilePathFactory(testLocation: .fixture())
-
-        #expect(
-            path.testSuiteSnapshotsDir.stringValue
-                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/\(testSourceFileName)/")
-        )
-    }
-
     @Test(.tags(.acceptanceTest))
     func should_resolve_test_snapshot_reference_file() {
         let location = SnapshotTestLocation.fixture()
@@ -44,7 +22,7 @@ struct SnapshotFilePathFactoryTests {
         let path = SnapshotFilePathFactory(testLocation: location)
 
         #expect(
-            path.referenceSnapshotFile.stringValue
+            path.referenceSnapshotFilePath.fullPath
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/\(testSourceFileName)/\(testName).png")
         )
     }
@@ -58,7 +36,7 @@ struct SnapshotFilePathFactoryTests {
         let path = SnapshotFilePathFactory(testLocation: location)
 
         #expect(
-            path.failureOriginalSnapshotFile.stringValue
+            path.failureOriginalSnapshotFilePath.fullPath
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/FailureDiffs/\(testSourceFileName)/ORIG_\(testName).png")
         )
     }
@@ -71,7 +49,7 @@ struct SnapshotFilePathFactoryTests {
         let path = SnapshotFilePathFactory(testLocation: location)
 
         #expect(
-            path.failureFailedSnapshotFile.stringValue
+            path.failureFailedSnapshotFilePath.fullPath
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/FailureDiffs/\(testSourceFileName)/FAIL_\(testName).png")
         )
     }
@@ -84,7 +62,7 @@ struct SnapshotFilePathFactoryTests {
         let path = SnapshotFilePathFactory(testLocation: location)
 
         #expect(
-            path.failureDiffSnapshotFile.stringValue
+            path.failureDiffSnapshotFilePath.fullPath
                 .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/FailureDiffs/\(testSourceFileName)/DIFF_\(testName).png")
         )
     }
@@ -93,13 +71,20 @@ struct SnapshotFilePathFactoryTests {
     func should_have_file_name_according_to_test_method_name() async throws {
         let path = SnapshotFilePathFactory(testLocation: .fixture())
 
-        #expect(path.snapshotImageFileName == "should_have_file_name_according_to_test_method_name")
+        #expect(path.referenceSnapshotFilePath.fileName == "should_have_file_name_according_to_test_method_name.png")
     }
 
     @Test
     func snapshot_should_append_identifier_to_filename_when_specified() async throws {
         let path = SnapshotFilePathFactory(testLocation: .fixture(testTag: "someIdentifier"))
 
-        #expect(path.snapshotImageFileName == "snapshot_should_append_identifier_to_filename_when_specified_someIdentifier")
+        #expect(path.referenceSnapshotFilePath.fileName == "snapshot_should_append_identifier_to_filename_when_specified_someIdentifier.png")
+    }
+}
+
+extension SnapshotFilePath {
+
+    var fileName: String {
+        return fileURL.lastPathComponent
     }
 }

@@ -16,48 +16,48 @@ struct SnapshotFilePathFactory: Equatable {
 
     private let testLocation: SnapshotTestLocation
 
-    var snapshotImageFileName: String {
+    var referenceSnapshotFilePath: SnapshotFilePath {
+        return SnapshotFilePath(fileURL: appendFile(named: snapshotImageFileName,
+                                                    at: testSuiteSnapshotsDir))
+    }
+
+    var failureOriginalSnapshotFilePath: SnapshotFilePath {
+        return SnapshotFilePath(fileURL: appendFile(named: failureOriginalImageFileName,
+                                                    at: testSuiteFailureDiffsDir))
+    }
+
+    var failureFailedSnapshotFilePath: SnapshotFilePath {
+        return SnapshotFilePath(fileURL: appendFile(named: failureFailingImageFileName,
+                                                    at: testSuiteFailureDiffsDir))
+    }
+
+    var failureDiffSnapshotFilePath: SnapshotFilePath {
+        return SnapshotFilePath(fileURL: appendFile(named: failureDiffImageFileName,
+                                                    at: testSuiteFailureDiffsDir))
+    }
+
+    private var snapshotImageFileName: String {
         return testLocation.testIdentifier
     }
 
-    var testTargetSnapshotsDir: FilePath {
+    private var testTargetSnapshotsDir: FilePath {
         return appendDir(named: snapshotsRootFolderName,
                          at: testTargetDir)
     }
 
-    var testTargetFailureDiffsDir: FilePath {
+    private var testTargetFailureDiffsDir: FilePath {
         return appendDir(named: failureDiffsRootFolderName,
                          at: testTargetSnapshotsDir)
     }
 
-    var testSuiteSnapshotsDir: FilePath {
+    private var testSuiteSnapshotsDir: FilePath {
         return appendDir(named: testSourceFileName,
                          at: testTargetSnapshotsDir)
     }
 
-    var testSuiteFailureDiffsDir: FilePath {
+    private var testSuiteFailureDiffsDir: FilePath {
         return appendDir(named: testSourceFileName,
                          at: testTargetFailureDiffsDir)
-    }
-
-    var referenceSnapshotFile: FilePath {
-        return appendFile(named: snapshotImageFileName,
-                          at: testSuiteSnapshotsDir)
-    }
-
-    var failureOriginalSnapshotFile: FilePath {
-        return appendFile(named: failureOriginalImageFileName,
-                          at: testSuiteFailureDiffsDir)
-    }
-
-    var failureFailedSnapshotFile: FilePath {
-        return appendFile(named: failureFailingImageFileName,
-                          at: testSuiteFailureDiffsDir)
-    }
-
-    var failureDiffSnapshotFile: FilePath {
-        return appendFile(named: failureDiffImageFileName,
-                          at: testSuiteFailureDiffsDir)
     }
 
     private var failureOriginalImageFileName: String {

@@ -41,18 +41,19 @@ final class SnapshotManager {
 
         return Snapshot(imageData: imageData,
                         scale: SnapshotImageRenderer.defaultImageScale,
-                        imageFilePath: SnapshotFilePath(fullPath: pathFactory.referenceSnapshotFile.path()))
+                        imageFilePath: pathFactory.referenceSnapshotFilePath)
     }
 
-    func makeSnapshot(filePath: FilePath) throws -> Snapshot {
-        guard fileManager.isFileExisting(at: filePath) else {
+    func makeSnapshot(filePath: SnapshotFilePath) throws -> Snapshot {
+        let fileURL = filePath.fileURL
+        guard fileManager.isFileExisting(at: fileURL) else {
             throw Error.fileDoesNotExist
         }
 
-        let data = try fileManager.load(contentsOf: filePath)
+        let data = try fileManager.load(contentsOf: fileURL)
         let snapshot =  Snapshot(imageData: data,
                                  scale: 1,
-                                 imageFilePath: SnapshotFilePath(fullPath: filePath.path()))
+                                 imageFilePath: filePath)
         guard snapshot.isValid else {
             throw Error.failedToLoadSnapshotFromFile
         }
@@ -80,15 +81,15 @@ final class SnapshotManager {
     }
 
     func makeFailureSnapshot(taken: Snapshot, reference: Snapshot) throws -> FailureSnapshot {
-        let originalSnapshot = reference.with(imageFilePath: pathFactory.failureOriginalSnapshotFile)
-        let failedSnapshot = taken.with(imageFilePath: pathFactory.failureFailedSnapshotFile)
+        let originalSnapshot = reference.with(imageFilePath: pathFactory.failureOriginalSnapshotFilePath)
+        let failedSnapshot = taken.with(imageFilePath: pathFactory.failureFailedSnapshotFilePath)
 
         guard let takenImage = taken.image,
               let referenceImage = reference.image,
               let diffImage = SnapshotImageRenderer.makeDiffImage(takenImage,
                                                                   referenceImage),
               let diffSnapshot = Snapshot(image: diffImage,
-                                          imageFilePath: SnapshotFilePath(fileURL: pathFactory.failureDiffSnapshotFile)) else {
+                                          imageFilePath: pathFactory.failureDiffSnapshotFilePath) else {
             throw Error.malformedSnapshotImage
         }
 
@@ -98,7 +99,7 @@ final class SnapshotManager {
     }
 
     private func createSnapshotDirectory(_ snapshot: Snapshot) throws {
-        let testSuiteSnapshotsDir = pathFactory.testSuiteSnapshotsDir
+        let testSuiteSnapshotsDir = pathFactory.referenceSnapshotFilePath.directoryURL
         if !fileManager.isDirectoryExisting(at: testSuiteSnapshotsDir) {
             try fileManager.createDirectory(at: testSuiteSnapshotsDir)
         }

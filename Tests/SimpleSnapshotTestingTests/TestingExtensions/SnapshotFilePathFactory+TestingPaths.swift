@@ -10,7 +10,8 @@
 extension SnapshotFilePathFactory {
 
     func testFixtureImagePath(for imageName: String) -> FilePath {
-        return testTargetSnapshotsDir
+        return referenceSnapshotFilePath
+            .directoryURL
             .deletingLastPathComponent()
             .appending(path: "Fixtures",
                        directoryHint: .isDirectory)

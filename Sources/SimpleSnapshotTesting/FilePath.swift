@@ -22,16 +22,9 @@ extension FilePath {
 
 struct SnapshotFilePath: Equatable {
 
+    var directoryURL: URL {
+        return fileURL.deletingLastPathComponent()
+    }
+
     let fileURL: URL
-}
-
-extension SnapshotFilePath {
-
-    var fullPath: String {
-        return fileURL.path()
-    }
-
-    init(fullPath: String) {
-        self.init(fileURL: URL(filePath: fullPath))
-    }
 }

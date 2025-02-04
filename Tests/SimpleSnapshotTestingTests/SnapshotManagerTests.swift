@@ -32,7 +32,7 @@ struct SnapshotManagerTests {
     func should_create_snapshot_from_view() async throws {
         let snapshot = try manager.makeSnapshot(view: Rectangle())
 
-        #expect(snapshot.imageFilePath == SnapshotFilePath(fileURL: pathFactory.referenceSnapshotFile))
+        #expect(snapshot.imageFilePath == pathFactory.referenceSnapshotFilePath)
     }
 
     // MARK: Saving snapshot
@@ -73,7 +73,7 @@ struct SnapshotManagerTests {
     func should_create_directory_if_not_existing_before_saving_snapshot() async throws {
         try manager.saveSnapshot(.dummy)
 
-        #expect(fileManager.createdDirectories == [pathFactory.testSuiteSnapshotsDir.stringValue])
+        #expect(fileManager.createdDirectories == [pathFactory.referenceSnapshotFilePath.directoryPath])
     }
 
     @Test
@@ -95,7 +95,7 @@ struct SnapshotManagerTests {
 
         let snapshot = try manager.makeSnapshot(filePath: refFilePath)
 
-        #expect(snapshot.imageFilePath == SnapshotFilePath(fileURL: refFilePath))
+        #expect(snapshot.imageFilePath == refFilePath)
     }
 
     @Test
@@ -134,9 +134,9 @@ struct SnapshotManagerTests {
         let refImage = try #require(refSnap.image)
         let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(takenImage, refImage))
 
-        let orignialSnap = refSnap.with(imageFilePath: pathFactory.failureOriginalSnapshotFile)
-        let failedSnap = takenSnap.with(imageFilePath: pathFactory.failureFailedSnapshotFile)
-        let diffSnap = Snapshot(image: diffImage, imageFilePath: SnapshotFilePath(fileURL: pathFactory.failureDiffSnapshotFile))
+        let orignialSnap = refSnap.with(imageFilePath: pathFactory.failureOriginalSnapshotFilePath)
+        let failedSnap = takenSnap.with(imageFilePath: pathFactory.failureFailedSnapshotFilePath)
+        let diffSnap = Snapshot(image: diffImage, imageFilePath: pathFactory.failureDiffSnapshotFilePath)
 
         let failureSnapshot = try manager.makeFailureSnapshot(taken: takenSnap, reference: refSnap)
 
@@ -152,12 +152,12 @@ struct SnapshotManagerTests {
                                fileManager: fileManager)
     }
 
-    private func setSnapshotAsReference(_ snapshot: Snapshot) -> FilePath {
+    private func setSnapshotAsReference(_ snapshot: Snapshot) -> SnapshotFilePath {
         fileManager.stubbedFileData = [snapshot.imageFilePath.fullPath: snapshot.imageData]
-        return snapshot.imageFilePath.fileURL
+        return snapshot.imageFilePath
     }
 
-    private func createRefImage() -> FilePath {
+    private func createRefImage() -> SnapshotFilePath {
         return setSnapshotAsReference(.fixture())
     }
 }

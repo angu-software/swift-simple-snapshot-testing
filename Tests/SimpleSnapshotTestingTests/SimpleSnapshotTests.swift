@@ -26,6 +26,6 @@ struct SimpleSnapshotTests {
 
         try manager.saveSnapshot(snapshot)
 
-        try FileManager.default.removeItem(at: pathFactory.testTargetSnapshotsDir)
+        try FileManager.default.removeItem(at: pathFactory.referenceSnapshotFilePath.directoryURL.deletingLastPathComponent())
     }
 }

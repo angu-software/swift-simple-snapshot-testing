@@ -72,7 +72,7 @@ final class SnapshotManager {
     }
 
     func compareSnapshot(_ snapshot: Snapshot, with referenceSnapshot: Snapshot) -> SnapshotComparisonResult {
-        if snapshot.imageData == referenceSnapshot.imageData {
+        if snapshot == referenceSnapshot {
             return .matching
         } else {
             return .different

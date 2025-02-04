@@ -132,14 +132,15 @@ struct SnapshotManagerTests {
         let takenSnap = Snapshot.fixture(imageData: .fixture(color: .blue))
         let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(takenSnap.image!, refSnap.image!))
 
+        let orignialSnap = refSnap.with(imageFilePath: pathFactory.failureOriginalSnapshotFile)
+        let failedSnap = takenSnap.with(imageFilePath: pathFactory.failureFailedSnapshotFile)
+        let diffSnap = Snapshot(image: diffImage, imageFilePath: pathFactory.failureDiffSnapshotFile)
+
         let failureSnapshot = manager.makeFailureSnapshot(taken: takenSnap, reference: refSnap)
 
-        #expect(failureSnapshot.original.imageData == refSnap.imageData)
-        #expect(failureSnapshot.original.imageFilePath == pathFactory.failureOriginalSnapshotFile)
-        #expect(failureSnapshot.failed.imageData == takenSnap.imageData)
-        #expect(failureSnapshot.failed.imageFilePath == pathFactory.failureFailedSnapshotFile)
-        #expect(failureSnapshot.diff.imageData == diffImage.pngData())
-        #expect(failureSnapshot.diff.imageFilePath == pathFactory.failureDiffSnapshotFile)
+        #expect(failureSnapshot.original == orignialSnap)
+        #expect(failureSnapshot.failed == failedSnap)
+        #expect(failureSnapshot.diff == diffSnap)
     }
 
     // MARK: Testing DSL
@@ -149,14 +150,21 @@ struct SnapshotManagerTests {
                                fileManager: fileManager)
     }
 
-    private func setSnapshotAsReference(_ snapshot: Snapshot) throws -> FilePath {
-        let imageData = try #require(snapshot.imageData)
-        fileManager.stubbedFileData = [snapshot.imageFilePath.stringValue: imageData]
+    private func setSnapshotAsReference(_ snapshot: Snapshot) -> FilePath {
+        fileManager.stubbedFileData = [snapshot.imageFilePath.stringValue: snapshot.imageData]
         return snapshot.imageFilePath
     }
 
-    private func createRefImage() throws -> FilePath {
-        return try setSnapshotAsReference(.fixture())
+    private func createRefImage() -> FilePath {
+        return setSnapshotAsReference(.fixture())
     }
 }
 
+extension Snapshot {
+
+    fileprivate func with(imageFilePath: FilePath) -> Self {
+        return Self(imageData: imageData,
+                    scale: scale,
+                    imageFilePath: imageFilePath)
+    }
+}

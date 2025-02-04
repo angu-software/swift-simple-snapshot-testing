@@ -9,7 +9,7 @@ import SwiftUI
 
 typealias SnapshotImageData = Data
 
-struct Snapshot {
+struct Snapshot: Equatable {
 
     let imageData: SnapshotImageData
     let scale: CGFloat

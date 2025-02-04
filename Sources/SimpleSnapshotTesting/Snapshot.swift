@@ -23,6 +23,10 @@ extension Snapshot {
                        scale: scale)
     }
 
+    var isValid: Bool {
+        return image != nil
+    }
+
     init?(image: UIImage,
           imageFilePath: FilePath) {
         guard let imageData = image.pngData() else {

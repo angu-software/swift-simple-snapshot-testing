@@ -53,7 +53,7 @@ final class SnapshotManager {
         let snapshot =  Snapshot(imageData: data,
                                  scale: 1,
                                  imageFilePath: filePath)
-        guard snapshot.image != nil else {
+        guard snapshot.isValid else {
             throw Error.failedToLoadSnapshotFromFile
         }
 
@@ -61,7 +61,7 @@ final class SnapshotManager {
     }
 
     func saveSnapshot(_ snapshot: Snapshot) throws {
-        guard snapshot.image != nil else {
+        guard snapshot.isValid else {
             throw Error.malformedSnapshotImage
         }
 

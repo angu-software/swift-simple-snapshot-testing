@@ -13,3 +13,10 @@ extension FilePath {
         return Self(filePath: "/foo/bar/file.png")
     }
 }
+
+extension SnapshotFilePath {
+
+    static func dummy() -> Self {
+        return Self(fullPath: "/foo/bar/file.png")
+    }
+}

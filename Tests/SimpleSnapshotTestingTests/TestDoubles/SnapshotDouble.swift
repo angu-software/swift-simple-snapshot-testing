@@ -17,7 +17,7 @@ extension Snapshot {
 
     static func fixture(imageData: SnapshotImageData = .fixture(scale: 1),
                         scale: CGFloat = 1,
-                        imageFilePath: FilePath = .dummy()) -> Self {
+                        imageFilePath: SnapshotFilePath = .dummy()) -> Self {
         Self(imageData: imageData,
              scale: scale,
              imageFilePath: imageFilePath)

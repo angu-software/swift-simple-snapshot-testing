@@ -32,7 +32,7 @@ struct SnapshotManagerTests {
     func should_create_snapshot_from_view() async throws {
         let snapshot = try manager.makeSnapshot(view: Rectangle())
 
-        #expect(snapshot.imageFilePath == pathFactory.referenceSnapshotFile)
+        #expect(snapshot.imageFilePath == SnapshotFilePath(fileURL: pathFactory.referenceSnapshotFile))
     }
 
     // MARK: Saving snapshot
@@ -44,7 +44,7 @@ struct SnapshotManagerTests {
         try manager.saveSnapshot(snapshot)
 
         #expect(
-            fileManager.writtenData == [snapshot.imageFilePath.stringValue: snapshot.imageData]
+            fileManager.writtenData == [snapshot.imageFilePath.fullPath: snapshot.imageData]
         )
     }
 
@@ -91,11 +91,11 @@ struct SnapshotManagerTests {
 
     @Test
     func should_load_snapshot_from_ref_file() async throws {
-        let refFilePath = try createRefImage()
+        let refFilePath = createRefImage()
 
         let snapshot = try manager.makeSnapshot(filePath: refFilePath)
 
-        #expect(snapshot.imageFilePath == refFilePath)
+        #expect(snapshot.imageFilePath == SnapshotFilePath(fileURL: refFilePath))
     }
 
     @Test
@@ -136,7 +136,7 @@ struct SnapshotManagerTests {
 
         let orignialSnap = refSnap.with(imageFilePath: pathFactory.failureOriginalSnapshotFile)
         let failedSnap = takenSnap.with(imageFilePath: pathFactory.failureFailedSnapshotFile)
-        let diffSnap = Snapshot(image: diffImage, imageFilePath: pathFactory.failureDiffSnapshotFile)
+        let diffSnap = Snapshot(image: diffImage, imageFilePath: SnapshotFilePath(fileURL: pathFactory.failureDiffSnapshotFile))
 
         let failureSnapshot = try manager.makeFailureSnapshot(taken: takenSnap, reference: refSnap)
 
@@ -153,8 +153,8 @@ struct SnapshotManagerTests {
     }
 
     private func setSnapshotAsReference(_ snapshot: Snapshot) -> FilePath {
-        fileManager.stubbedFileData = [snapshot.imageFilePath.stringValue: snapshot.imageData]
-        return snapshot.imageFilePath
+        fileManager.stubbedFileData = [snapshot.imageFilePath.fullPath: snapshot.imageData]
+        return snapshot.imageFilePath.fileURL
     }
 
     private func createRefImage() -> FilePath {

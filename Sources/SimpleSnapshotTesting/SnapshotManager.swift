@@ -41,7 +41,7 @@ final class SnapshotManager {
 
         return Snapshot(imageData: imageData,
                         scale: SnapshotImageRenderer.defaultImageScale,
-                        imageFilePath: pathFactory.referenceSnapshotFile)
+                        imageFilePath: SnapshotFilePath(fullPath: pathFactory.referenceSnapshotFile.path()))
     }
 
     func makeSnapshot(filePath: FilePath) throws -> Snapshot {
@@ -52,7 +52,7 @@ final class SnapshotManager {
         let data = try fileManager.load(contentsOf: filePath)
         let snapshot =  Snapshot(imageData: data,
                                  scale: 1,
-                                 imageFilePath: filePath)
+                                 imageFilePath: SnapshotFilePath(fullPath: filePath.path()))
         guard snapshot.isValid else {
             throw Error.failedToLoadSnapshotFromFile
         }
@@ -68,7 +68,7 @@ final class SnapshotManager {
         try createSnapshotDirectory(snapshot)
 
         try fileManager.write(snapshot.imageData,
-                              to: snapshot.imageFilePath)
+                              to: snapshot.imageFilePath.fileURL)
     }
 
     func compareSnapshot(_ snapshot: Snapshot, with referenceSnapshot: Snapshot) -> SnapshotComparisonResult {
@@ -88,7 +88,7 @@ final class SnapshotManager {
               let diffImage = SnapshotImageRenderer.makeDiffImage(takenImage,
                                                                   referenceImage),
               let diffSnapshot = Snapshot(image: diffImage,
-                                          imageFilePath: pathFactory.failureDiffSnapshotFile) else {
+                                          imageFilePath: SnapshotFilePath(fileURL: pathFactory.failureDiffSnapshotFile)) else {
             throw Error.malformedSnapshotImage
         }
 

@@ -19,3 +19,19 @@ extension FilePath {
         self.init(filePath: path)
     }
 }
+
+struct SnapshotFilePath: Equatable {
+
+    let fileURL: URL
+}
+
+extension SnapshotFilePath {
+
+    var fullPath: String {
+        return fileURL.path()
+    }
+
+    init(fullPath: String) {
+        self.init(fileURL: URL(filePath: fullPath))
+    }
+}

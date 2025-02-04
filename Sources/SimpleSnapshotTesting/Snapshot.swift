@@ -13,7 +13,7 @@ struct Snapshot: Equatable {
 
     let imageData: SnapshotImageData
     let scale: CGFloat
-    let imageFilePath: FilePath
+    let imageFilePath: SnapshotFilePath
 }
 
 extension Snapshot {
@@ -28,7 +28,7 @@ extension Snapshot {
     }
 
     init?(image: UIImage,
-          imageFilePath: FilePath) {
+          imageFilePath: SnapshotFilePath) {
         guard let imageData = SnapshotImageRenderer.makeImageData(image: image) else {
             return nil
         }
@@ -42,6 +42,10 @@ extension Snapshot {
 extension Snapshot {
 
     func with(imageFilePath: FilePath) -> Self {
+        return with(imageFilePath: SnapshotFilePath(fullPath: imageFilePath.path()))
+    }
+
+    func with(imageFilePath: SnapshotFilePath) -> Self {
         return Self(imageData: imageData,
                     scale: scale,
                     imageFilePath: imageFilePath)

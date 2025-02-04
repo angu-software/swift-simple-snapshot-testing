@@ -63,7 +63,7 @@ struct SnapshotImageRendererTests {
         let location = SnapshotTestLocation.fixture()
         let path = SnapshotFilePathFactory(testLocation: location)
         let diffSnapshot = try #require (Snapshot(image: image,
-                                                  imageFilePath: path.testFixtureImagePath(for: "fixture_image_diff")))
+                                                  imageFilePath: SnapshotFilePath(fileURL: path.testFixtureImagePath(for: "fixture_image_diff"))))
         let manager = SnapshotManager(testLocation: location)
         try manager.saveSnapshot(diffSnapshot)
     }

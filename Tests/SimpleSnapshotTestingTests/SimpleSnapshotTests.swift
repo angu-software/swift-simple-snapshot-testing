@@ -16,28 +16,19 @@ struct SimpleSnapshotTests {
 
     @Test
     func should_save_reference_image_when_recording_is_set() async throws {
-        let testLocation = SnapshotTestLocation(testFunction: #function,
-                                                testFilePath: #filePath,
-                                                testFileID: #fileID)
-        let pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
-
-        _ = evaluate(Rectangle(),
-                 record: true,
-                 sourceLocation: testLocation)
-
-        #expect(fileExists(at: pathFactory.referenceSnapshotFilePath))
-
+        _ = evaluate(Rectangle(), record: true)
+        
+        #expect(
+            fileExists(at: SnapshotFilePathFactory(testLocation: makeLocation())
+                .referenceSnapshotFilePath)
+        )
+        
         removeSnapshotFolder()
     }
 
     @Test
     func should_fail_when_recording_reference_snapshot() {
-        let testLocation = SnapshotTestLocation(testFunction: #function,
-                                                testFilePath: #filePath,
-                                                testFileID: #fileID)
-        let result = evaluate(Rectangle(),
-                              record: true,
-                              sourceLocation: testLocation)
+        let result = evaluate(Rectangle(), record: true)
 
         #expect(throws: EvaluationError.didRecordReference,
                 performing: {
@@ -47,10 +38,47 @@ struct SimpleSnapshotTests {
         removeSnapshotFolder()
     }
 
+    @Test
+    func should_fail_when_view_snapshot_not_matching_reference() async throws {
+        _ = evaluate(Rectangle(), record: true)
+
+        let result = evaluate(Text("Hello"))
+
+        #expect(throws: EvaluationError.notMatchingReference,
+                performing: {
+            try result.get()
+        })
+
+        removeSnapshotFolder()
+    }
+
+    @Test
+    func should_save_snapshot_diff_artifacts_when_snapshot_not_matching() {
+        let pathFactory = SnapshotFilePathFactory(testLocation: makeLocation())
+        _ = evaluate(Rectangle(), record: true)
+
+        _ = evaluate(Text("Hello"))
+
+        #expect(fileExists(at: pathFactory.failureDiffSnapshotFilePath))
+        #expect(fileExists(at: pathFactory.failureFailedSnapshotFilePath))
+        #expect(fileExists(at: pathFactory.failureOriginalSnapshotFilePath))
+
+        removeSnapshotFolder()
+    }
+
     // MARK: Testing DSL
 
     private func fileExists(at filePath: SnapshotFilePath) -> Bool {
         return FileManager.default.fileExists(atPath: filePath.fullPath)
+    }
+
+    private func makeLocation(function: StaticString = #function,
+                              filePath: StaticString = #filePath,
+                              fileID: StaticString = #fileID) -> SnapshotTestLocation {
+        return SnapshotTestLocation(testFunction: function,
+                                    testFilePath: filePath,
+                                    testFileID: fileID,
+                                    testTag: "")
     }
 
     private func removeSnapshotFolder() {
@@ -71,6 +99,22 @@ struct SimpleSnapshotTests {
 
 enum EvaluationError: Swift.Error {
     case didRecordReference
+    case notMatchingReference
+}
+
+@MainActor
+func evaluate<View: SwiftUI.View>(_ view: View,
+                                  testTag: String = "",
+                                  record: Bool = false,
+                                  function: StaticString = #function,
+                                  filePath: StaticString = #filePath,
+                                  fileID: StaticString = #fileID) -> Result<Void, any Error> {
+    return evaluate(view,
+                    record: record,
+                    sourceLocation: SnapshotTestLocation(testFunction: function,
+                                                         testFilePath: filePath,
+                                                         testFileID: fileID,
+                                                         testTag: testTag))
 }
 
 @MainActor
@@ -78,14 +122,26 @@ func evaluate<View: SwiftUI.View>(_ view: View, record: Bool, sourceLocation: Sn
     let manager = SnapshotManager(testLocation: sourceLocation)
 
     do {
-        let snapshot = try manager.makeSnapshot(view: view)
+        let takenSnapshot = try manager.makeSnapshot(view: view)
 
         if record {
-            try manager.saveSnapshot(snapshot)
+            try manager.saveSnapshot(takenSnapshot)
             throw EvaluationError.didRecordReference
         }
 
-        return .success(())
+        let referenceSnapshot = try manager.makeSnapshot(filePath: takenSnapshot.filePath)
+
+        switch manager.compareSnapshot(takenSnapshot,
+                                       with: referenceSnapshot) {
+        case .matching:
+            return .success(())
+        case .different:
+            let failureSnapshot = try manager.makeFailureSnapshot(taken: takenSnapshot,
+                                                                  reference: referenceSnapshot)
+            try manager.saveFailureSnapshot(failureSnapshot)
+
+            throw EvaluationError.notMatchingReference
+        }
     } catch {
         return .failure(error)
     }

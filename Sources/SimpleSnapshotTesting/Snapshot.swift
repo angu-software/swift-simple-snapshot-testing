@@ -13,7 +13,7 @@ struct Snapshot: Equatable {
 
     let imageData: SnapshotImageData
     let scale: CGFloat
-    let imageFilePath: SnapshotFilePath
+    let filePath: SnapshotFilePath
 }
 
 extension Snapshot {
@@ -35,15 +35,15 @@ extension Snapshot {
 
         self.init(imageData: imageData,
                   scale: image.scale,
-                  imageFilePath: imageFilePath)
+                  filePath: imageFilePath)
     }
 }
 
 extension Snapshot {
 
-    func with(imageFilePath: SnapshotFilePath) -> Self {
+    func with(filePath: SnapshotFilePath) -> Self {
         return Self(imageData: imageData,
                     scale: scale,
-                    imageFilePath: imageFilePath)
+                    filePath: filePath)
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 
 @testable import SimpleSnapshotTesting
 
-extension FilePath {
+extension URL {
 
     static func dummy() -> Self {
         return Self(filePath: "/foo/bar/file.png")

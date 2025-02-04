@@ -21,29 +21,29 @@ final class FileManagerDouble: FileManaging {
 
     // MARK: - FileManaging
 
-    func isFileExisting(at filePath: SimpleSnapshotTesting.FilePath) -> Bool {
-        stubbedFileData.keys.contains(filePath.stringValue)
+    func isFileExisting(at fileURL: URL) -> Bool {
+        stubbedFileData.keys.contains(fileURL.path())
     }
 
-    func isDirectoryExisting(at directoryPath: FilePath) -> Bool {
+    func isDirectoryExisting(at directoryURL: URL) -> Bool {
         return false
     }
 
-    func createDirectory(at directoryPath: SimpleSnapshotTesting.FilePath) throws {
+    func createDirectory(at directoryURL: URL) throws {
         if shouldThrowCreateDirError {
             throw .dummy()
         }
-        createdDirectories.append(directoryPath.stringValue)
+        createdDirectories.append(directoryURL.path())
     }
 
-    func write(_ data: Data, to filePath: FilePath) throws {
+    func write(_ data: Data, to fileURL: URL) throws {
         if shouldThrowWriteFileError {
             throw .dummy()
         }
-        writtenData[filePath.stringValue] = data
+        writtenData[fileURL.path()] = data
     }
 
-    func load(contentsOf file: FilePath) throws -> Data {
-        return stubbedFileData[file.stringValue] ?? Data()
+    func load(contentsOf fileURL: URL) throws -> Data {
+        return stubbedFileData[fileURL.path()] ?? Data()
     }
 }

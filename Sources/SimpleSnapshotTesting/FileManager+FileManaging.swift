@@ -17,31 +17,31 @@ extension FileManager: FileManaging {
 
     // MARK: - FileManaging
 
-    func isFileExisting(at filePath: FilePath) -> Bool {
+    func isFileExisting(at fileURL: URL) -> Bool {
         var isDir: ObjCBool = false
-        let isExisting = fileExists(atPath: filePath.stringValue,
+        let isExisting = fileExists(atPath: fileURL.path(),
                                     isDirectory: &isDir)
         return isExisting && !isDir.boolValue
     }
 
-    func isDirectoryExisting(at directoryPath: FilePath) -> Bool {
+    func isDirectoryExisting(at directoryURL: URL) -> Bool {
         var isDir: ObjCBool = false
-        let isExisting = fileExists(atPath: directoryPath.stringValue,
+        let isExisting = fileExists(atPath: directoryURL.path(),
                    isDirectory: &isDir)
         return isExisting && isDir.boolValue
     }
     
-    func createDirectory(at directoryPath: FilePath) throws {
-        try createDirectory(at: directoryPath,
+    func createDirectory(at directoryURL: URL) throws {
+        try createDirectory(at: directoryURL,
                             withIntermediateDirectories: true)
     }
     
-    func write(_ data: Data, to filePath: FilePath) throws {
-        try data.write(to: filePath)
+    func write(_ data: Data, to fileURL: URL) throws {
+        try data.write(to: fileURL)
     }
 
-    func load(contentsOf file: FilePath) throws -> Data {
-        return try Data(contentsOf: file,
+    func load(contentsOf fileURL: URL) throws -> Data {
+        return try Data(contentsOf: fileURL,
                         options: .uncached)
     }
 }

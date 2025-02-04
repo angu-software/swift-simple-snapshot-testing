@@ -5,11 +5,13 @@
 //  Created by Andreas Guenther on 31.01.25.
 //
 
+import Foundation
+
 @testable import SimpleSnapshotTesting
 
 extension SnapshotFilePathFactory {
 
-    func testFixtureImagePath(for imageName: String) -> FilePath {
+    func testFixtureImagePath(for imageName: String) -> URL {
         return referenceSnapshotFilePath
             .directoryURL
             .deletingLastPathComponent()

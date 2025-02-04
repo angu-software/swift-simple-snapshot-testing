@@ -38,3 +38,12 @@ extension Snapshot {
                   imageFilePath: imageFilePath)
     }
 }
+
+extension Snapshot {
+
+    func with(imageFilePath: FilePath) -> Self {
+        return Self(imageData: imageData,
+                    scale: scale,
+                    imageFilePath: imageFilePath)
+    }
+}

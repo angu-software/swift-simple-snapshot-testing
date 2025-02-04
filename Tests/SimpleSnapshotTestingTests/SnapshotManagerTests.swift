@@ -130,13 +130,15 @@ struct SnapshotManagerTests {
     func should_create_failure_snapshot() async throws {
         let refSnap = Snapshot.fixture()
         let takenSnap = Snapshot.fixture(imageData: .fixture(color: .blue))
-        let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(takenSnap.image!, refSnap.image!))
+        let takenImage = try #require(takenSnap.image)
+        let refImage = try #require(refSnap.image)
+        let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(takenImage, refImage))
 
         let orignialSnap = refSnap.with(imageFilePath: pathFactory.failureOriginalSnapshotFile)
         let failedSnap = takenSnap.with(imageFilePath: pathFactory.failureFailedSnapshotFile)
         let diffSnap = Snapshot(image: diffImage, imageFilePath: pathFactory.failureDiffSnapshotFile)
 
-        let failureSnapshot = manager.makeFailureSnapshot(taken: takenSnap, reference: refSnap)
+        let failureSnapshot = try manager.makeFailureSnapshot(taken: takenSnap, reference: refSnap)
 
         #expect(failureSnapshot.original == orignialSnap)
         #expect(failureSnapshot.failed == failedSnap)
@@ -157,14 +159,5 @@ struct SnapshotManagerTests {
 
     private func createRefImage() -> FilePath {
         return setSnapshotAsReference(.fixture())
-    }
-}
-
-extension Snapshot {
-
-    fileprivate func with(imageFilePath: FilePath) -> Self {
-        return Self(imageData: imageData,
-                    scale: scale,
-                    imageFilePath: imageFilePath)
     }
 }

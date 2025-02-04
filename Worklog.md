@@ -2,11 +2,10 @@
 
 ## In Progress
 
-- [ ] FilePath create with dir and filename
+- [ ] store diff image in repo
 
 ## Backlog
 
-- [ ] store diff image in repo
 - [ ] snapshot name from test function with parameters
 - [ ] Image (snapshot) renderer type that can handle different platforms (iOS, MacOS, ...)
 - [ ] Config to define stored/compared image format

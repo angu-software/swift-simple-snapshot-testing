@@ -16,7 +16,7 @@ final class FileManagerDouble: FileManaging {
     var shouldThrowCreateDirError = false
     var shouldThrowWriteFileError = false
     var stubbedFileData: [String: Data] = [:]
-    private(set) var createdDirectories: [Path] = []
+    private(set) var createdDirectories: Set<Path> = []
     private(set) var writtenData: [Path: Data] = [:]
 
     // MARK: - FileManaging
@@ -33,7 +33,7 @@ final class FileManagerDouble: FileManaging {
         if shouldThrowCreateDirError {
             throw .dummy()
         }
-        createdDirectories.append(directoryURL.path())
+        createdDirectories.insert(directoryURL.path())
     }
 
     func write(_ data: Data, to fileURL: URL) throws {

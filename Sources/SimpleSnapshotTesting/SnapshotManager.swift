@@ -72,6 +72,12 @@ final class SnapshotManager {
                               to: snapshot.filePath.fileURL)
     }
 
+    func saveFailureSnapshot(_ failureSnapshot: FailureSnapshot) throws {
+        try createSnapshotDirectory(failureSnapshot.original)
+        try createSnapshotDirectory(failureSnapshot.failed)
+        try createSnapshotDirectory(failureSnapshot.diff)
+    }
+
     func compareSnapshot(_ snapshot: Snapshot, with referenceSnapshot: Snapshot) -> SnapshotComparisonResult {
         if snapshot == referenceSnapshot {
             return .matching
@@ -99,7 +105,7 @@ final class SnapshotManager {
     }
 
     private func createSnapshotDirectory(_ snapshot: Snapshot) throws {
-        let testSuiteSnapshotsDir = pathFactory.referenceSnapshotFilePath.directoryURL
+        let testSuiteSnapshotsDir = snapshot.filePath.directoryURL
         if !fileManager.isDirectoryExisting(at: testSuiteSnapshotsDir) {
             try fileManager.createDirectory(at: testSuiteSnapshotsDir)
         }

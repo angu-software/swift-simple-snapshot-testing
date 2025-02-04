@@ -71,9 +71,10 @@ struct SnapshotManagerTests {
 
     @Test
     func should_create_directory_if_not_existing_before_saving_snapshot() async throws {
-        try manager.saveSnapshot(.dummy)
+        let snapshot = Snapshot.fixture(imageFilePath: pathFactory.referenceSnapshotFilePath)
+        try manager.saveSnapshot(snapshot)
 
-        #expect(fileManager.createdDirectories == [pathFactory.referenceSnapshotFilePath.directoryPath])
+        #expect(fileManager.createdDirectories == [snapshot.filePath.directoryPath])
     }
 
     @Test
@@ -144,6 +145,17 @@ struct SnapshotManagerTests {
         #expect(failureSnapshot.original == orignialSnap)
         #expect(failureSnapshot.failed == failedSnap)
         #expect(failureSnapshot.diff == diffSnap)
+    }
+
+    @Test
+    func should_create_diff_dir_when_saving_failing_snapshot_artifacts() throws {
+        let failureSnap = FailureSnapshot(original: .fixture(imageFilePath: pathFactory.failureOriginalSnapshotFilePath),
+                                          failed: .fixture(imageFilePath: pathFactory.failureFailedSnapshotFilePath),
+                                          diff: .fixture(imageFilePath: pathFactory.failureDiffSnapshotFilePath))
+
+        try manager.saveFailureSnapshot(failureSnap)
+
+        #expect(fileManager.createdDirectories == [pathFactory.failureDiffSnapshotFilePath.directoryPath])
     }
 
     // MARK: Testing DSL

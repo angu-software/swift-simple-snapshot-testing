@@ -21,11 +21,28 @@ struct SimpleSnapshotTests {
                                                 testFileID: #fileID)
         let pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
 
-        evaluate(Rectangle(),
+        _ = evaluate(Rectangle(),
                  record: true,
                  sourceLocation: testLocation)
 
         #expect(fileExists(at: pathFactory.referenceSnapshotFilePath))
+
+        removeSnapshotFolder()
+    }
+
+    @Test
+    func should_fail_when_recording_reference_snapshot() {
+        let testLocation = SnapshotTestLocation(testFunction: #function,
+                                                testFilePath: #filePath,
+                                                testFileID: #fileID)
+        let result = evaluate(Rectangle(),
+                              record: true,
+                              sourceLocation: testLocation)
+
+        #expect(throws: EvaluationError.didRecordReference,
+                performing: {
+            try result.get()
+        })
 
         removeSnapshotFolder()
     }
@@ -52,14 +69,24 @@ struct SimpleSnapshotTests {
     }
 }
 
+enum EvaluationError: Swift.Error {
+    case didRecordReference
+}
+
 @MainActor
-func evaluate<View: SwiftUI.View>(_ view: View, record: Bool, sourceLocation: SnapshotTestLocation) {
+func evaluate<View: SwiftUI.View>(_ view: View, record: Bool, sourceLocation: SnapshotTestLocation) -> Result<Void, any Error> {
     let manager = SnapshotManager(testLocation: sourceLocation)
+
     do {
         let snapshot = try manager.makeSnapshot(view: view)
 
-        try manager.saveSnapshot(snapshot)
+        if record {
+            try manager.saveSnapshot(snapshot)
+            throw EvaluationError.didRecordReference
+        }
+
+        return .success(())
     } catch {
-        assertionFailure("")
+        return .failure(error)
     }
 }

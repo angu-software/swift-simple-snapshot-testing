@@ -26,7 +26,19 @@ enum SnapshotImageRenderer {
 
     @MainActor
     static func makePNGData<SwiftUIView: View>(view: SwiftUIView) -> SnapshotImageData? {
-        return makeImage(view: view)?.pngData()
+        guard let image = makeImage(view: view) else {
+            return nil
+        }
+
+        return makeImageData(image: image)
+    }
+
+    static func makeImageData(image: SnapshotImage) -> SnapshotImageData? {
+        return image.pngData()
+    }
+
+    static func makeImage(data: Data, scale: CGFloat = Self.defaultImageScale) -> SnapshotImage? {
+        return SnapshotImage(data: data,  scale: scale)
     }
 
     @MainActor

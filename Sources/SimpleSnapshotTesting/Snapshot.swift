@@ -19,8 +19,8 @@ struct Snapshot: Equatable {
 extension Snapshot {
 
     var image: SnapshotImage? {
-        return UIImage(data: imageData,
-                       scale: scale)
+        return SnapshotImageRenderer.makeImage(data: imageData,
+                                               scale: scale)
     }
 
     var isValid: Bool {
@@ -29,7 +29,7 @@ extension Snapshot {
 
     init?(image: UIImage,
           imageFilePath: FilePath) {
-        guard let imageData = image.pngData() else {
+        guard let imageData = SnapshotImageRenderer.makeImageData(image: image) else {
             return nil
         }
 

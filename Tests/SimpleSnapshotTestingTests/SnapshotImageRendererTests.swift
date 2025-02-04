@@ -62,9 +62,8 @@ struct SnapshotImageRendererTests {
     private func recordFixtureImage(_ image: UIImage) throws {
         let location = SnapshotTestLocation.fixture()
         let path = SnapshotFilePathFactory(testLocation: location)
-        let diffSnapshot = Snapshot(imageData: image.pngData()!,
-                                    scale: image.scale,
-                                    imageFilePath: path.testFixtureImagePath(for: "fixture_image_diff"))
+        let diffSnapshot = try #require (Snapshot(image: image,
+                                                  imageFilePath: path.testFixtureImagePath(for: "fixture_image_diff")))
         let manager = SnapshotManager(testLocation: location)
         try manager.saveSnapshot(diffSnapshot)
     }

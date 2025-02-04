@@ -73,9 +73,9 @@ final class SnapshotManager {
     }
 
     func saveFailureSnapshot(_ failureSnapshot: FailureSnapshot) throws {
-        try createSnapshotDirectory(failureSnapshot.original)
-        try createSnapshotDirectory(failureSnapshot.failed)
-        try createSnapshotDirectory(failureSnapshot.diff)
+        try saveSnapshot(failureSnapshot.diff)
+        try saveSnapshot(failureSnapshot.failed)
+        try saveSnapshot(failureSnapshot.original)
     }
 
     func compareSnapshot(_ snapshot: Snapshot, with referenceSnapshot: Snapshot) -> SnapshotComparisonResult {

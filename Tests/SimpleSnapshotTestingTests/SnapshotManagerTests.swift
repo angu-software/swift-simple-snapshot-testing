@@ -158,6 +158,22 @@ struct SnapshotManagerTests {
         #expect(fileManager.createdDirectories == [pathFactory.failureDiffSnapshotFilePath.directoryPath])
     }
 
+    @Test
+    func should_save_failure_diff_artifacts_on_filesystem() throws {
+        let original = Snapshot.fixture(imageFilePath: pathFactory.failureOriginalSnapshotFilePath)
+        let failed = Snapshot.fixture(imageFilePath: pathFactory.failureFailedSnapshotFilePath)
+        let diff = Snapshot.fixture(imageFilePath: pathFactory.failureDiffSnapshotFilePath)
+        let failureSnap = FailureSnapshot(original: original,
+                                          failed: failed,
+                                          diff: diff)
+
+        try manager.saveFailureSnapshot(failureSnap)
+
+        #expect(fileManager.writtenData == [original.filePath.fullPath: original.imageData,
+                                            failed.filePath.fullPath: failed.imageData,
+                                            diff.filePath.fullPath: diff.imageData])
+    }
+
     // MARK: Testing DSL
 
     private func makeSnapshotManager(testLocation: SnapshotTestLocation) -> SnapshotManager {

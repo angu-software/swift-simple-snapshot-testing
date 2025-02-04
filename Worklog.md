@@ -2,6 +2,8 @@
 
 ## In Progress
 
+- [ ] should create ref image when view image is set as reference
+
 ## Backlog
 
 - [ ] snapshot name from test function with parameters
@@ -12,7 +14,6 @@
 - [ ] should fail when ref image not found
 - [ ] should succeed when ref image and view image is equal
 - [ ] should fail when ref image and view image is different
-- [ ] should create ref image when view image is set as reference
 - [ ] should create diff image set when ref image and view image is different
 
 ## Done

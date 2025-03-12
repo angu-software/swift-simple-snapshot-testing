@@ -43,6 +43,7 @@ struct SnapshotImageRendererTests {
 
     @Test
     func should_create_diff_image() throws {
+        #warning("Fails when tests run on iPad")
         let refDiffImage = try #require(TestFixtures.image(named: "fixture_image_diff"))
         let image1 = try #require(makeSnapshotImage(view: FixtureView()))
         let image2 = try #require(makeSnapshotImage(view: FixtureView(isChanged: true)))

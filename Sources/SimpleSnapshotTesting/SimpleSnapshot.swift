@@ -7,18 +7,18 @@
 
 import SwiftUI
 
-enum EvaluationError: Swift.Error {
+public enum EvaluationError: Swift.Error {
     case didRecordReference
     case notMatchingReference
 }
 
 @MainActor
-func evaluate<View: SwiftUI.View>(_ view: View,
-                                  testTag: String = "",
-                                  record: Bool = false,
-                                  function: StaticString = #function,
-                                  filePath: StaticString = #filePath,
-                                  fileID: StaticString = #fileID) -> Result<Void, any Error> {
+public func evaluate<View: SwiftUI.View>(_ view: View,
+                                         testTag: String = "",
+                                         record: Bool = false,
+                                         function: StaticString = #function,
+                                         filePath: StaticString = #filePath,
+                                         fileID: StaticString = #fileID) -> Result<Void, any Error> {
     return evaluate(view,
                     record: record,
                     sourceLocation: SnapshotTestLocation(testFunction: function,
@@ -28,7 +28,9 @@ func evaluate<View: SwiftUI.View>(_ view: View,
 }
 
 @MainActor
-func evaluate<View: SwiftUI.View>(_ view: View, record: Bool, sourceLocation: SnapshotTestLocation) -> Result<Void, any Error> {
+func evaluate<View: SwiftUI.View>(_ view: View,
+                                  record: Bool,
+                                  sourceLocation: SnapshotTestLocation) -> Result<Void, any Error> {
     let manager = SnapshotManager(testLocation: sourceLocation)
 
     do {

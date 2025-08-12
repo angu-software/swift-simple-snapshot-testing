@@ -15,9 +15,22 @@ import Testing
 struct SimpleSnapshotTests {
 
     @Test
+    func should_fail_when_recording_reference_snapshot() async throws {
+        withKnownIssue() {
+            evaluate(Rectangle(), record: true)
+        } matching: { issue in
+            (issue.error as? EvaluationError) == .didRecordReference
+        }
+
+        removeSnapshotFolder()
+    }
+
+    @Test
     func should_save_reference_image_when_recording_is_set() async throws {
-        _ = evaluate(Rectangle(), record: true)
-        
+        withKnownIssue() {
+            evaluate(Rectangle(), record: true)
+        }
+
         #expect(
             fileExists(at: SnapshotFilePathFactory(testLocation: makeLocation())
                 .referenceSnapshotFilePath)
@@ -27,27 +40,14 @@ struct SimpleSnapshotTests {
     }
 
     @Test
-    func should_fail_when_recording_reference_snapshot() {
-        let result = evaluate(Rectangle(), record: true)
-
-        #expect(throws: EvaluationError.didRecordReference,
-                performing: {
-            try result.get()
-        })
-
-        removeSnapshotFolder()
-    }
-
-    @Test
     func should_fail_when_view_snapshot_not_matching_reference() async throws {
-        _ = evaluate(Rectangle(), record: true)
+        record(Rectangle())
 
-        let result = evaluate(Text("Hello"))
-
-        #expect(throws: EvaluationError.notMatchingReference,
-                performing: {
-            try result.get()
-        })
+        withKnownIssue {
+            evaluate(Text("Hello"))
+        } matching: { issue in
+            issue.error as? EvaluationError == .notMatchingReference
+        }
 
         removeSnapshotFolder()
     }
@@ -55,9 +55,11 @@ struct SimpleSnapshotTests {
     @Test
     func should_save_snapshot_diff_artifacts_when_snapshot_not_matching() {
         let pathFactory = SnapshotFilePathFactory(testLocation: makeLocation())
-        _ = evaluate(Rectangle(), record: true)
+        record(Rectangle())
 
-        _ = evaluate(Text("Hello"))
+        withKnownIssue {
+            evaluate(Text("Hello"))
+        }
 
         #expect(fileExists(at: pathFactory.failureDiffSnapshotFilePath))
         #expect(fileExists(at: pathFactory.failureFailedSnapshotFilePath))
@@ -67,6 +69,23 @@ struct SimpleSnapshotTests {
     }
 
     // MARK: Testing DSL
+
+    public func record<View: SwiftUI.View>(_ view: View,
+                                           function: StaticString = #function,
+                                           filePath: StaticString = #filePath,
+                                           fileID: StaticString = #fileID,
+                                           line: Int = #line,
+                                           column: Int = #column) {
+        withKnownIssue {
+            evaluate(view,
+                      record: true,
+                      function: function,
+                      filePath: filePath,
+                      fileID: fileID,
+                      line: line,
+                      column: column)
+        }
+    }
 
     private func fileExists(at filePath: SnapshotFilePath) -> Bool {
         return FileManager.default.fileExists(atPath: filePath.fullPath)

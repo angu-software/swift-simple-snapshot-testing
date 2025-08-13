@@ -68,6 +68,16 @@ struct SimpleSnapshotTests {
         removeSnapshotFolder()
     }
 
+    @Test()
+    func should_pass_test_if_snapshot_matches_reference_image() async throws {
+        let view = Rectangle()
+        record(view)
+
+        evaluate(view)
+
+        removeSnapshotFolder()
+    }
+
     // MARK: Testing DSL
 
     public func record<View: SwiftUI.View>(_ view: View,

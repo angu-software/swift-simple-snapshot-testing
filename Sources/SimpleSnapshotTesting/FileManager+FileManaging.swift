@@ -19,14 +19,14 @@ extension FileManager: FileManaging {
 
     func isFileExisting(at fileURL: URL) -> Bool {
         var isDir: ObjCBool = false
-        let isExisting = fileExists(atPath: fileURL.path(),
+        let isExisting = fileExists(atPath: fileURL.filePath,
                                     isDirectory: &isDir)
         return isExisting && !isDir.boolValue
     }
 
     func isDirectoryExisting(at directoryURL: URL) -> Bool {
         var isDir: ObjCBool = false
-        let isExisting = fileExists(atPath: directoryURL.path(),
+        let isExisting = fileExists(atPath: directoryURL.filePath,
                    isDirectory: &isDir)
         return isExisting && isDir.boolValue
     }
@@ -43,5 +43,12 @@ extension FileManager: FileManaging {
     func load(contentsOf fileURL: URL) throws -> Data {
         return try Data(contentsOf: fileURL,
                         options: .uncached)
+    }
+}
+
+extension URL {
+
+    fileprivate var filePath: String {
+        return path(percentEncoded: false)
     }
 }

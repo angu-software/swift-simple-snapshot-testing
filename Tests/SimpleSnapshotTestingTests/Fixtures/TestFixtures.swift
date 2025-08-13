@@ -15,4 +15,12 @@ enum TestFixtures {
                        in: .module,
                        with: nil)
     }
+
+    static func url(forResourceFileNamed fileName: String, withExtension fileExtension: String?) -> URL? {
+        return Bundle.module.url(forResource: fileName, withExtension: fileExtension)
+    }
+
+    static func url(forResourceDirectory dirName: String) -> URL? {
+        return Bundle.module.resourceURL?.appending(component: dirName)
+    }
 }

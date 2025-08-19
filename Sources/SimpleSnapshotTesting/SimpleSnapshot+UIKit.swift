@@ -1,22 +1,22 @@
 //
-//  SimpleSnapshot+SwiftUI.swift
+//  SimpleSnapshot+UIKit.swift
 //  SimpleSnapshotTesting
 //
 //  Created by Andreas Guenther on 12.03.25.
 //
 
-import SwiftUI
 import Testing
+import UIKit
 
 @MainActor
-public func evaluate<View: SwiftUI.View>(_ view: View,
-                                         testTag: String = "",
-                                         record: Bool = false,
-                                         function: StaticString = #function,
-                                         filePath: StaticString = #filePath,
-                                         fileID: StaticString = #fileID,
-                                         line: Int = #line,
-                                         column: Int = #column) {
+public func evaluate<View: UIView>(_ view: View,
+                                   testTag: String = "",
+                                   record: Bool = false,
+                                   function: StaticString = #function,
+                                   filePath: StaticString = #filePath,
+                                   fileID: StaticString = #fileID,
+                                   line: Int = #line,
+                                   column: Int = #column) {
     switch evaluate(view,
                     record: record,
                     sourceLocation: SnapshotTestLocation(testFunction: function,
@@ -36,9 +36,9 @@ public func evaluate<View: SwiftUI.View>(_ view: View,
 }
 
 @MainActor
-func evaluate<View: SwiftUI.View>(_ view: View,
-                                  record: Bool,
-                                  sourceLocation: SnapshotTestLocation) -> Result<Void, any Error> {
+func evaluate<View: UIView>(_ view: View,
+                            record: Bool,
+                            sourceLocation: SnapshotTestLocation) -> Result<Void, any Error> {
     let manager = SnapshotManager(testLocation: sourceLocation)
 
     do {

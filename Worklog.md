@@ -2,22 +2,20 @@
 
 ## In Progress
 
-- [ ] should create ref image when view image is set as reference
+- [ ] Support for UIKit.UIView
 
 ## Backlog
 
 - [ ] snapshot name from test function with parameters
 - [ ] Image (snapshot) renderer type that can handle different platforms (iOS, MacOS, ...)
 
-### PublicAPI Acceptance tests
-
-- [ ] should fail when ref image not found
-- [ ] should succeed when ref image and view image is equal
-- [ ] should fail when ref image and view image is different
-- [ ] should create diff image set when ref image and view image is different
-
 ## Done
 
+- [x] should fail when ref image not found
+- [x] should succeed when ref image and view image is equal
+- [x] should fail when ref image and view image is different
+- [x] should create diff image set when ref image and view image is different
+- [x] should create ref image when view image is set as reference
 - [x] Use #fileID to construct snapshot folder for the respective tests
 - [x] store recorded snapshot in repo
 - [x] reliable root path for storing snapshot reference and diffs

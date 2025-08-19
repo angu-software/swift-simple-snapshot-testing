@@ -19,14 +19,22 @@ struct SnapshotImageRendererTests_UIKit {
         #expect(makeSnapshotImage(view: makeText("Hello World")) != nil)
     }
 
+    @Test
+    func should_create_image_with_views_size() throws {
+        let view = makeText("Hello World", size: CGSize(width: 100, height: 100))
+        let image = try #require(makeSnapshotImage(view: view))
+
+        #expect(image.size == CGSize(width: 100, height: 100))
+    }
+
     // MARK: Test DSL
 
     private func makeSnapshotImage<UIKitView: UIView>(view: UIKitView) -> SnapshotImage? {
         return SnapshotImageRenderer.makeImage(view: view)
     }
 
-    private func makeText(_ string: String) -> UILabel {
-        let text = UILabel(frame: .init(origin: .zero, size: CGSize(width: 40, height: 20)))
+    private func makeText(_ string: String, size: CGSize = CGSize(width: 40, height: 20)) -> UILabel {
+        let text = UILabel(frame: CGRect(origin: .zero, size: size))
         text.text = string
 
         return text

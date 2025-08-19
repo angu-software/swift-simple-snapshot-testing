@@ -14,6 +14,10 @@ import Testing
 @MainActor
 struct SnapshotImageRendererTests_UIKit {
 
+    private var defaultScale: CGFloat {
+        return SnapshotImageRenderer.defaultImageScale
+    }
+
     @Test
     func should_create_an_image_from_a_UIView() throws {
         #expect(makeSnapshotImage(view: makeText("Hello World")) != nil)
@@ -25,6 +29,13 @@ struct SnapshotImageRendererTests_UIKit {
         let image = try #require(makeSnapshotImage(view: view))
 
         #expect(image.size == CGSize(width: 100, height: 100))
+    }
+
+    @Test
+    func should_create_image_with_default_scale() throws {
+        let image = try #require(makeSnapshotImage(view: makeText("Hello World")))
+
+        #expect(image.scale == defaultScale)
     }
 
     // MARK: Test DSL

@@ -19,7 +19,10 @@ enum SnapshotImageRenderer {
     @MainActor
     static func makeImage<UIKitView: UIView>(view: UIKitView) -> SnapshotImage? {
         let canvasFrame = CGRect(origin: .zero, size: view.frame.size)
-        let renderer = UIGraphicsImageRenderer(bounds: canvasFrame)
+        let format = UIGraphicsImageRendererFormat(for: UITraitCollection(displayScale: defaultImageScale))
+
+        let renderer = UIGraphicsImageRenderer(bounds: canvasFrame,
+                                               format: format)
 
         return renderer.image { ctx in
             view.draw(canvasFrame)

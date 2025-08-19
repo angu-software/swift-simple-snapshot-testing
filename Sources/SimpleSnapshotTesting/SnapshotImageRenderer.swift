@@ -18,15 +18,22 @@ enum SnapshotImageRenderer {
 
     @MainActor
     static func makeImage<UIKitView: UIView>(view: UIKitView) -> SnapshotImage? {
-        let canvasFrame = CGRect(origin: .zero, size: view.frame.size)
         let format = UIGraphicsImageRendererFormat(for: UITraitCollection(displayScale: defaultImageScale))
-
-        let renderer = UIGraphicsImageRenderer(bounds: canvasFrame,
+        let renderer = UIGraphicsImageRenderer(bounds: view.bounds,
                                                format: format)
 
         return renderer.image { ctx in
-            view.draw(canvasFrame)
+            view.layer.render(in: ctx.cgContext)
         }
+    }
+
+    @MainActor
+    static func makePNGData<UIKitView: UIView>(view: UIKitView) -> SnapshotImageData? {
+        guard let image = makeImage(view: view) else {
+            return nil
+        }
+
+        return makeImageData(image: image)
     }
 
     @MainActor

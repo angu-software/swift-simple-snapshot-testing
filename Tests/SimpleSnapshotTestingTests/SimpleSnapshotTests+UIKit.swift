@@ -20,11 +20,10 @@ struct SimpleSnapshotTests_UIKit {
 
     @Test
     func should_fail_when_recording_reference_snapshot() async throws {
-        withKnownIssue("Under development") {
+        withKnownIssue() {
             evaluate(Rectangle(), record: true)
         } matching: { issue in
-            (issue.error as? SnapshotManager.Error) == .snapshotImageRenderingFailed
-//            (issue.error as? EvaluationError) == .didRecordReference
+            (issue.error as? EvaluationError) == .didRecordReference
         }
 
         removeSnapshotFolder()

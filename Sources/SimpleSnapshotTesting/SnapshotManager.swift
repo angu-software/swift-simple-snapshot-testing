@@ -35,13 +35,13 @@ final class SnapshotManager {
     }
 
     func makeSnapshot<UIKitView: UIView>(view: UIKitView) throws -> Snapshot {
-//        guard let imageData = SnapshotImageRenderer.makePNGData(view: view) else {
+        guard let imageData = SnapshotImageRenderer.makePNGData(view: view) else {
             throw Error.snapshotImageRenderingFailed
-//        }
+        }
 
-//        return Snapshot(imageData: imageData,
-//                        scale: SnapshotImageRenderer.defaultImageScale,
-//                        filePath: pathFactory.referenceSnapshotFilePath)
+        return Snapshot(imageData: imageData,
+                        scale: SnapshotImageRenderer.defaultImageScale,
+                        filePath: pathFactory.referenceSnapshotFilePath)
     }
 
     func makeSnapshot<SwiftUIView: SwiftUI.View>(view: SwiftUIView) throws -> Snapshot {

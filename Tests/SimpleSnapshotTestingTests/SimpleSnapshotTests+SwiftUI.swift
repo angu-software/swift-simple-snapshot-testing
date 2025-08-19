@@ -1,5 +1,5 @@
 //
-//  SimpleSnapshotTests.swift
+//  SimpleSnapshotTests+SwiftUI.swift
 //  SimpleSnapshotTesting
 //
 //  Created by Andreas Guenther on 23.01.25.
@@ -12,7 +12,7 @@ import Testing
 
 @MainActor
 @Suite(.tags(.acceptanceTest))
-struct SimpleSnapshotTests {
+struct SimpleSnapshotTests_SwiftUI {
 
     @Test
     func should_fail_when_recording_reference_snapshot() async throws {

@@ -21,6 +21,7 @@ let package = Package(
             name: "SimpleSnapshotTestingTests",
             dependencies: ["SimpleSnapshotTesting"],
             resources: [.process("Fixtures/fixture_image_diff.png"),
-                        .process("Fixtures/file with spaces.txt")]),
+                        .process("Fixtures/file with spaces.txt"),
+                        .copy("Fixtures/folder with spaces/")]),
     ]
 )

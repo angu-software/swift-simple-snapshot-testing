@@ -28,78 +28,85 @@ struct SimpleSnapshotTests_UIKit {
 
         removeSnapshotFolder()
     }
-//
-//    @Test
-//    func should_save_reference_image_when_recording_is_set() async throws {
-//        withKnownIssue() {
-//            evaluate(Rectangle(), record: true)
-//        }
-//
-//        #expect(
-//            fileExists(at: SnapshotFilePathFactory(testLocation: makeLocation())
-//                .referenceSnapshotFilePath)
-//        )
-//        
-//        removeSnapshotFolder()
-//    }
-//
-//    @Test
-//    func should_fail_when_view_snapshot_not_matching_reference() async throws {
-//        record(Rectangle())
-//
-//        withKnownIssue {
-//            evaluate(Text("Hello"))
-//        } matching: { issue in
-//            issue.error as? EvaluationError == .notMatchingReference
-//        }
-//
-//        removeSnapshotFolder()
-//    }
-//
-//    @Test
-//    func should_save_snapshot_diff_artifacts_when_snapshot_not_matching() {
-//        let pathFactory = SnapshotFilePathFactory(testLocation: makeLocation())
-//        record(Rectangle())
-//
-//        withKnownIssue {
-//            evaluate(Text("Hello"))
-//        }
-//
-//        #expect(fileExists(at: pathFactory.failureDiffSnapshotFilePath))
-//        #expect(fileExists(at: pathFactory.failureFailedSnapshotFilePath))
-//        #expect(fileExists(at: pathFactory.failureOriginalSnapshotFilePath))
-//
-//        removeSnapshotFolder()
-//    }
-//
-//    @Test()
-//    func should_pass_test_if_snapshot_matches_reference_image() async throws {
-//        let view = Rectangle()
-//        record(view)
-//
-//        evaluate(view)
-//
-//        removeSnapshotFolder()
-//    }
+
+    @Test
+    func should_save_reference_image_when_recording_is_set() async throws {
+        withKnownIssue() {
+            evaluate(Rectangle(), record: true)
+        }
+
+        #expect(
+            fileExists(at: SnapshotFilePathFactory(testLocation: makeLocation())
+                .referenceSnapshotFilePath)
+        )
+
+        removeSnapshotFolder()
+    }
+
+    @Test
+    func should_fail_when_view_snapshot_not_matching_reference() async throws {
+        record(Rectangle())
+
+        withKnownIssue {
+            evaluate(makeText("Hello"))
+        } matching: { issue in
+            issue.error as? EvaluationError == .notMatchingReference
+        }
+
+        removeSnapshotFolder()
+    }
+
+    @Test
+    func should_save_snapshot_diff_artifacts_when_snapshot_not_matching() {
+        let pathFactory = SnapshotFilePathFactory(testLocation: makeLocation())
+        record(Rectangle())
+
+        withKnownIssue {
+            evaluate(makeText("Hello"))
+        }
+
+        #expect(fileExists(at: pathFactory.failureDiffSnapshotFilePath))
+        #expect(fileExists(at: pathFactory.failureFailedSnapshotFilePath))
+        #expect(fileExists(at: pathFactory.failureOriginalSnapshotFilePath))
+
+        removeSnapshotFolder()
+    }
+
+    @Test()
+    func should_pass_test_if_snapshot_matches_reference_image() async throws {
+        let view = Rectangle()
+        record(view)
+
+        evaluate(view)
+
+        removeSnapshotFolder()
+    }
 
     // MARK: Testing DSL
 
-//    public func record<View: SwiftUI.View>(_ view: View,
-//                                           function: StaticString = #function,
-//                                           filePath: StaticString = #filePath,
-//                                           fileID: StaticString = #fileID,
-//                                           line: Int = #line,
-//                                           column: Int = #column) {
-//        withKnownIssue {
-//            evaluate(view,
-//                      record: true,
-//                      function: function,
-//                      filePath: filePath,
-//                      fileID: fileID,
-//                      line: line,
-//                      column: column)
-//        }
-//    }
+    public func record<View: UIView>(_ view: View,
+                                     function: StaticString = #function,
+                                     filePath: StaticString = #filePath,
+                                     fileID: StaticString = #fileID,
+                                     line: Int = #line,
+                                     column: Int = #column) {
+        withKnownIssue {
+            evaluate(view,
+                     record: true,
+                     function: function,
+                     filePath: filePath,
+                     fileID: fileID,
+                     line: line,
+                     column: column)
+        }
+    }
+
+    private func makeText(_ string: String, size: CGSize = CGSize(width: 40, height: 20)) -> UILabel {
+        let text = UILabel(frame: CGRect(origin: .zero, size: size))
+        text.text = string
+
+        return text
+    }
 
     private func fileExists(at filePath: SnapshotFilePath) -> Bool {
         return FileManager.default.fileExists(atPath: filePath.fullPath)

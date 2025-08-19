@@ -17,6 +17,11 @@ enum SnapshotImageRenderer {
     private static let diffAlpha: CGFloat = 0.75
 
     @MainActor
+    static func makeImage<UIKitView: UIView>(view: UIKitView) -> SnapshotImage? {
+        return UIImage()
+    }
+
+    @MainActor
     static func makeImage<SwiftUIView: View>(view: SwiftUIView) -> SnapshotImage? {
         let renderer = ImageRenderer(content: view)
         renderer.scale = defaultImageScale

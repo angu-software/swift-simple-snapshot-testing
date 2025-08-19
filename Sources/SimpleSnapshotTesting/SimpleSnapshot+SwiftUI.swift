@@ -1,5 +1,5 @@
 //
-//  SimpleSnapshot.swift
+//  SimpleSnapshot+SwiftUI.swift
 //  SimpleSnapshotTesting
 //
 //  Created by Andreas Guenther on 12.03.25.

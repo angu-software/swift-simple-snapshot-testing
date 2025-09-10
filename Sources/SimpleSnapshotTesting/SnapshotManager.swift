@@ -62,7 +62,7 @@ final class SnapshotManager {
 
         let data = try fileManager.load(contentsOf: fileURL)
         let snapshot =  Snapshot(imageData: data,
-                                 scale: 1,
+                                 scale: SnapshotImageRenderer.defaultImageScale,
                                  filePath: filePath)
         guard snapshot.isValid else {
             throw Error.failedToLoadSnapshotFromFile

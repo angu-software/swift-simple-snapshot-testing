@@ -11,7 +11,7 @@ typealias SnapshotImage = UIImage
 
 enum SnapshotImageRenderer {
 
-    static let defaultImageScale: CGFloat = 1
+    static let defaultImageScale: CGFloat = 2
 
     private static let diffBlendMode: CGBlendMode = .difference
     private static let diffAlpha: CGFloat = 0.75

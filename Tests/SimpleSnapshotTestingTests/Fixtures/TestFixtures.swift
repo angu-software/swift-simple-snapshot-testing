@@ -8,12 +8,18 @@
 import Foundation
 import UIKit
 
+@testable import SimpleSnapshotTesting
+
 enum TestFixtures {
 
     static func image(named fileName: String) -> UIImage? {
-        return UIImage(named: fileName,
-                       in: .module,
-                       with: nil)
+        guard let url = Bundle.module.url(forResource: fileName, withExtension: "png"),
+              let data = try? Data(contentsOf: url),
+              let image = UIImage(data: data, scale: SnapshotImageRenderer.defaultImageScale) else {
+            return nil
+        }
+
+        return image
     }
 
     static func url(forResourceFileNamed fileName: String, withExtension fileExtension: String?) -> URL? {

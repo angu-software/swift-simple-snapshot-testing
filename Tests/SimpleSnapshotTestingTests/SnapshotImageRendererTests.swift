@@ -51,6 +51,8 @@ struct SnapshotImageRendererTests {
 
         let diffImage = try #require(SnapshotImageRenderer.makeDiffImage(image1, image2))
 
+        try recordFixtureImage(diffImage)
+
         #expect(diffImage.scale == defaultScale)
         #expect(diffImage.pngData() == refDiffImage.pngData())
     }

@@ -18,38 +18,6 @@ struct Snapshot: Equatable {
 
 extension Snapshot {
 
-    var image: SnapshotImage? {
-        return SnapshotImageRenderer.makeImage(data: imageData,
-                                               scale: scale)
-    }
-
-    var isValid: Bool {
-        return image != nil
-    }
-
-    init?(image: UIImage,
-          imageFilePath: SnapshotFilePath) {
-        guard let imageData = SnapshotImageRenderer.makeImageData(image: image) else {
-            return nil
-        }
-
-        self.init(imageData: imageData,
-                  scale: image.scale,
-                  filePath: imageFilePath)
-    }
-}
-
-extension Snapshot {
-
-    func with(filePath: SnapshotFilePath) -> Self {
-        return Self(imageData: imageData,
-                    scale: scale,
-                    filePath: filePath)
-    }
-}
-
-extension Snapshot {
-
     func matches(_ other: Self, precision: Double) -> Bool {
         return imageData.matches(other.imageData, precision: precision)
     }

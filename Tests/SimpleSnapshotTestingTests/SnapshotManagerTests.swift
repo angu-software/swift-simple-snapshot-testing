@@ -44,7 +44,7 @@ struct SnapshotManagerTests {
         try manager.saveSnapshot(snapshot)
 
         #expect(
-            fileManager.writtenData == [snapshot.filePath.fullPath: snapshot.imageData]
+            fileManager.writtenData == [snapshot.filePath.fullPath: snapshot.pngData]
         )
     }
 
@@ -171,9 +171,9 @@ struct SnapshotManagerTests {
 
         try manager.saveFailureSnapshot(failureSnap)
 
-        #expect(fileManager.writtenData == [original.filePath.fullPath: original.imageData,
-                                            failed.filePath.fullPath: failed.imageData,
-                                            diff.filePath.fullPath: diff.imageData])
+        #expect(fileManager.writtenData == [original.filePath.fullPath: original.pngData,
+                                            failed.filePath.fullPath: failed.pngData,
+                                            diff.filePath.fullPath: diff.pngData])
     }
 
     // MARK: Testing DSL
@@ -184,7 +184,7 @@ struct SnapshotManagerTests {
     }
 
     private func setSnapshotAsReference(_ snapshot: Snapshot) -> SnapshotFilePath {
-        fileManager.stubbedFileData = [snapshot.filePath.fullPath: snapshot.imageData]
+        fileManager.stubbedFileData = [snapshot.filePath.fullPath: snapshot.pngData]
         return snapshot.filePath
     }
 

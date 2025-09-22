@@ -11,7 +11,7 @@ typealias SnapshotImageData = Data
 
 struct Snapshot: Equatable {
 
-    let imageData: SnapshotImageData
+    let pngData: SnapshotImageData
     let scale: CGFloat
     let filePath: SnapshotFilePath
 }
@@ -19,6 +19,6 @@ struct Snapshot: Equatable {
 extension Snapshot {
 
     func matches(_ other: Self, precision: Double) -> Bool {
-        return imageData.matches(other.imageData, precision: precision)
+        return pngData.matches(other.pngData, precision: precision)
     }
 }

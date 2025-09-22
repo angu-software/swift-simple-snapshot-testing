@@ -10,7 +10,7 @@ import UIKit
 extension Snapshot {
 
     var image: SnapshotImage? {
-        return SnapshotImageRenderer.makeImage(data: imageData,
+        return SnapshotImageRenderer.makeImage(data: pngData,
                                                scale: scale)
     }
 
@@ -20,11 +20,11 @@ extension Snapshot {
 
     init?(image: UIImage,
           imageFilePath: SnapshotFilePath) {
-        guard let imageData = SnapshotImageRenderer.makeImageData(image: image) else {
+        guard let pngData = SnapshotImageRenderer.makePNGData(image: image) else {
             return nil
         }
 
-        self.init(imageData: imageData,
+        self.init(pngData: pngData,
                   scale: image.scale,
                   filePath: imageFilePath)
     }

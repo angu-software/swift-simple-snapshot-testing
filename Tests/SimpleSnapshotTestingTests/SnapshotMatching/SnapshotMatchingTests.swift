@@ -13,7 +13,7 @@ struct SnapshotMatchingTests {
 
     @Test
     func whenSnapshotsMatching_itReturnsTrue() async throws {
-        let snapshot1 = Snapshot(imageData: .fixture(),
+        let snapshot1 = Snapshot(pngData: .fixture(),
                                  scale: 1,
                                  filePath: .dummy())
 

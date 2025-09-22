@@ -32,7 +32,7 @@ final class SnapshotFactory {
             throw Error.snapshotImageRenderingFailed
         }
 
-        return Snapshot(imageData: imageData,
+        return Snapshot(pngData: imageData,
                         scale: SnapshotImageRenderer.defaultImageScale,
                         filePath: pathFactory.referenceSnapshotFilePath)
     }
@@ -42,7 +42,7 @@ final class SnapshotFactory {
             throw Error.snapshotImageRenderingFailed
         }
 
-        return Snapshot(imageData: imageData,
+        return Snapshot(pngData: imageData,
                         scale: SnapshotImageRenderer.defaultImageScale,
                         filePath: pathFactory.referenceSnapshotFilePath)
     }
@@ -55,7 +55,7 @@ final class SnapshotFactory {
 
         let data = try fileManager.load(contentsOf: fileURL)
         let scale = SnapshotImageRenderer.defaultImageScale
-        let snapshot =  Snapshot(imageData: data,
+        let snapshot =  Snapshot(pngData: data, // TODO: ensure the data is really png data from the loaded snapshot
                                  scale: scale,
                                  filePath: filePath)
         guard snapshot.isValid else {

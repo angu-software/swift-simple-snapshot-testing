@@ -51,7 +51,7 @@ final class SnapshotManager {
 
         try createSnapshotDirectory(snapshot)
 
-        try fileManager.write(snapshot.imageData,
+        try fileManager.write(snapshot.pngData,
                               to: snapshot.filePath.fileURL)
     }
 

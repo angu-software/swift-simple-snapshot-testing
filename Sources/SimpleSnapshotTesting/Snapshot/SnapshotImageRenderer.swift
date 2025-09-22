@@ -32,7 +32,7 @@ enum SnapshotImageRenderer {
             return nil
         }
 
-        return makeImageData(image: image)
+        return makePNGData(image: image)
     }
 
     @MainActor
@@ -49,15 +49,15 @@ enum SnapshotImageRenderer {
             return nil
         }
 
-        return makeImageData(image: image)
+        return makePNGData(image: image)
     }
 
-    static func makeImageData(image: SnapshotImage) -> SnapshotImageData? {
+    static func makePNGData(image: SnapshotImage) -> SnapshotImageData? {
         return image.pngData()
     }
 
     static func makeImage(data: Data, scale: CGFloat = Self.defaultImageScale) -> SnapshotImage? {
-        return SnapshotImage(data: data,  scale: scale)
+        return SnapshotImage(data: data, scale: scale)
     }
 
     @MainActor

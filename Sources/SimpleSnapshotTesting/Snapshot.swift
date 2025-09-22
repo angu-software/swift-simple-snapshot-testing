@@ -47,3 +47,10 @@ extension Snapshot {
                     filePath: filePath)
     }
 }
+
+extension Snapshot {
+
+    func matches(_ other: Self, precision: Double) -> Bool {
+        return imageData.matches(other.imageData, precision: precision)
+    }
+}

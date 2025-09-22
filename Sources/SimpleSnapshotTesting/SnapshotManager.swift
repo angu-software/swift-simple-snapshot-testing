@@ -88,8 +88,10 @@ final class SnapshotManager {
         try saveSnapshot(failureSnapshot.original)
     }
 
-    func compareSnapshot(_ snapshot: Snapshot, with referenceSnapshot: Snapshot) -> SnapshotComparisonResult {
-        if snapshot == referenceSnapshot {
+    func compareSnapshot(_ snapshot: Snapshot,
+                         with referenceSnapshot: Snapshot,
+                         precision: Double) -> SnapshotComparisonResult {
+        if snapshot.matches(referenceSnapshot, precision: precision) {
             return .matching
         } else {
             return .different

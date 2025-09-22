@@ -37,6 +37,7 @@ public func evaluate<View: UIView>(_ view: View,
 
 @MainActor
 func evaluate<View: UIView>(_ view: View,
+                            precision: Double = 1.0,
                             record: Bool,
                             sourceLocation: SnapshotTestLocation) -> Result<Void, any Error> {
     let manager = SnapshotManager(testLocation: sourceLocation)
@@ -52,7 +53,8 @@ func evaluate<View: UIView>(_ view: View,
         let referenceSnapshot = try manager.makeSnapshot(filePath: takenSnapshot.filePath)
 
         switch manager.compareSnapshot(takenSnapshot,
-                                       with: referenceSnapshot) {
+                                       with: referenceSnapshot,
+                                       precision: precision) {
             case .matching:
                 return .success(())
             case .different:

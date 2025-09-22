@@ -112,7 +112,8 @@ struct SnapshotManagerTests {
     @Test
     func should_report_match_for_matching_taken_and_reference_snapshot() throws {
         let result = manager.compareSnapshot(.fixture(),
-                                             with: .fixture())
+                                             with: .fixture(),
+                                             precision: 1.0)
 
         #expect(result == .matching)
     }
@@ -120,7 +121,8 @@ struct SnapshotManagerTests {
     @Test
     func should_report_no_match_for_not_equal_snapshots() throws {
         let result = manager.compareSnapshot(.fixture(),
-                                             with: .fixture(imageData: .fixture(color: .blue)))
+                                             with: .fixture(imageData: .fixture(color: .blue)),
+                                             precision: 1.0)
 
         #expect(result == .different)
     }
@@ -188,5 +190,15 @@ struct SnapshotManagerTests {
 
     private func createRefImage() -> SnapshotFilePath {
         return setSnapshotAsReference(.fixture())
+    }
+}
+
+struct SnapshotMatchingTests {
+
+    @Test
+    func whenSnapshotsMatching_itReturnsTrue() async throws {
+        let snapshot1 = Snapshot(imageData: .fixture(), scale: 1, filePath: .dummy())
+
+        #expect(snapshot1.matches(snapshot1, precision: 1.0))
     }
 }

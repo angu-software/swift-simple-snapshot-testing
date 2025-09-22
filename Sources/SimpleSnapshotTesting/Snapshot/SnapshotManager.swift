@@ -16,59 +16,32 @@ enum SnapshotComparisonResult {
 @MainActor
 final class SnapshotManager {
 
-    enum Error: Swift.Error {
-        case malformedSnapshotImage
-        case failedToLoadSnapshotFromFile
-        case snapshotImageRenderingFailed
-        case fileDoesNotExist
-    }
+    typealias Error = SnapshotFactory.Error
 
     private let testLocation: SnapshotTestLocation
     private let fileManager: FileManaging
     private let pathFactory: SnapshotFilePathFactory
+
+    private let snapshotFactory: SnapshotFactory
 
     init(testLocation: SnapshotTestLocation,
          fileManager: FileManaging = .default) {
         self.testLocation = testLocation
         self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
         self.fileManager = fileManager
+        self.snapshotFactory = SnapshotFactory(fileManager: fileManager, pathFactory: pathFactory)
     }
 
     func snapshot<UIKitView: UIView>(from view: UIKitView) throws -> Snapshot {
-        guard let imageData = SnapshotImageRenderer.makePNGData(view: view) else {
-            throw Error.snapshotImageRenderingFailed
-        }
-
-        return Snapshot(imageData: imageData,
-                        scale: SnapshotImageRenderer.defaultImageScale,
-                        filePath: pathFactory.referenceSnapshotFilePath)
+        return try snapshotFactory.snapshot(from: view)
     }
 
     func snapshot<SwiftUIView: SwiftUI.View>(from view: SwiftUIView) throws -> Snapshot {
-        guard let imageData = SnapshotImageRenderer.makePNGData(view: view) else {
-            throw Error.snapshotImageRenderingFailed
-        }
-
-        return Snapshot(imageData: imageData,
-                        scale: SnapshotImageRenderer.defaultImageScale,
-                        filePath: pathFactory.referenceSnapshotFilePath)
+        return try snapshotFactory.snapshot(from: view)
     }
 
     func referenceSnapshot(from filePath: SnapshotFilePath) throws -> Snapshot {
-        let fileURL = filePath.fileURL
-        guard fileManager.isFileExisting(at: fileURL) else {
-            throw Error.fileDoesNotExist
-        }
-
-        let data = try fileManager.load(contentsOf: fileURL)
-        let snapshot =  Snapshot(imageData: data,
-                                 scale: SnapshotImageRenderer.defaultImageScale,
-                                 filePath: filePath)
-        guard snapshot.isValid else {
-            throw Error.failedToLoadSnapshotFromFile
-        }
-
-        return snapshot
+        return try snapshotFactory.referenceSnapshot(from: filePath)
     }
 
     func saveSnapshot(_ snapshot: Snapshot) throws {
@@ -123,3 +96,6 @@ final class SnapshotManager {
         }
     }
 }
+
+
+

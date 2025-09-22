@@ -13,31 +13,31 @@ struct DataDifferenceTests {
 
     @Test
     func whenDataIsEqual_itReturnZero() async throws {
-        #expect(dataDifferenceCount(lhs: Data([1, 1]),
-                                    rhs: Data([1, 1])) == 0)
+        #expect(Data([1, 1]).countDifferences(to: Data([1, 1])) == 0)
     }
 
     @Test
     func whenDataIsDifferent_itReturnsTheAmountOfDifferentBytes() async throws {
-        #expect(dataDifferenceCount(lhs: Data([1, 2, 1]),
-                                    rhs: Data([1, 1, 4])) == 2)
+        #expect(Data([1, 2, 1]).countDifferences(to: Data([1, 1, 4])) == 2)
     }
 
     @Test
     func whenDataIsDifferentInSizeAndContent_itReturnsTheAmountOfDifferentBytes() async throws {
-        #expect(dataDifferenceCount(lhs: Data([1, 2, 1]),
-                                    rhs: Data([1, 1, 4, 1])) == 3)
+        #expect(Data([1, 2, 1]).countDifferences(to: Data([1, 1, 4, 1])) == 3)
     }
 }
 
-func dataDifferenceCount(lhs: Data, rhs: Data) -> Int {
-    let lengthDifference = abs(lhs.count - rhs.count)
+extension Data {
 
-    let differingBytes = zip(lhs, rhs).reduce(0) { count, pair in
-        count + (pair.0 == pair.1 ? 0 : 1)
+    func countDifferences(to other: Data) -> Int {
+        let lengthDifference = abs(count - other.count)
+
+        let differingBytes = zip(self, other).reduce(0) { count, pair in
+            count + (pair.0 == pair.1 ? 0 : 1)
+        }
+
+        return differingBytes + lengthDifference
     }
-
-    return differingBytes + lengthDifference
 }
 
 struct DataComparisonTests {
@@ -47,7 +47,7 @@ struct DataComparisonTests {
         let data1 = Data([1])
         let data2 = Data([1])
 
-        #expect(compare(data1, data2, precision: 1.0))
+        #expect(data1.matches(data2, precision: 1.0))
     }
 
     @Test
@@ -55,7 +55,7 @@ struct DataComparisonTests {
         let data1 = Data([1, 2])
         let data2 = Data([1, 1])
 
-        #expect(compare(data1, data2, precision: 0.5))
+        #expect(data1.matches(data2, precision: 0.5))
     }
 
     @Test
@@ -63,7 +63,7 @@ struct DataComparisonTests {
         let data1 = Data([1, 2, 2, 2])
         let data2 = Data([1, 1, 1, 1])
 
-        #expect(compare(data1, data2, precision: 0.5) == false)
+        #expect(data1.matches(data2, precision: 0.5) == false)
     }
 
     @Test
@@ -71,18 +71,21 @@ struct DataComparisonTests {
         let data1 = Data([1, 2, 2, 2])
         let data2 = Data([1, 1])
 
-        #expect(compare(data1, data2, precision: 0.0) == false)
+        #expect(data1.matches(data2, precision: 0.0) == false)
     }
 }
 
-func compare(_ lhs: Data, _ rhs: Data, precision: Double) -> Bool {
-    guard lhs.count == rhs.count else {
-        return false
+extension Data {
+
+    func matches(_ other: Data, precision: Double) -> Bool {
+        guard count == other.count else {
+            return false
+        }
+
+        let byteCount = Double(count)
+        let diffCount = Double(countDifferences(to: other))
+        let matchingBytes = byteCount - diffCount
+
+        return matchingBytes / byteCount >= precision
     }
-
-    let byteCount = Double(lhs.count)
-    let diffCount = Double(dataDifferenceCount(lhs: lhs, rhs: rhs))
-    let matchingBytes = byteCount - diffCount
-
-    return matchingBytes / byteCount >= precision
 }

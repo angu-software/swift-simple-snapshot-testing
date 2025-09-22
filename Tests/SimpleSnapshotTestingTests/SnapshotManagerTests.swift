@@ -30,7 +30,7 @@ struct SnapshotManagerTests {
 
     @Test(.tags(.acceptanceTest))
     func should_create_snapshot_from_view() async throws {
-        let snapshot = try manager.makeSnapshot(view: Rectangle())
+        let snapshot = try manager.snapshot(from: Rectangle())
 
         #expect(snapshot.filePath == pathFactory.referenceSnapshotFilePath)
     }
@@ -94,7 +94,7 @@ struct SnapshotManagerTests {
     func should_load_snapshot_from_ref_file() async throws {
         let refFilePath = createRefImage()
 
-        let snapshot = try manager.makeSnapshot(filePath: refFilePath)
+        let snapshot = try manager.referenceSnapshot(from: refFilePath)
 
         #expect(snapshot.filePath == refFilePath)
     }
@@ -103,7 +103,7 @@ struct SnapshotManagerTests {
     func should_fail_loading_snapshot_if_file_does_not_exist() {
         #expect(throws: SnapshotManager.Error.fileDoesNotExist,
                 performing: {
-            _ = try manager.makeSnapshot(filePath: .dummy())
+            _ = try manager.referenceSnapshot(from: .dummy())
         })
     }
 

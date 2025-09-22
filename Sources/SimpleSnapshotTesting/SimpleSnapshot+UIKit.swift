@@ -43,14 +43,14 @@ func evaluate<View: UIView>(_ view: View,
     let manager = SnapshotManager(testLocation: sourceLocation)
 
     do {
-        let takenSnapshot = try manager.makeSnapshot(view: view)
+        let takenSnapshot = try manager.snapshot(from: view)
 
         if record {
             try manager.saveSnapshot(takenSnapshot)
             throw EvaluationError.didRecordReference
         }
 
-        let referenceSnapshot = try manager.makeSnapshot(filePath: takenSnapshot.filePath)
+        let referenceSnapshot = try manager.referenceSnapshot(from: takenSnapshot.filePath)
 
         switch manager.compareSnapshot(takenSnapshot,
                                        with: referenceSnapshot,

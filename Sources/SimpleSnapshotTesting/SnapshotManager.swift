@@ -34,7 +34,7 @@ final class SnapshotManager {
         self.fileManager = fileManager
     }
 
-    func makeSnapshot<UIKitView: UIView>(view: UIKitView) throws -> Snapshot {
+    func snapshot<UIKitView: UIView>(from view: UIKitView) throws -> Snapshot {
         guard let imageData = SnapshotImageRenderer.makePNGData(view: view) else {
             throw Error.snapshotImageRenderingFailed
         }
@@ -44,7 +44,7 @@ final class SnapshotManager {
                         filePath: pathFactory.referenceSnapshotFilePath)
     }
 
-    func makeSnapshot<SwiftUIView: SwiftUI.View>(view: SwiftUIView) throws -> Snapshot {
+    func snapshot<SwiftUIView: SwiftUI.View>(from view: SwiftUIView) throws -> Snapshot {
         guard let imageData = SnapshotImageRenderer.makePNGData(view: view) else {
             throw Error.snapshotImageRenderingFailed
         }
@@ -54,7 +54,7 @@ final class SnapshotManager {
                         filePath: pathFactory.referenceSnapshotFilePath)
     }
 
-    func makeSnapshot(filePath: SnapshotFilePath) throws -> Snapshot {
+    func referenceSnapshot(from filePath: SnapshotFilePath) throws -> Snapshot {
         let fileURL = filePath.fileURL
         guard fileManager.isFileExisting(at: fileURL) else {
             throw Error.fileDoesNotExist

@@ -96,6 +96,3 @@ final class SnapshotManager {
         }
     }
 }
-
-
-

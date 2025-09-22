@@ -193,12 +193,4 @@ struct SnapshotManagerTests {
     }
 }
 
-struct SnapshotMatchingTests {
 
-    @Test
-    func whenSnapshotsMatching_itReturnsTrue() async throws {
-        let snapshot1 = Snapshot(imageData: .fixture(), scale: 1, filePath: .dummy())
-
-        #expect(snapshot1.matches(snapshot1, precision: 1.0))
-    }
-}

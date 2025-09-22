@@ -18,9 +18,8 @@ enum SnapshotImageRenderer {
 
     @MainActor
     static func makeImage<UIKitView: UIView>(view: UIKitView) -> SnapshotImage? {
-        let format = UIGraphicsImageRendererFormat(for: UITraitCollection(displayScale: defaultImageScale))
         let renderer = UIGraphicsImageRenderer(bounds: view.bounds,
-                                               format: format)
+                                               format: makeFormat())
 
         return renderer.image { ctx in
             view.layer.render(in: ctx.cgContext)

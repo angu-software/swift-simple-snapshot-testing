@@ -10,6 +10,7 @@ import CoreGraphics
 import UIKit
 
 struct NormalizedImageData: Equatable {
+
     let data: Data
     let pixelBufferInfo: PixelBufferInfo
 }
@@ -17,7 +18,6 @@ struct NormalizedImageData: Equatable {
 struct PixelBufferInfo: Equatable {
     let width: Int
     let height: Int
-    // TODO: scale?
 
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
@@ -76,6 +76,28 @@ extension NormalizedImageData {
 
 extension NormalizedImageData {
 
+    static func from(uiImage: UIImage) -> Self? {
+        let imageBounds = CGRect(origin: .zero, size: uiImage.size)
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1.0
+        format.opaque = false
+
+        let renderer = UIGraphicsImageRenderer(size: imageBounds.size,
+                                               format: format)
+
+        let normalizedImage = renderer.image { context in
+            uiImage.draw(in: imageBounds)
+        }
+
+        guard let cgImage = normalizedImage.cgImage else {
+            return nil
+        }
+
+        return from(cgImage: cgImage)
+    }
+
+    /// - Note: Assumes the `pngData` is @1x scale
     static func from(pngData: Data) -> Self? {
         guard let imageSource = CGImageSourceCreateWithData(pngData as CFData, nil),
               let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else {

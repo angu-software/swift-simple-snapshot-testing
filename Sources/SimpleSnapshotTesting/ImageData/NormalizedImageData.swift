@@ -9,13 +9,6 @@ import Foundation
 import CoreGraphics
 import UIKit
 
-/*
- struct Snapshot {
-    let normalizedImageData: NormalizedImageData
-    let scale: CGFloat
- }
- */
-
 struct NormalizedImageData: Equatable {
     let data: Data
     let width: Int
@@ -56,9 +49,42 @@ extension NormalizedImageData {
                 context.draw(cgImage, in: imageRect)
             }
         }
-        
+
         return Self(data: rawData,
                     width: width,
                     height: height)
+    }
+}
+
+extension NormalizedImageData {
+
+    // TODO: reduce duplication in CGImage config
+
+    func toPNGData() -> Data? {
+        guard let dataProvider = CGDataProvider(data: data as CFData) else {
+            return nil
+        }
+
+        let bitsPerComponent = 8
+        let bytesPerPixel = 4
+        let bitsPerPixel = bytesPerPixel * bitsPerComponent
+        let bytesPerRow = width * bytesPerPixel
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+
+        guard let cgImage = CGImage(width: width,
+                                    height: height,
+                                    bitsPerComponent: bitsPerComponent,
+                                    bitsPerPixel: bitsPerPixel,
+                                    bytesPerRow: bytesPerRow,
+                                    space: colorSpace,
+                                    bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
+                                    provider: dataProvider,
+                                    decode: nil,
+                                    shouldInterpolate: false,
+                                    intent: .defaultIntent) else {
+            return nil
+        }
+
+        return UIImage(cgImage: cgImage).pngData()
     }
 }

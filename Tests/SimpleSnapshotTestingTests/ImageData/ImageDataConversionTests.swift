@@ -17,6 +17,27 @@ struct ImageDataConversionTests {
                                               color: .red)
 
     @Test
+    func whenGivenNormalizedImageData_itConvertsToPNGDataAndBack() async throws {
+        let normalized = NormalizedImageData(data: Data([255, 0, 0, 255]),
+                                             width: 1,
+                                             height: 1)
+
+        // When
+        let pngData = try #require(normalized.toPNGData())
+
+        // Then
+        // 1. Should not be empty
+        #expect(!pngData.isEmpty)
+
+        // 2. Decoding back to normalized should match original
+        let decoded = try #require(NormalizedImageData.from(pngData: pngData))
+        #expect(decoded.data == normalized.data)
+
+        let image = UIImage(data: pngData)
+        #expect(image != nil)
+    }
+
+    @Test
     func whenGivenPNGData_itConvertsToNormalizedImageData() async throws {
         let pngData = try #require(sourceImage.pngData())
 

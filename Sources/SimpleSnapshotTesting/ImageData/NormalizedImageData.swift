@@ -76,6 +76,27 @@ extension NormalizedImageData {
 
 extension NormalizedImageData {
 
+    static func from(uiView: UIView) -> Self? {
+        uiView.layoutIfNeeded()
+
+        // size precheck
+
+        let imageBounds = uiView.bounds
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1.0
+        format.opaque = false
+
+        let renderer = UIGraphicsImageRenderer(size: imageBounds.size,
+                                               format: format)
+
+        let normalizedImage = renderer.image { context in
+            uiView.layer.render(in: context.cgContext)
+        }
+
+        return from(uiImage: normalizedImage)
+    }
+
     static func from(uiImage: UIImage) -> Self? {
         let imageBounds = CGRect(origin: .zero, size: uiImage.size)
 

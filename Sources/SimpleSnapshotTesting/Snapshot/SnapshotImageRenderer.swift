@@ -9,6 +9,7 @@ import SwiftUI
 
 typealias SnapshotImage = UIImage
 
+@available(*, deprecated, message: "Will be replaced soon")
 enum SnapshotImageRenderer {
 
     static let defaultImageScale: CGFloat = 2

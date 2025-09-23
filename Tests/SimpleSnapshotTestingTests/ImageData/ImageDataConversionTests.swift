@@ -10,6 +10,7 @@ import UIKit
 
 @testable import SimpleSnapshotTesting
 
+@MainActor
 struct ImageDataConversionTests {
 
     @Test
@@ -48,6 +49,20 @@ struct ImageDataConversionTests {
     @Test
     func whenGivenUIImage_whenImageIsScaled_itConvertsToNormalizedImageData() async throws {
         let normalized = try #require(NormalizedImageData.from(uiImage: imageFixture(scale: 3)))
+
+        #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
+                                                  width: 1,
+                                                  height: 1))
+    }
+
+    @Test
+    func whenGivenAUIView_itConvertsToNormalizedImageData() async throws {
+        let rectView = UIView(frame: CGRect(origin: .zero,
+                                            size: CGSize(width: 1,
+                                                         height: 1)))
+        rectView.backgroundColor = .red
+
+        let normalized = NormalizedImageData.from(uiView: rectView)
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,

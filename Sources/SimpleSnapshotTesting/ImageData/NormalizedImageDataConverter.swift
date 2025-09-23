@@ -62,7 +62,7 @@ enum NormalizedImageDataConverter {
         return Self.from(cgImage: cgImage)
     }
 
-    static func from(cgImage: CGImage) -> NormalizedImageData {
+    private static func from(cgImage: CGImage) -> NormalizedImageData {
         let meta = PixelBufferInfo(width: cgImage.width, height: cgImage.height)
         var rawData = Data(count: meta.byteCount)
 

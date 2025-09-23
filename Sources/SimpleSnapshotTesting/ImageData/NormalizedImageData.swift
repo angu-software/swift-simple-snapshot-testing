@@ -7,7 +7,6 @@
 
 import Foundation
 import CoreGraphics
-import UIKit
 
 struct NormalizedImageData: Equatable {
 
@@ -74,8 +73,25 @@ extension NormalizedImageData {
     }
 }
 
+import SwiftUI
+import UIKit
+
 extension NormalizedImageData {
 
+    @MainActor
+    static func from<SwiftUIView: SwiftUI.View>(swiftUIView: SwiftUIView) -> Self? {
+        let renderer = ImageRenderer(content: swiftUIView)
+        renderer.scale = 1
+        renderer.isOpaque = false
+
+        guard let cgImage = renderer.cgImage else {
+            return nil
+        }
+
+        return from(cgImage: cgImage)
+    }
+
+    @MainActor
     static func from(uiView: UIView) -> Self? {
         uiView.layoutIfNeeded()
 

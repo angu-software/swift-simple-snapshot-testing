@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreGraphics
+import UIKit
 
 /*
  struct Snapshot {
@@ -15,11 +16,24 @@ import CoreGraphics
  }
  */
 
-struct NormalizedImageData {
+struct NormalizedImageData: Equatable {
     let data: Data
+    let width: Int
+    let height: Int
+
+    // TODO: CGSize, CGRect convenience?
 }
 
 extension NormalizedImageData {
+
+    static func from(pngData: Data) -> Self? {
+        guard let imageSource = CGImageSourceCreateWithData(pngData as CFData, nil),
+              let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else {
+            return nil
+        }
+
+        return Self.from(cgImage: cgImage)
+    }
 
     static func from(cgImage: CGImage) -> Self {
         let width = cgImage.width
@@ -42,7 +56,9 @@ extension NormalizedImageData {
                 context.draw(cgImage, in: imageRect)
             }
         }
-
-        return Self(data: rawData)
+        
+        return Self(data: rawData,
+                    width: width,
+                    height: height)
     }
 }

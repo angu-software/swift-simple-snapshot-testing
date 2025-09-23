@@ -22,7 +22,8 @@ struct NormalizedImageDataTests {
 
         let normalized = NormalizedImageData.from(cgImage: cgImage)
 
-        let expected = Data([255, 0, 0, 255])
-        #expect(normalized.data == expected)
+        #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
+                                                  width: 1,
+                                                  height: 1))
     }
 }

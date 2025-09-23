@@ -20,8 +20,7 @@ struct NormalizedImageDataConverterTests {
                                              width: 1,
                                              height: 1)
 
-
-        let pngData = try #require(normalized.pngData())
+        let pngData = try #require(NormalizedImageDataConverter.makePNGData(from: normalized))
 
         let decoded = try #require(NormalizedImageDataConverter.makeNormalizedImageData(from: pngData))
         #expect(decoded == normalized)

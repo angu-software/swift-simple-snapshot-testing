@@ -13,6 +13,40 @@ enum NormalizedImageDataConverter {
     private static let scale: CGFloat = 1
     private static let isOpaque = false
 
+    // MARK: Conversions from NormalizedImageData
+
+    static func makeCGImage(from normalizedData: NormalizedImageData) -> CGImage? {
+        guard let dataProvider = CGDataProvider(data: normalizedData.data as CFData) else {
+            return nil
+        }
+
+        let pixelBufferInfo = normalizedData.pixelBufferInfo
+
+        return CGImage(width: pixelBufferInfo.width,
+                       height: pixelBufferInfo.height,
+                       bitsPerComponent: pixelBufferInfo.bitsPerComponent,
+                       bitsPerPixel: pixelBufferInfo.bitsPerPixel,
+                       bytesPerRow: pixelBufferInfo.bytesPerRow,
+                       space: pixelBufferInfo.colorSpace,
+                       bitmapInfo: pixelBufferInfo.bitmapInfo,
+                       provider: dataProvider,
+                       decode: nil,
+                       shouldInterpolate: false,
+                       intent: .defaultIntent)
+    }
+
+    static func makeUIImage(from normalizedData: NormalizedImageData) -> UIImage? {
+        guard let cgImage = makeCGImage(from: normalizedData) else {
+            return nil
+        }
+
+        return UIImage(cgImage: cgImage)
+    }
+
+    static func makePNGData(from normalizedData: NormalizedImageData) -> Data? {
+        return makeUIImage(from: normalizedData)?.pngData()
+    }
+
     // MARK: Conversion to NormalizedImageData
 
     @MainActor
@@ -88,6 +122,8 @@ enum NormalizedImageDataConverter {
                          space: bufferInfo.colorSpace,
                          bitmapInfo: bufferInfo.bitmapInfo)
     }
+
+    // MARK: Supporting Factory Methods
 
     @MainActor
     private static func makeImageRenderer(imageSize: CGSize) -> UIGraphicsImageRenderer {

@@ -12,14 +12,6 @@ import UIKit
 struct NormalizedImageData: Equatable {
     let data: Data
     let pixelBufferInfo: PixelBufferInfo
-
-    var width: Int {
-        pixelBufferInfo.width
-    }
-
-    var height: Int {
-        pixelBufferInfo.height
-    }
 }
 
 struct PixelBufferInfo: Equatable {

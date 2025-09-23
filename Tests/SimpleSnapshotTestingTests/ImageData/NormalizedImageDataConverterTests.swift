@@ -12,7 +12,7 @@ import UIKit
 @testable import SimpleSnapshotTesting
 
 @MainActor
-struct ImageDataConversionTests {
+struct NormalizedImageDataConverterTests {
 
     @Test
     func whenGivenNormalizedImageData_itConvertsToPNGDataAndBack() async throws {
@@ -23,7 +23,7 @@ struct ImageDataConversionTests {
 
         let pngData = try #require(normalized.pngData())
 
-        let decoded = try #require(NormalizedImageData.from(pngData: pngData))
+        let decoded = try #require(NormalizedImageDataConverter.from(pngData: pngData))
         #expect(decoded == normalized)
     }
 
@@ -31,7 +31,7 @@ struct ImageDataConversionTests {
     func whenGivenPNGData_itConvertsToNormalizedImageData() async throws {
         let pngData = try #require(imageFixture().pngData())
 
-        let normalized = try #require(NormalizedImageData.from(pngData: pngData))
+        let normalized = try #require(NormalizedImageDataConverter.from(pngData: pngData))
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,
@@ -40,7 +40,7 @@ struct ImageDataConversionTests {
 
     @Test
     func whenGivenUIImage_itConvertsToNormalizedImageData() async throws {
-        let normalized = try #require(NormalizedImageData.from(uiImage: imageFixture()))
+        let normalized = try #require(NormalizedImageDataConverter.from(uiImage: imageFixture()))
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,
@@ -49,7 +49,7 @@ struct ImageDataConversionTests {
 
     @Test
     func whenGivenUIImage_whenImageIsScaled_itConvertsToNormalizedImageData() async throws {
-        let normalized = try #require(NormalizedImageData.from(uiImage: imageFixture(scale: 3)))
+        let normalized = try #require(NormalizedImageDataConverter.from(uiImage: imageFixture(scale: 3)))
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,
@@ -63,7 +63,7 @@ struct ImageDataConversionTests {
                                                          height: 1)))
         rectView.backgroundColor = .red
 
-        let normalized = NormalizedImageData.from(uiView: rectView)
+        let normalized = NormalizedImageDataConverter.from(uiView: rectView)
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,
@@ -76,7 +76,7 @@ struct ImageDataConversionTests {
             .fill(Color(red: 1, green: 0, blue: 0))
             .frame(width: 1, height: 1)
 
-        let normalized = NormalizedImageData.from(swiftUIView: rectView)
+        let normalized = NormalizedImageDataConverter.from(swiftUIView: rectView)
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,

@@ -23,7 +23,7 @@ struct ImageDataConversionTests {
                                              height: 1)
 
         // When
-        let pngData = try #require(normalized.toPNGData())
+        let pngData = try #require(normalized.pngData())
 
         // Then
         // 1. Should not be empty

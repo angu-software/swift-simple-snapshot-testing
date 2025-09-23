@@ -78,11 +78,12 @@ import UIKit
 
 extension NormalizedImageData {
 
+    private static let scale: CGFloat = 1
+    private static let isOpaque = false
+
     @MainActor
     static func from<SwiftUIView: SwiftUI.View>(swiftUIView: SwiftUIView) -> Self? {
-        let renderer = ImageRenderer(content: swiftUIView)
-        renderer.scale = 1
-        renderer.isOpaque = false
+        let renderer = makeImageRenderer(content: swiftUIView)
 
         guard let cgImage = renderer.cgImage else {
             return nil
@@ -93,18 +94,7 @@ extension NormalizedImageData {
 
     @MainActor
     static func from(uiView: UIView) -> Self? {
-        uiView.layoutIfNeeded()
-
-        // size precheck
-
-        let imageBounds = uiView.bounds
-
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1.0
-        format.opaque = false
-
-        let renderer = UIGraphicsImageRenderer(size: imageBounds.size,
-                                               format: format)
+        let renderer = makeImageRenderer(imageSize: uiView.bounds.size)
 
         let normalizedImage = renderer.image { context in
             uiView.layer.render(in: context.cgContext)
@@ -113,15 +103,10 @@ extension NormalizedImageData {
         return from(uiImage: normalizedImage)
     }
 
+    @MainActor
     static func from(uiImage: UIImage) -> Self? {
         let imageBounds = CGRect(origin: .zero, size: uiImage.size)
-
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1.0
-        format.opaque = false
-
-        let renderer = UIGraphicsImageRenderer(size: imageBounds.size,
-                                               format: format)
+        let renderer = makeImageRenderer(imageSize: imageBounds.size)
 
         let normalizedImage = renderer.image { context in
             uiImage.draw(in: imageBounds)
@@ -162,5 +147,24 @@ extension NormalizedImageData {
 
         return Self(data: rawData,
                     pixelBufferInfo: meta)
+    }
+
+    @MainActor
+    private static func makeImageRenderer(imageSize: CGSize) -> UIGraphicsImageRenderer {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = scale
+        format.opaque = isOpaque
+
+        return UIGraphicsImageRenderer(size: imageSize,
+                                       format: format)
+    }
+
+    @MainActor
+    private static func makeImageRenderer<Content: View>(content: Content) -> ImageRenderer<Content> {
+        let renderer = ImageRenderer(content: content)
+        renderer.scale = scale
+        renderer.isOpaque = isOpaque
+
+        return renderer
     }
 }

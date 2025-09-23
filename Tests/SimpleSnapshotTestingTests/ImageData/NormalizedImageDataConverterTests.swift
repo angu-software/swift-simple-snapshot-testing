@@ -14,15 +14,17 @@ import UIKit
 @MainActor
 struct NormalizedImageDataConverterTests {
 
+    private let converter = NormalizedImageDataConverter()
+
     @Test
     func whenGivenNormalizedImageData_itConvertsToPNGDataAndBack() async throws {
         let normalized = NormalizedImageData(data: Data([255, 0, 0, 255]),
                                              width: 1,
                                              height: 1)
 
-        let pngData = try #require(NormalizedImageDataConverter.makePNGData(from: normalized))
+        let pngData = try #require(converter.makePNGData(from: normalized))
 
-        let decoded = try #require(NormalizedImageDataConverter.makeNormalizedImageData(from: pngData))
+        let decoded = try #require(converter.makeNormalizedImageData(from: pngData))
         #expect(decoded == normalized)
     }
 
@@ -30,7 +32,7 @@ struct NormalizedImageDataConverterTests {
     func whenGivenPNGData_itConvertsToNormalizedImageData() async throws {
         let pngData = try #require(imageFixture().pngData())
 
-        let normalized = try #require(NormalizedImageDataConverter.makeNormalizedImageData(from: pngData))
+        let normalized = try #require(converter.makeNormalizedImageData(from: pngData))
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,
@@ -39,7 +41,7 @@ struct NormalizedImageDataConverterTests {
 
     @Test
     func whenGivenUIImage_itConvertsToNormalizedImageData() async throws {
-        let normalized = try #require(NormalizedImageDataConverter.makeNormalizedImageData(from: imageFixture()))
+        let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture()))
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,
@@ -48,7 +50,7 @@ struct NormalizedImageDataConverterTests {
 
     @Test
     func whenGivenUIImage_whenImageIsScaled_itConvertsToNormalizedImageData() async throws {
-        let normalized = try #require(NormalizedImageDataConverter.makeNormalizedImageData(from: imageFixture(scale: 3)))
+        let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture(scale: 3)))
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,
@@ -62,7 +64,7 @@ struct NormalizedImageDataConverterTests {
                                                          height: 1)))
         rectView.backgroundColor = .red
 
-        let normalized = NormalizedImageDataConverter.makeNormalizedImageData(from: rectView)
+        let normalized = converter.makeNormalizedImageData(from: rectView)
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,
@@ -75,7 +77,7 @@ struct NormalizedImageDataConverterTests {
             .fill(Color(red: 1, green: 0, blue: 0))
             .frame(width: 1, height: 1)
 
-        let normalized = NormalizedImageDataConverter.makeNormalizedImageData(from: rectView)
+        let normalized = converter.makeNormalizedImageData(from: rectView)
 
         #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
                                                   width: 1,

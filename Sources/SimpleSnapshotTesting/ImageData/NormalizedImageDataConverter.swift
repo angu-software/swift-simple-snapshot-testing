@@ -8,14 +8,14 @@
 import SwiftUI
 import UIKit
 
-enum NormalizedImageDataConverter {
+final class NormalizedImageDataConverter {
 
-    private static let scale: CGFloat = 1
-    private static let isOpaque = false
+    private let scale: CGFloat = 1
+    private let isOpaque = false
 
     // MARK: Conversions from NormalizedImageData
 
-    static func makeCGImage(from normalizedData: NormalizedImageData) -> CGImage? {
+    func makeCGImage(from normalizedData: NormalizedImageData) -> CGImage? {
         guard let dataProvider = CGDataProvider(data: normalizedData.data as CFData) else {
             return nil
         }
@@ -35,7 +35,7 @@ enum NormalizedImageDataConverter {
                        intent: .defaultIntent)
     }
 
-    static func makeUIImage(from normalizedData: NormalizedImageData) -> UIImage? {
+    func makeUIImage(from normalizedData: NormalizedImageData) -> UIImage? {
         guard let cgImage = makeCGImage(from: normalizedData) else {
             return nil
         }
@@ -43,14 +43,14 @@ enum NormalizedImageDataConverter {
         return UIImage(cgImage: cgImage)
     }
 
-    static func makePNGData(from normalizedData: NormalizedImageData) -> Data? {
+    func makePNGData(from normalizedData: NormalizedImageData) -> Data? {
         return makeUIImage(from: normalizedData)?.pngData()
     }
 
     // MARK: Conversion to NormalizedImageData
 
     @MainActor
-    static func makeNormalizedImageData<SwiftUIView: SwiftUI.View>(from view: SwiftUIView) -> NormalizedImageData? {
+    func makeNormalizedImageData<SwiftUIView: SwiftUI.View>(from view: SwiftUIView) -> NormalizedImageData? {
         let renderer = makeImageRenderer(content: view)
 
         guard let cgImage = renderer.cgImage else {
@@ -61,7 +61,7 @@ enum NormalizedImageDataConverter {
     }
 
     @MainActor
-    static func makeNormalizedImageData(from uiView: UIView) -> NormalizedImageData? {
+    func makeNormalizedImageData(from uiView: UIView) -> NormalizedImageData? {
         let renderer = makeImageRenderer(imageSize: uiView.bounds.size)
 
         let normalizedImage = renderer.image { context in
@@ -72,7 +72,7 @@ enum NormalizedImageDataConverter {
     }
 
     @MainActor
-    static func makeNormalizedImageData(from uiImage: UIImage) -> NormalizedImageData? {
+    func makeNormalizedImageData(from uiImage: UIImage) -> NormalizedImageData? {
         let imageBounds = CGRect(origin: .zero, size: uiImage.size)
         let renderer = makeImageRenderer(imageSize: imageBounds.size)
 
@@ -88,16 +88,16 @@ enum NormalizedImageDataConverter {
     }
 
     /// - Note: Assumes the `pngData` is @1x scale
-    static func makeNormalizedImageData(from pngData: Data) -> NormalizedImageData? {
+    func makeNormalizedImageData(from pngData: Data) -> NormalizedImageData? {
         guard let imageSource = CGImageSourceCreateWithData(pngData as CFData, nil),
               let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else {
             return nil
         }
 
-        return Self.makeNormalizedImageData(from: cgImage)
+        return makeNormalizedImageData(from: cgImage)
     }
     
-    private static func makeNormalizedImageData(from cgImage: CGImage) -> NormalizedImageData? {
+    private func makeNormalizedImageData(from cgImage: CGImage) -> NormalizedImageData? {
         let bufferInfo = PixelBufferInfo(width: cgImage.width, height: cgImage.height)
         var rawData = Data(count: bufferInfo.byteCount)
 
@@ -112,7 +112,7 @@ enum NormalizedImageDataConverter {
                                    pixelBufferInfo: bufferInfo)
     }
 
-    private static func makeCGContext(buffer bufferPointer: UnsafeMutableRawBufferPointer,
+    private func makeCGContext(buffer bufferPointer: UnsafeMutableRawBufferPointer,
                                       bufferInfo: PixelBufferInfo) -> CGContext? {
         return CGContext(data: bufferPointer.baseAddress,
                          width: bufferInfo.width,
@@ -126,7 +126,7 @@ enum NormalizedImageDataConverter {
     // MARK: Supporting Factory Methods
 
     @MainActor
-    private static func makeImageRenderer(imageSize: CGSize) -> UIGraphicsImageRenderer {
+    private func makeImageRenderer(imageSize: CGSize) -> UIGraphicsImageRenderer {
         let format = UIGraphicsImageRendererFormat()
         format.scale = scale
         format.opaque = isOpaque
@@ -136,7 +136,7 @@ enum NormalizedImageDataConverter {
     }
 
     @MainActor
-    private static func makeImageRenderer<Content: View>(content: Content) -> ImageRenderer<Content> {
+    private func makeImageRenderer<Content: View>(content: Content) -> ImageRenderer<Content> {
         let renderer = ImageRenderer(content: content)
         renderer.scale = scale
         renderer.isOpaque = isOpaque

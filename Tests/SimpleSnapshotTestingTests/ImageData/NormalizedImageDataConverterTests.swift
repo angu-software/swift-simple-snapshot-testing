@@ -34,29 +34,22 @@ struct NormalizedImageDataConverterTests {
 
         let normalized = try #require(converter.makeNormalizedImageData(from: pngData))
 
-        #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
-                                                  width: 1,
-                                                  height: 1))
+        #expect(normalized == expectedNormalizedImageData())
     }
 
     @Test
     func whenGivenUIImage_itConvertsToNormalizedImageData() async throws {
         let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture()))
 
-        #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
-                                                  width: 1,
-                                                  height: 1))
+        #expect(normalized == expectedNormalizedImageData())
     }
 
     @Test
     func whenGivenUIImage_whenImageIsScaled_itTakesImageScaleIntoAccount() async throws {
-        let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture(color: .white,
-                                                                                           scale: 2)))
+        let scale: CGFloat = 2
+        let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture(scale: scale)))
 
-        #expect(normalized == NormalizedImageData(data: Data(repeating: 255,
-                                                             count: normalized.pixelBufferInfo.byteCount),
-                                                  width: 2,
-                                                  height: 2))
+        #expect(normalized == expectedNormalizedImageData(scale: 2))
     }
 
     @Test
@@ -68,9 +61,7 @@ struct NormalizedImageDataConverterTests {
 
         let normalized = converter.makeNormalizedImageData(from: rectView)
 
-        #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
-                                                  width: 1,
-                                                  height: 1))
+        #expect(normalized == expectedNormalizedImageData())
     }
 
     @Test
@@ -81,14 +72,26 @@ struct NormalizedImageDataConverterTests {
 
         let normalized = converter.makeNormalizedImageData(from: rectView)
 
-        #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
-                                                  width: 1,
-                                                  height: 1))
+        #expect(normalized == expectedNormalizedImageData())
     }
 
-    private func imageFixture(color: UIColor = .red, scale: CGFloat = 1) -> UIImage {
+    private func imageFixture(scale: CGFloat = 1) -> UIImage {
         return .fixture(size: CGSize(width: 1, height: 1),
                         scale: scale,
-                        color: color)
+                        color: .red)
+    }
+
+    private func makeExpectedImageData(scale: CGFloat = 1) -> Data {
+        let rgbaColorPixel: [UInt8] = [255, 0, 0, 255]
+
+        let pixel = Array(repeating: rgbaColorPixel, count: Int(scale * scale)).flatMap { $0 }
+
+        return Data(pixel)
+    }
+
+    private func expectedNormalizedImageData(scale: CGFloat = 1) -> NormalizedImageData {
+        return NormalizedImageData(data: makeExpectedImageData(scale: scale),
+                                   width: 1 * Int(scale),
+                                   height: 1 * Int(scale))
     }
 }

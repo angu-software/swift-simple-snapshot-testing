@@ -11,8 +11,13 @@ import Foundation
 
 extension NormalizedImageData {
 
-    init(data: Data, width: Int, height: Int) {
+    init(data: Data,
+         width: Int,
+         height: Int,
+         scale: Int) {
         self.init(data: data,
-                  pixelBufferInfo: PixelBufferInfo(width: width, height: height))
+                  pixelBufferInfo: PixelBufferInfo(width: width,
+                                                   height: height,
+                                                   scale: scale))
     }
 }

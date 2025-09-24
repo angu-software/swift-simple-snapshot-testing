@@ -49,10 +49,12 @@ extension NormalizedImageData {
 
     static func fixture(imageData: Data,
                         width: Int = 1,
-                        height: Int = 1) -> Self {
+                        height: Int = 1,
+                        scale: Int = 1) -> Self {
         return NormalizedImageData(data: imageData,
                                    pixelBufferInfo: PixelBufferInfo(width: width,
-                                                                    height: height))
+                                                                    height: height,
+                                                                    scale: scale))
     }
 
     @MainActor

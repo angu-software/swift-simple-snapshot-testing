@@ -18,23 +18,32 @@ struct NormalizedImageDataConverterTests {
 
     @Test
     func whenGivenNormalizedImageData_itConvertsToPNGDataAndBack() async throws {
-        let normalized = NormalizedImageData(data: Data([255, 0, 0, 255]),
-                                             width: 1,
-                                             height: 1)
+        let normalized = expectedNormalizedImageData()
 
         let pngData = try #require(converter.makePNGData(from: normalized))
 
-        let decoded = try #require(converter.makeNormalizedImageData(from: pngData))
+        let decoded = try #require(converter.makeNormalizedImageData(from: pngData, scale: 1))
         #expect(decoded == normalized)
     }
 
     @Test
-    func whenGivenPNGData_itConvertsToNormalizedImageData() async throws {
-        let pngData = try #require(imageFixture().pngData())
+    func whenGivenScaledPNGData_itConvertsToNormalizedImageData() async throws {
+        let scale = 2
+        let pngData = try #require(converter.makePNGData(from: expectedNormalizedImageData(scale: scale)))
 
-        let normalized = try #require(converter.makeNormalizedImageData(from: pngData))
+        let normalized = try #require(converter.makeNormalizedImageData(from: pngData, scale: scale))
 
-        #expect(normalized == expectedNormalizedImageData())
+        #expect(normalized == expectedNormalizedImageData(scale: scale))
+    }
+
+    @Test
+    func whenGivenScaledPNGData_itPreservesTheScaleInformation() async throws {
+        let scale = 2
+        let pngData = try #require(converter.makePNGData(from: expectedNormalizedImageData(scale: scale)))
+
+        let normalized = try #require(converter.makeNormalizedImageData(from: pngData, scale: scale))
+
+        #expect(normalized.pixelBufferInfo.scale == scale)
     }
 
     @Test
@@ -46,7 +55,7 @@ struct NormalizedImageDataConverterTests {
 
     @Test
     func whenGivenUIImage_whenImageIsScaled_itTakesImageScaleIntoAccount() async throws {
-        let scale: CGFloat = 2
+        let scale = 2
         let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture(scale: scale)))
 
         #expect(normalized == expectedNormalizedImageData(scale: 2))
@@ -59,14 +68,14 @@ struct NormalizedImageDataConverterTests {
                                                          height: 1)))
         rectView.backgroundColor = .red
 
-        let normalized = converter.makeNormalizedImageData(from: rectView, imageScale: 2)
+        let normalized = converter.makeNormalizedImageData(from: rectView, scale: 2)
 
         #expect(normalized == expectedNormalizedImageData(scale: 2))
     }
 
     @Test
     func whenGivenASwiftUIView_itConvertsToNormalizedImageData() async throws {
-        let scale: CGFloat = 2
+        let scale = 2
         let rectView = Rectangle()
             .fill(Color(red: 1, green: 0, blue: 0))
             .frame(width: 1, height: 1)
@@ -78,23 +87,24 @@ struct NormalizedImageDataConverterTests {
 
     // MARK: Test Support
 
-    private func imageFixture(scale: CGFloat = 1) -> UIImage {
+    private func imageFixture(scale: Int = 1) -> UIImage {
         return .fixture(size: CGSize(width: 1, height: 1),
-                        scale: scale,
+                        scale: CGFloat(scale),
                         color: .red)
     }
 
-    private func makeExpectedImageData(scale: CGFloat = 1) -> Data {
+    private func makeExpectedImageData(scale: Int) -> Data {
         let rgbaColorPixel: [UInt8] = [255, 0, 0, 255]
 
-        let pixel = Array(repeating: rgbaColorPixel, count: Int(scale * scale)).flatMap { $0 }
+        let pixel = Array(repeating: rgbaColorPixel, count: scale * scale).flatMap { $0 }
 
         return Data(pixel)
     }
 
-    private func expectedNormalizedImageData(scale: CGFloat = 1) -> NormalizedImageData {
+    private func expectedNormalizedImageData(scale: Int = 1) -> NormalizedImageData {
         return NormalizedImageData(data: makeExpectedImageData(scale: scale),
-                                   width: 1 * Int(scale),
-                                   height: 1 * Int(scale))
+                                   width: 1 * scale,
+                                   height: 1 * scale,
+                                   scale: scale)
     }
 }

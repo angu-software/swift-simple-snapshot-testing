@@ -17,6 +17,7 @@ struct NormalizedImageData: Equatable {
 struct PixelBufferInfo: Equatable {
     let width: Int
     let height: Int
+    let scale: Int
 
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)

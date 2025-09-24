@@ -52,21 +52,21 @@ final class NormalizedImageDataConverter {
     // MARK: Conversion to NormalizedImageData
 
     @MainActor
-    func makeNormalizedImageData<SwiftUIView: SwiftUI.View>(from view: SwiftUIView, scale: CGFloat) -> NormalizedImageData? {
+    func makeNormalizedImageData<SwiftUIView: SwiftUI.View>(from view: SwiftUIView, scale: Int) -> NormalizedImageData? {
         let renderer = makeImageRenderer(content: view, scale: scale)
 
         guard let cgImage = renderer.cgImage else {
             return nil
         }
 
-        return makeNormalizedImageData(from: cgImage)
+        return makeNormalizedImageData(cgImage: cgImage, scale: scale)
     }
 
     // TODO: make scale an Int
 
     @MainActor
-    func makeNormalizedImageData(from uiView: UIView, imageScale: CGFloat) -> NormalizedImageData? {
-        let renderer = makeImageRenderer(imageSize: uiView.bounds.size, scale: imageScale)
+    func makeNormalizedImageData(from uiView: UIView, scale: Int) -> NormalizedImageData? {
+        let renderer = makeImageRenderer(imageSize: uiView.bounds.size, scale: scale)
 
         let normalizedImage = renderer.image { context in
             uiView.layer.render(in: context.cgContext)
@@ -78,8 +78,9 @@ final class NormalizedImageDataConverter {
     @MainActor
     func makeNormalizedImageData(from uiImage: UIImage) -> NormalizedImageData? {
         let imageBounds = CGRect(origin: .zero, size: uiImage.size)
+        let scale = Int(uiImage.scale)
         let renderer = makeImageRenderer(imageSize: imageBounds.size,
-                                         scale: uiImage.scale)
+                                         scale: scale)
 
         let normalizedImage = renderer.image { context in
             uiImage.draw(in: imageBounds)
@@ -89,23 +90,25 @@ final class NormalizedImageDataConverter {
             return nil
         }
 
-        return makeNormalizedImageData(from: cgImage)
+        return makeNormalizedImageData(cgImage: cgImage,
+                                       scale: Int(scale))
     }
 
     // TODO: forward scale information to the buffer info to not loose that information
+    // TODO: name the methods labels correctly
 
     /// - Note: Assumes the `pngData` is @1x scale
-    func makeNormalizedImageData(from pngData: Data) -> NormalizedImageData? {
+    func makeNormalizedImageData(from pngData: Data, scale: Int) -> NormalizedImageData? {
         guard let imageSource = CGImageSourceCreateWithData(pngData as CFData, nil),
               let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else {
             return nil
         }
 
-        return makeNormalizedImageData(from: cgImage)
+        return makeNormalizedImageData(cgImage: cgImage, scale: scale)
     }
     
-    private func makeNormalizedImageData(from cgImage: CGImage) -> NormalizedImageData? {
-        let bufferInfo = PixelBufferInfo(width: cgImage.width, height: cgImage.height)
+    private func makeNormalizedImageData(cgImage: CGImage, scale: Int) -> NormalizedImageData? {
+        let bufferInfo = PixelBufferInfo(width: cgImage.width, height: cgImage.height, scale: scale)
         var rawData = Data(count: bufferInfo.byteCount)
 
         rawData.withUnsafeMutableBytes { bufferPointer in
@@ -133,9 +136,9 @@ final class NormalizedImageDataConverter {
     // MARK: Supporting Factory Methods
 
     @MainActor
-    private func makeImageRenderer(imageSize: CGSize, scale: CGFloat) -> UIGraphicsImageRenderer {
+    private func makeImageRenderer(imageSize: CGSize, scale: Int) -> UIGraphicsImageRenderer {
         let format = UIGraphicsImageRendererFormat()
-        format.scale = scale
+        format.scale = CGFloat(scale)
         format.opaque = isOpaque
 
         return UIGraphicsImageRenderer(size: imageSize,
@@ -143,9 +146,9 @@ final class NormalizedImageDataConverter {
     }
 
     @MainActor
-    private func makeImageRenderer<Content: View>(content: Content, scale: CGFloat) -> ImageRenderer<Content> {
+    private func makeImageRenderer<Content: View>(content: Content, scale: Int) -> ImageRenderer<Content> {
         let renderer = ImageRenderer(content: content)
-        renderer.scale = scale
+        renderer.scale = CGFloat(scale)
         renderer.isOpaque = isOpaque
 
         return renderer

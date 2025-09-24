@@ -59,9 +59,9 @@ struct NormalizedImageDataConverterTests {
                                                          height: 1)))
         rectView.backgroundColor = .red
 
-        let normalized = converter.makeNormalizedImageData(from: rectView)
+        let normalized = converter.makeNormalizedImageData(from: rectView, imageScale: 2)
 
-        #expect(normalized == expectedNormalizedImageData())
+        #expect(normalized == expectedNormalizedImageData(scale: 2))
     }
 
     @Test
@@ -74,6 +74,8 @@ struct NormalizedImageDataConverterTests {
 
         #expect(normalized == expectedNormalizedImageData())
     }
+
+    // MARK: Test Support
 
     private func imageFixture(scale: CGFloat = 1) -> UIImage {
         return .fixture(size: CGSize(width: 1, height: 1),

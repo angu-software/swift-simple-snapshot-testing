@@ -62,9 +62,11 @@ final class NormalizedImageDataConverter {
         return makeNormalizedImageData(from: cgImage)
     }
 
+    // TODO: make scale an Int
+
     @MainActor
-    func makeNormalizedImageData(from uiView: UIView) -> NormalizedImageData? {
-        let renderer = makeImageRenderer(imageSize: uiView.bounds.size, scale: 1)
+    func makeNormalizedImageData(from uiView: UIView, imageScale: CGFloat) -> NormalizedImageData? {
+        let renderer = makeImageRenderer(imageSize: uiView.bounds.size, scale: imageScale)
 
         let normalizedImage = renderer.image { context in
             uiView.layer.render(in: context.cgContext)
@@ -89,6 +91,8 @@ final class NormalizedImageDataConverter {
 
         return makeNormalizedImageData(from: cgImage)
     }
+
+    // TODO: forward scale information to the buffer info to not loose that information
 
     /// - Note: Assumes the `pngData` is @1x scale
     func makeNormalizedImageData(from pngData: Data) -> NormalizedImageData? {

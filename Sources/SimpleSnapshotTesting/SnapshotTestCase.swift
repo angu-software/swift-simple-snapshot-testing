@@ -29,9 +29,9 @@ struct SnapshotTestCase {
     }
 
     func evaluate<View: SwiftUI.View>(_ view: View) -> Result<Void, any Error> {
-
         do {
-            return try evaluateSnapshot(try snapshot(for: view))
+            try evaluateSnapshot(try snapshot(for: view))
+            return .success(())
         } catch {
             return .failure(error)
         }
@@ -40,7 +40,8 @@ struct SnapshotTestCase {
     @MainActor
     func evaluate<View: UIView>(_ view: View) -> Result<Void, any Error> {
         do {
-            return try evaluateSnapshot(try snapshot(for: view))
+            try evaluateSnapshot(try snapshot(for: view))
+            return .success(())
         } catch {
             return .failure(error)
         }
@@ -54,29 +55,36 @@ struct SnapshotTestCase {
         return try manager.snapshot(from: view)
     }
 
-    private func evaluateSnapshot(_ takenSnapshot: Snapshot) throws -> Result<Void, any Error>  {
+    private func evaluateSnapshot(_ takenSnapshot: Snapshot) throws {
         if isRecordingReference {
             try manager.saveSnapshot(takenSnapshot)
             throw EvaluationError.didRecordReference
         }
 
-        let referenceSnapshot = try manager.referenceSnapshot(from: takenSnapshot.filePath)
+        let referenceSnapshot = try referenceSnapshot(for: takenSnapshot)
 
         switch compare(takenSnapshot, with: referenceSnapshot) {
             case .matching:
-                return .success(())
+                return
             case .different:
-                let failureSnapshot = try manager.makeFailureSnapshot(taken: takenSnapshot,
-                                                                      reference: referenceSnapshot)
-                try manager.saveFailureSnapshot(failureSnapshot)
-
+                try recordFailure(takenSnapshot, referenceSnapshot)
                 throw EvaluationError.notMatchingReference
         }
+    }
+
+    private func referenceSnapshot(for snapshot: Snapshot) throws -> Snapshot {
+        return try manager.referenceSnapshot(from: snapshot.filePath)
     }
 
     private func compare(_ snapshot: Snapshot, with reference: Snapshot) -> SnapshotComparisonResult {
         return manager.compareSnapshot(snapshot,
                                        with: reference,
                                        precision: precision)
+    }
+
+    private func recordFailure(_ takenSnapshot: Snapshot, _ referenceSnapshot: Snapshot) throws {
+        let failureSnapshot = try manager.makeFailureSnapshot(taken: takenSnapshot,
+                                                              reference: referenceSnapshot)
+        try manager.saveFailureSnapshot(failureSnapshot)
     }
 }

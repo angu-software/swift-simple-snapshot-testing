@@ -53,4 +53,3 @@ extension SnapshotTestLocation {
                   testTag: testTag)
     }
 }
-

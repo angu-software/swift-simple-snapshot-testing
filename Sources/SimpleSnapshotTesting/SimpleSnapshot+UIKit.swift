@@ -20,9 +20,9 @@ public func evaluate<View: UIView>(_ view: View,
                                    column: Int = #column) {
 
     let sourceLocation = SnapshotTestLocation(testFunction: function,
-                                         testFilePath: filePath,
-                                         testFileID: fileID,
-                                         testTag: testTag)
+                                              testFilePath: filePath,
+                                              testFileID: fileID,
+                                              testTag: testTag)
 
     let testCase = SnapshotTestCase(isRecordingReference: record,
                                     sourceLocation: sourceLocation,

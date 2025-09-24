@@ -40,7 +40,7 @@ struct SnapshotImageRendererTests_UIKit {
 
     // MARK: Test DSL
 
-    private func makeSnapshotImage<UIKitView: UIView>(view: UIKitView) -> SnapshotImage? {
+    private func makeSnapshotImage<UIKitView: UIView>(view: UIKitView) -> UIImage? {
         let converter = NormalizedImageDataConverter()
         guard let imageData = converter.makeNormalizedImageData(view: view, scale: Int(defaultScale)) else {
             return nil

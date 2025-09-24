@@ -58,7 +58,7 @@ struct SnapshotImageRendererTests {
 
     // MARK: Test DSL
 
-    private func makeSnapshotImage<SwiftUIView: SwiftUI.View>(view: SwiftUIView) -> SnapshotImage? {
+    private func makeSnapshotImage<SwiftUIView: SwiftUI.View>(view: SwiftUIView) -> UIImage? {
         let converter = NormalizedImageDataConverter()
         guard let imageData = converter.makeNormalizedImageData(view: view, scale: Int(defaultScale)) else {
             return nil

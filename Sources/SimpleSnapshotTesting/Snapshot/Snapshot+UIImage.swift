@@ -9,7 +9,7 @@ import UIKit
 
 extension Snapshot {
 
-    var image: SnapshotImage? {
+    var image: UIImage? {
         return NormalizedImageDataConverter().makeUIImage(normalizedImageData: imageData)
     }
 

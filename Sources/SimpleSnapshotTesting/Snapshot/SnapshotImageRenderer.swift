@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-typealias SnapshotImage = UIImage
-
 @available(*, deprecated, message: "Will be replaced soon")
 enum SnapshotImageRenderer {
 
@@ -18,7 +16,7 @@ enum SnapshotImageRenderer {
     private static let diffAlpha: CGFloat = 0.75
 
     @MainActor
-    static func makeDiffImage(_ image1: SnapshotImage, _ image2: SnapshotImage) -> SnapshotImage? {
+    static func makeDiffImage(_ image1: UIImage, _ image2: UIImage) -> UIImage? {
         let size = makeCanvasSize(size1: image1.size, size2: image2.size)
 
         let renderer = UIGraphicsImageRenderer(size: size,

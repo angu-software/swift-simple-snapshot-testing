@@ -8,21 +8,29 @@
 import SwiftUI
 import Testing
 
+// TODO: inject SwiftTesting #_sourceLocation here as this method is build for this framework as it reports an issue
 @MainActor
 public func evaluate<View: SwiftUI.View>(_ view: View,
                                          testTag: String = "",
+                                         precision: Double = 1.0,
                                          record: Bool = false,
                                          function: StaticString = #function,
                                          filePath: StaticString = #filePath,
                                          fileID: StaticString = #fileID,
                                          line: Int = #line,
                                          column: Int = #column) {
-    switch evaluate(view,
-                    record: record,
-                    sourceLocation: SnapshotTestLocation(testFunction: function,
-                                                         testFilePath: filePath,
-                                                         testFileID: fileID,
-                                                         testTag: testTag)) {
+
+    let sourceLocation = SnapshotTestLocation(testFunction: function,
+                                         testFilePath: filePath,
+                                         testFileID: fileID,
+                                         testTag: testTag)
+
+    let testCase = SnapshotTestCase(isRecordingReference: record,
+                                    sourceLocation: sourceLocation,
+                                    precision: precision)
+    let testResult = testCase.evaluate(view)
+
+    switch testResult {
         case .success(()):
             break
         case let .failure(error):
@@ -35,36 +43,4 @@ public func evaluate<View: SwiftUI.View>(_ view: View,
     }
 }
 
-@MainActor
-func evaluate<View: SwiftUI.View>(_ view: View,
-                                  precision: Double = 1.0,
-                                  record: Bool,
-                                  sourceLocation: SnapshotTestLocation) -> Result<Void, any Error> {
-    let manager = SnapshotManager(testLocation: sourceLocation)
 
-    do {
-        let takenSnapshot = try manager.snapshot(from: view)
-
-        if record {
-            try manager.saveSnapshot(takenSnapshot)
-            throw EvaluationError.didRecordReference
-        }
-
-        let referenceSnapshot = try manager.referenceSnapshot(from: takenSnapshot.filePath)
-
-        switch manager.compareSnapshot(takenSnapshot,
-                                       with: referenceSnapshot,
-                                       precision: precision) {
-            case .matching:
-                return .success(())
-            case .different:
-                let failureSnapshot = try manager.makeFailureSnapshot(taken: takenSnapshot,
-                                                                      reference: referenceSnapshot)
-                try manager.saveFailureSnapshot(failureSnapshot)
-
-                throw EvaluationError.notMatchingReference
-        }
-    } catch {
-        return .failure(error)
-    }
-}

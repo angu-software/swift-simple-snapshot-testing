@@ -15,7 +15,7 @@ enum TestFixtures {
     static func image(named fileName: String) -> UIImage? {
         guard let url = Bundle.module.url(forResource: fileName, withExtension: "png"),
               let data = try? Data(contentsOf: url),
-              let image = UIImage(data: data, scale: SnapshotImageRenderer.defaultImageScale) else {
+              let image = UIImage(data: data, scale: DiffImageFactory.defaultImageScale) else {
             return nil
         }
 

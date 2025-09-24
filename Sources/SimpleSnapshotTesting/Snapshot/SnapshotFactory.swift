@@ -24,7 +24,7 @@ final class SnapshotFactory {
     private let dataConverter = NormalizedImageDataConverter()
 
     var viewScale: Int {
-        return Int(SnapshotImageRenderer.defaultImageScale)
+        return Int(DiffImageFactory.defaultImageScale)
     }
 
     init(fileManager: FileManaging, pathFactory: SnapshotFilePathFactory) {
@@ -57,7 +57,7 @@ final class SnapshotFactory {
         }
 
         let data = try fileManager.load(contentsOf: fileURL)
-        let scale = SnapshotImageRenderer.defaultImageScale
+        let scale = DiffImageFactory.defaultImageScale
         let snapshot =  Snapshot(pngData: data, // TODO: ensure the data is really png data from the loaded snapshot
                                  scale: scale,
                                  filePath: filePath)!

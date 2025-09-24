@@ -135,7 +135,7 @@ struct SimpleSnapshotTests_UIKit {
     }
 
     private func makePathFactory(testLocation: SnapshotTestLocation,
-                                 scale: CGFloat = SnapshotImageRenderer.defaultImageScale) -> SnapshotFilePathFactory {
+                                 scale: CGFloat = DiffImageFactory.defaultImageScale) -> SnapshotFilePathFactory {
         SnapshotFilePathFactory(testLocation: testLocation,
                                 deviceScale: scale)
     }

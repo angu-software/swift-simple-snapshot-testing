@@ -1,5 +1,5 @@
 //
-//  SnapshotImageRenderer.swift
+//  DiffImageFactory.swift
 //  SimpleSnapshotTesting
 //
 //  Created by Andreas Guenther on 30.12.24.
@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-@available(*, deprecated, message: "Will be replaced soon")
-enum SnapshotImageRenderer {
+enum DiffImageFactory {
 
     static let defaultImageScale: CGFloat = 2
 

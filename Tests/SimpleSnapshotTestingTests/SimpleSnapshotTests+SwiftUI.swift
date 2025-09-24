@@ -123,6 +123,6 @@ struct SimpleSnapshotTests_SwiftUI {
 
     private func makePathFactory(testLocation: SnapshotTestLocation) -> SnapshotFilePathFactory {
         return SnapshotFilePathFactory(testLocation: testLocation,
-                                       deviceScale: SnapshotImageRenderer.defaultImageScale)
+                                       deviceScale: DiffImageFactory.defaultImageScale)
     }
 }

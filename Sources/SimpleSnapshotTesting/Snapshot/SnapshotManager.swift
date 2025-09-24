@@ -29,7 +29,7 @@ final class SnapshotManager {
          fileManager: FileManaging = .default) {
         self.testLocation = testLocation
         self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation,
-                                                   deviceScale: SnapshotImageRenderer.defaultImageScale)
+                                                   deviceScale: DiffImageFactory.defaultImageScale)
         self.fileManager = fileManager
         self.snapshotFactory = SnapshotFactory(fileManager: fileManager, pathFactory: pathFactory)
     }
@@ -79,7 +79,7 @@ final class SnapshotManager {
 
         guard let takenImage = taken.image,
               let referenceImage = reference.image,
-              let diffImage = SnapshotImageRenderer.makeDiffImage(takenImage,
+              let diffImage = DiffImageFactory.makeDiffImage(takenImage,
                                                                   referenceImage),
               let diffSnapshot = Snapshot(image: diffImage,
                                           filePath: pathFactory.failureDiffSnapshotFilePath) else {

@@ -45,8 +45,7 @@ final class SnapshotManager {
     }
 
     func saveSnapshot(_ snapshot: Snapshot) throws {
-        guard snapshot.isValid,
-            let pngData = snapshot.pngData else {
+        guard let pngData = snapshot.pngData else {
             throw Error.malformedSnapshotImage
         }
 

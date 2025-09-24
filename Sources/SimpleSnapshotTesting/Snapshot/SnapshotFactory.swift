@@ -58,9 +58,6 @@ final class SnapshotFactory {
         let snapshot =  Snapshot(pngData: data, // TODO: ensure the data is really png data from the loaded snapshot
                                  scale: scale,
                                  filePath: filePath)!
-        guard snapshot.isValid else {
-            throw Error.failedToLoadSnapshotFromFile
-        }
 
         return snapshot
     }

@@ -21,6 +21,11 @@ final class SnapshotFactory {
 
     private let fileManager: FileManaging
     private let pathFactory: SnapshotFilePathFactory
+    private let dataConverter = NormalizedImageDataConverter()
+
+    var viewScale: Int {
+        return Int(SnapshotImageRenderer.defaultImageScale)
+    }
 
     init(fileManager: FileManaging, pathFactory: SnapshotFilePathFactory) {
         self.fileManager = fileManager
@@ -28,23 +33,21 @@ final class SnapshotFactory {
     }
 
     func snapshot<UIKitView: UIView>(from view: UIKitView) throws -> Snapshot {
-        guard let imageData = SnapshotImageRenderer.makePNGData(view: view) else {
+        guard let imageData = dataConverter.makeNormalizedImageData(view: view, scale: viewScale) else {
             throw Error.snapshotImageRenderingFailed
         }
 
-        return Snapshot(pngData: imageData,
-                        scale: SnapshotImageRenderer.defaultImageScale,
-                        filePath: pathFactory.referenceSnapshotFilePath)!
+        return Snapshot(imageData: imageData,
+                        filePath: pathFactory.referenceSnapshotFilePath)
     }
 
     func snapshot<SwiftUIView: SwiftUI.View>(from view: SwiftUIView) throws -> Snapshot {
-        guard let imageData = SnapshotImageRenderer.makePNGData(view: view) else {
+        guard let imageData = dataConverter.makeNormalizedImageData(view: view, scale: viewScale) else {
             throw Error.snapshotImageRenderingFailed
         }
 
-        return Snapshot(pngData: imageData,
-                        scale: SnapshotImageRenderer.defaultImageScale,
-                        filePath: pathFactory.referenceSnapshotFilePath)!
+        return Snapshot(imageData: imageData,
+                        filePath: pathFactory.referenceSnapshotFilePath)
     }
 
     func referenceSnapshot(from filePath: SnapshotFilePath) throws -> Snapshot {

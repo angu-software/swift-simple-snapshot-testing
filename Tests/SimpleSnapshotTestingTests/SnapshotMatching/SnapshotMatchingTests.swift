@@ -13,9 +13,7 @@ struct SnapshotMatchingTests {
 
     @Test
     func whenSnapshotsMatching_itReturnsTrue() async throws {
-        let snapshot1 = Snapshot(pngData: .fixture(),
-                                 scale: 1,
-                                 filePath: .dummy())!
+        let snapshot1 = Snapshot.dummy
 
         #expect(snapshot1.matches(snapshot1, precision: 1.0))
     }

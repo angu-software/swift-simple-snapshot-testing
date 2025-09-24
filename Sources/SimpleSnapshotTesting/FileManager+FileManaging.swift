@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension FileManaging where Self == Foundation.FileManager {
     static var `default`: Self {
@@ -48,7 +49,7 @@ extension FileManager: FileManaging {
 
 extension URL {
 
-    fileprivate var filePath: String {
+    var filePath: String {
         return path(percentEncoded: false)
     }
 }

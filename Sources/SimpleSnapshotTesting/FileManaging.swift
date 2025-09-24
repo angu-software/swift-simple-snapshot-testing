@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol FileManaging {
     func isDirectoryExisting(at directoryURL: URL) -> Bool

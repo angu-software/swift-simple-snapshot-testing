@@ -18,28 +18,26 @@ struct NormalizedImageDataConverterTests {
 
     @Test
     func whenGivenNormalizedImageData_itConvertsToPNGDataAndBack() async throws {
-        let normalized = expectedNormalizedImageData()
-
-        let pngData = try #require(converter.makePNGImageData(normalizedImageData: normalized))
+        let pngData = try #require(converter.makePNGImageData(normalizedImageData: .fixture()))
 
         let decoded = try #require(converter.makeNormalizedImageData(pngImageData: pngData))
-        #expect(decoded == normalized)
+        #expect(decoded == .fixture())
     }
 
     @Test
     func whenGivenScaledPNGData_itConvertsToNormalizedImageData() async throws {
         let scale = 2
-        let pngImageData = try #require(converter.makePNGImageData(normalizedImageData: expectedNormalizedImageData(scale: scale)))
+        let pngImageData = try #require(converter.makePNGImageData(normalizedImageData: .fixture(scale: scale)))
 
         let normalized = try #require(converter.makeNormalizedImageData(pngImageData: pngImageData))
 
-        #expect(normalized == expectedNormalizedImageData(scale: scale))
+        #expect(normalized == .fixture(scale: scale))
     }
 
     @Test
     func whenGivenScaledPNGData_itPreservesTheScaleInformation() async throws {
         let scale = 2
-        let pngImageData = try #require(converter.makePNGImageData(normalizedImageData: expectedNormalizedImageData(scale: scale)))
+        let pngImageData = try #require(converter.makePNGImageData(normalizedImageData: .fixture(scale: scale)))
 
         let normalized = try #require(converter.makeNormalizedImageData(pngImageData: pngImageData))
 
@@ -50,7 +48,7 @@ struct NormalizedImageDataConverterTests {
     func whenGivenUIImage_itConvertsToNormalizedImageData() async throws {
         let normalized = try #require(converter.makeNormalizedImageData(uiImage: imageFixture()))
 
-        #expect(normalized == expectedNormalizedImageData())
+        #expect(normalized == .fixture())
     }
 
     @Test
@@ -58,7 +56,7 @@ struct NormalizedImageDataConverterTests {
         let scale = 2
         let normalized = try #require(converter.makeNormalizedImageData(uiImage: imageFixture(scale: scale)))
 
-        #expect(normalized == expectedNormalizedImageData(scale: 2))
+        #expect(normalized == .fixture(scale: 2))
     }
 
     @Test
@@ -70,7 +68,7 @@ struct NormalizedImageDataConverterTests {
 
         let normalized = converter.makeNormalizedImageData(view: rectView, scale: 2)
 
-        #expect(normalized == expectedNormalizedImageData(scale: 2))
+        #expect(normalized == .fixture(scale: 2))
     }
 
     @Test
@@ -82,14 +80,12 @@ struct NormalizedImageDataConverterTests {
 
         let normalized = converter.makeNormalizedImageData(view: rectView, scale: scale)
 
-        #expect(normalized == expectedNormalizedImageData(scale: scale))
+        #expect(normalized == .fixture(scale: scale))
     }
 
     @Test
     func whenConvertingToUIView_itSizesUIImageCorrectly() async throws {
-        let normalizedData = expectedNormalizedImageData(scale: 3)
-
-        let uiImage = try #require(converter.makeUIImage(normalizedImageData: normalizedData))
+        let uiImage = try #require(converter.makeUIImage(normalizedImageData: .fixture(scale: 3)))
 
         #expect(uiImage.scale == 3)
         #expect(uiImage.size == CGSize(width: 1, height: 1))
@@ -101,20 +97,5 @@ struct NormalizedImageDataConverterTests {
         return .fixture(size: CGSize(width: 1, height: 1),
                         scale: CGFloat(scale),
                         color: .red)
-    }
-
-    private func makeExpectedImageData(scale: Int) -> Data {
-        let rgbaColorPixel: [UInt8] = [255, 0, 0, 255]
-
-        let pixel = Array(repeating: rgbaColorPixel, count: scale * scale).flatMap { $0 }
-
-        return Data(pixel)
-    }
-
-    private func expectedNormalizedImageData(scale: Int = 1) -> NormalizedImageData {
-        return NormalizedImageData(data: makeExpectedImageData(scale: scale),
-                                   width: 1 * scale,
-                                   height: 1 * scale,
-                                   scale: scale)
     }
 }

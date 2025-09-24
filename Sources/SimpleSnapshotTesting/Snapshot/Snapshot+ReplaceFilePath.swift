@@ -9,8 +9,7 @@
 extension Snapshot {
 
     func with(filePath: SnapshotFilePath) -> Self {
-        return Self(pngData: pngData!,
-                    scale: scale,
-                    filePath: filePath)!
+        return Self(imageData: imageData,
+                    filePath: filePath)
     }
 }

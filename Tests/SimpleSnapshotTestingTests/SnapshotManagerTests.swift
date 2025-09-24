@@ -140,7 +140,7 @@ struct SnapshotManagerTests {
         let orignialSnap = refSnap.with(filePath: pathFactory.failureOriginalSnapshotFilePath)
         let failedSnap = takenSnap.with(filePath: pathFactory.failureFailedSnapshotFilePath)
         let diffSnap = Snapshot(image: diffImage,
-                                imageFilePath: pathFactory.failureDiffSnapshotFilePath)
+                                filePath: pathFactory.failureDiffSnapshotFilePath)
 
         let failureSnapshot = try manager.makeFailureSnapshot(taken: takenSnap, reference: refSnap)
 

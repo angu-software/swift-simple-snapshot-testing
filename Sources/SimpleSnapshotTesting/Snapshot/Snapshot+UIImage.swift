@@ -13,15 +13,14 @@ extension Snapshot {
         return NormalizedImageDataConverter().makeUIImage(normalizedImageData: imageData)
     }
 
-    @available(*, deprecated, message: "Use Snapshot(imageData:filePath:) instead")
+    @MainActor
     init?(image: UIImage,
-          imageFilePath: SnapshotFilePath) {
-        guard let pngData = SnapshotImageRenderer.makePNGData(image: image) else {
+          filePath: SnapshotFilePath) {
+        guard let imageData = NormalizedImageDataConverter().makeNormalizedImageData(uiImage: image) else {
             return nil
         }
 
-        self.init(pngData: pngData,
-                  scale: image.scale,
-                  filePath: imageFilePath)
+        self.init(imageData: imageData,
+                  filePath: filePath)
     }
 }

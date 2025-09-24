@@ -80,7 +80,7 @@ final class SnapshotManager {
               let diffImage = SnapshotImageRenderer.makeDiffImage(takenImage,
                                                                   referenceImage),
               let diffSnapshot = Snapshot(image: diffImage,
-                                          imageFilePath: pathFactory.failureDiffSnapshotFilePath) else {
+                                          filePath: pathFactory.failureDiffSnapshotFilePath) else {
             throw Error.malformedSnapshotImage
         }
 

@@ -57,7 +57,7 @@ extension NormalizedImageData {
 
     @MainActor
     static func fixture(uiImage: UIImage) -> Self? {
-        return NormalizedImageDataConverter(scale: uiImage.scale).makeNormalizedImageData(from: uiImage)
+        return NormalizedImageDataConverter().makeNormalizedImageData(from: uiImage)
     }
 }
 

@@ -48,14 +48,15 @@ struct NormalizedImageDataConverterTests {
                                                   height: 1))
     }
 
-    // Comparing 1x with 2x image should not be equal
     @Test
-    func whenGivenUIImage_whenImageIsScaled_itConvertsToNormalizedImageData() async throws {
-        let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture(scale: 3)))
+    func whenGivenUIImage_whenImageIsScaled_itTakesImageScaleIntoAccount() async throws {
+        let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture(color: .white,
+                                                                                           scale: 2)))
 
-        #expect(normalized == NormalizedImageData(data: Data([255, 0, 0, 255]),
-                                                  width: 1,
-                                                  height: 1))
+        #expect(normalized == NormalizedImageData(data: Data(repeating: 255,
+                                                             count: normalized.pixelBufferInfo.byteCount),
+                                                  width: 2,
+                                                  height: 2))
     }
 
     @Test
@@ -85,9 +86,9 @@ struct NormalizedImageDataConverterTests {
                                                   height: 1))
     }
 
-    private func imageFixture(scale: CGFloat = 1) -> UIImage {
+    private func imageFixture(color: UIColor = .red, scale: CGFloat = 1) -> UIImage {
         return .fixture(size: CGSize(width: 1, height: 1),
                         scale: scale,
-                        color: .red)
+                        color: color)
     }
 }

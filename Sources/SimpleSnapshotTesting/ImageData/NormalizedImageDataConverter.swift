@@ -10,15 +10,11 @@ import UIKit
 
 final class NormalizedImageDataConverter {
 
-    private let scale: CGFloat
     private let isOpaque = false
-
-    init(scale: CGFloat = 1) {
-        self.scale = scale
-    }
 
     // MARK: Conversions from NormalizedImageData
 
+    // TODO: account for scale
     func makeCGImage(from normalizedData: NormalizedImageData) -> CGImage? {
         guard let dataProvider = CGDataProvider(data: normalizedData.data as CFData) else {
             return nil
@@ -39,6 +35,7 @@ final class NormalizedImageDataConverter {
                        intent: .defaultIntent)
     }
 
+    // TODO: generate image with correct scale
     func makeUIImage(from normalizedData: NormalizedImageData) -> UIImage? {
         guard let cgImage = makeCGImage(from: normalizedData) else {
             return nil
@@ -47,6 +44,7 @@ final class NormalizedImageDataConverter {
         return UIImage(cgImage: cgImage)
     }
 
+    // TODO: account for scale of the Data
     func makePNGData(from normalizedData: NormalizedImageData) -> Data? {
         return makeUIImage(from: normalizedData)?.pngData()
     }
@@ -55,7 +53,7 @@ final class NormalizedImageDataConverter {
 
     @MainActor
     func makeNormalizedImageData<SwiftUIView: SwiftUI.View>(from view: SwiftUIView) -> NormalizedImageData? {
-        let renderer = makeImageRenderer(content: view)
+        let renderer = makeImageRenderer(content: view, scale: 1)
 
         guard let cgImage = renderer.cgImage else {
             return nil
@@ -66,7 +64,7 @@ final class NormalizedImageDataConverter {
 
     @MainActor
     func makeNormalizedImageData(from uiView: UIView) -> NormalizedImageData? {
-        let renderer = makeImageRenderer(imageSize: uiView.bounds.size)
+        let renderer = makeImageRenderer(imageSize: uiView.bounds.size, scale: 1)
 
         let normalizedImage = renderer.image { context in
             uiView.layer.render(in: context.cgContext)
@@ -78,7 +76,8 @@ final class NormalizedImageDataConverter {
     @MainActor
     func makeNormalizedImageData(from uiImage: UIImage) -> NormalizedImageData? {
         let imageBounds = CGRect(origin: .zero, size: uiImage.size)
-        let renderer = makeImageRenderer(imageSize: imageBounds.size)
+        let renderer = makeImageRenderer(imageSize: imageBounds.size,
+                                         scale: uiImage.scale)
 
         let normalizedImage = renderer.image { context in
             uiImage.draw(in: imageBounds)
@@ -130,7 +129,7 @@ final class NormalizedImageDataConverter {
     // MARK: Supporting Factory Methods
 
     @MainActor
-    private func makeImageRenderer(imageSize: CGSize) -> UIGraphicsImageRenderer {
+    private func makeImageRenderer(imageSize: CGSize, scale: CGFloat) -> UIGraphicsImageRenderer {
         let format = UIGraphicsImageRendererFormat()
         format.scale = scale
         format.opaque = isOpaque
@@ -140,7 +139,7 @@ final class NormalizedImageDataConverter {
     }
 
     @MainActor
-    private func makeImageRenderer<Content: View>(content: Content) -> ImageRenderer<Content> {
+    private func makeImageRenderer<Content: View>(content: Content, scale: CGFloat) -> ImageRenderer<Content> {
         let renderer = ImageRenderer(content: content)
         renderer.scale = scale
         renderer.isOpaque = isOpaque

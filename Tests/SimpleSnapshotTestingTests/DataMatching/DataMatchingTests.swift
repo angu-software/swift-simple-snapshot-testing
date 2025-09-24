@@ -17,7 +17,7 @@ struct DataMatchingTests {
         let data1 = Data([1])
         let data2 = Data([1])
 
-        #expect(data1.matches(data2, precision: 1.0))
+        #expect(data1.isMatching(data2, precision: 1.0))
     }
 
     @Test
@@ -25,7 +25,7 @@ struct DataMatchingTests {
         let data1 = Data([1, 2])
         let data2 = Data([1, 1])
 
-        #expect(data1.matches(data2, precision: 0.5))
+        #expect(data1.isMatching(data2, precision: 0.5))
     }
 
     @Test
@@ -33,7 +33,7 @@ struct DataMatchingTests {
         let data1 = Data([1, 2, 2, 2])
         let data2 = Data([1, 1, 1, 1])
 
-        #expect(data1.matches(data2, precision: 0.5) == false)
+        #expect(data1.isMatching(data2, precision: 0.5) == false)
     }
 
     @Test
@@ -41,6 +41,6 @@ struct DataMatchingTests {
         let data1 = Data([1, 2, 2, 2])
         let data2 = Data([1, 1])
 
-        #expect(data1.matches(data2, precision: 0.0) == false)
+        #expect(data1.isMatching(data2, precision: 0.0) == false)
     }
 }

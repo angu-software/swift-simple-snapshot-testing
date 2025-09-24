@@ -9,7 +9,7 @@ import Foundation
 
 extension Data {
 
-    func matches(_ other: Data, precision: Double) -> Bool {
+    func isMatching(_ other: Data, precision: Double) -> Bool {
         guard count == other.count else {
             return false
         }

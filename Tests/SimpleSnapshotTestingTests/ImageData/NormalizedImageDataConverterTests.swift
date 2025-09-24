@@ -48,6 +48,7 @@ struct NormalizedImageDataConverterTests {
                                                   height: 1))
     }
 
+    // Comparing 1x with 2x image should not be equal
     @Test
     func whenGivenUIImage_whenImageIsScaled_itConvertsToNormalizedImageData() async throws {
         let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture(scale: 3)))

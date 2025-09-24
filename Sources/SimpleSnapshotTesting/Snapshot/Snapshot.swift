@@ -19,6 +19,6 @@ struct Snapshot: Equatable {
 extension Snapshot {
 
     func matches(_ other: Self, precision: Double) -> Bool {
-        return pngData.matches(other.pngData, precision: precision)
+        return pngData.isMatching(other.pngData, precision: precision)
     }
 }

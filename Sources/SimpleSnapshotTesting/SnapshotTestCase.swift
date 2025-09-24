@@ -12,7 +12,7 @@ import UIKit
 @MainActor
 struct SnapshotTestCase {
 
-    let isRecordingReference: Bool
+    var isRecordingReference: Bool
     let sourceLocation: SnapshotTestLocation
     let precision: Double
 

@@ -9,5 +9,5 @@ import Foundation
 
 public enum EvaluationError: Swift.Error {
     case didRecordReference
-    case notMatchingReference
+    case notMatchingReference // TODO: rename Snapshot did not match reference
 }

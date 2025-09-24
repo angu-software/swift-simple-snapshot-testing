@@ -14,6 +14,8 @@ import Testing
 @Suite(.tags(.acceptanceTest))
 struct SnapshotTestCaseTests {
 
+    // MARK: Recording Reference
+
     @Test
     func whenRecordingReference_itThrowsDidRecordReferenceError() async throws {
         let fileManager = FileManagerDouble()
@@ -31,30 +33,60 @@ struct SnapshotTestCaseTests {
     }
 
     @Test
-    func should_save_reference_image_when_recording_is_set() async throws {
-        withKnownIssue() {
-            evaluate(Rectangle(), record: true)
-        }
+    func whenRecordingReference_itStoresTheReferenceImageInFileSystem() async throws {
+        let fileManager = FileManagerDouble()
+        let testCase = SnapshotTestCase(isRecordingReference: true,
+                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
+                                                                             testFilePath: "SnapshotTest/TestCase.swift",
+                                                                             testFileID: "SnapshotTest/TestCase.swift",
+                                                                             testTag: ""),
+                                        precision: 0.0,
+                                        fileManager: fileManager)
 
-        #expect(
-            fileExists(at: makePathFactory(testLocation: makeLocation()).referenceSnapshotFilePath)
-        )
-        
-        removeSnapshotFolder()
+        try? testCase.evaluate(Rectangle()).get()
+
+        #expect(fileManager.writtenData.isEmpty == false)
+    }
+
+    // MARK: Comparing Snapshot
+
+    @Test
+    func whenComparingSnapshot_whenReferenceMatches_itThrowsNoError() async throws {
+        let fileManager = FileManagerDouble()
+        var testCase = SnapshotTestCase(isRecordingReference: true,
+                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
+                                                                             testFilePath: "SnapshotTest/TestCase.swift",
+                                                                             testFileID: "SnapshotTest/TestCase.swift",
+                                                                             testTag: ""),
+                                        precision: 0.0,
+                                        fileManager: fileManager)
+        try? testCase.evaluate(Rectangle()).get()
+        fileManager.stubbedFileData = fileManager.writtenData
+        testCase.isRecordingReference = false
+
+        #expect(try testCase.evaluate(Rectangle()).get() == ())
     }
 
     @Test
-    func should_fail_when_view_snapshot_not_matching_reference() async throws {
-        record(Rectangle())
+    func whenComparingSnapshot_whenReferenceNotMatching_itThrowsNotMatchingError() async throws {
+        let fileManager = FileManagerDouble()
+        var testCase = SnapshotTestCase(isRecordingReference: true,
+                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
+                                                                             testFilePath: "SnapshotTest/TestCase.swift",
+                                                                             testFileID: "SnapshotTest/TestCase.swift",
+                                                                             testTag: ""),
+                                        precision: 0.0,
+                                        fileManager: fileManager)
+        try? testCase.evaluate(Rectangle()).get()
+        fileManager.stubbedFileData = fileManager.writtenData
+        testCase.isRecordingReference = false
 
-        withKnownIssue {
-            evaluate(Text("Hello"))
-        } matching: { issue in
-            issue.error as? EvaluationError == .notMatchingReference
+        #expect(throws: EvaluationError.notMatchingReference) {
+            try testCase.evaluate(Text("Hello")).get()
         }
-
-        removeSnapshotFolder()
     }
+
+    // TODO: reference does not exist
 
     @Test
     func should_save_snapshot_diff_artifacts_when_snapshot_not_matching() {
@@ -68,16 +100,6 @@ struct SnapshotTestCaseTests {
         #expect(fileExists(at: pathFactory.failureDiffSnapshotFilePath))
         #expect(fileExists(at: pathFactory.failureFailedSnapshotFilePath))
         #expect(fileExists(at: pathFactory.failureOriginalSnapshotFilePath))
-
-        removeSnapshotFolder()
-    }
-
-    @Test()
-    func should_pass_test_if_snapshot_matches_reference_image() async throws {
-        let view = Rectangle()
-        record(view)
-
-        evaluate(view)
 
         removeSnapshotFolder()
     }

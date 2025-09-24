@@ -17,8 +17,27 @@ struct RGBAPixel {
     }
 
     init(color: UIColor, scale: Int) {
-        let rgbaColor: [UInt8] = [255, 0, 0, 255]
+        let rgbaColor = color.rgbaBytes
 
         self.bytes = Array(repeating: rgbaColor, count: scale * scale).flatMap { $0 }
+    }
+}
+
+extension UIColor {
+
+    fileprivate var rgbaBytes: [UInt8] {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+
+        self.getRed(&r, green: &g, blue: &b, alpha: &a)
+
+        return [
+            255 * UInt8(r),
+            255 * UInt8(g),
+            255 * UInt8(b),
+            255 * UInt8(a)
+        ]
     }
 }

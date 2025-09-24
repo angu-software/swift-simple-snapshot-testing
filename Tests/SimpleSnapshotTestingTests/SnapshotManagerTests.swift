@@ -61,8 +61,7 @@ struct SnapshotManagerTests {
 
     @Test
     func should_throw_error_when_image_conversion_to_data_fails() async throws {
-        let brokenImage = SnapshotImageData.fixture(size: .zero)
-        let brokenSnapshot = Snapshot.fixture(imageData: brokenImage)
+        let brokenSnapshot = Snapshot.fixture(imageData: .fixture(size: .zero))
 
         #expect(throws: SnapshotManager.Error.malformedSnapshotImage, performing: {
             try manager.saveSnapshot(brokenSnapshot)
@@ -71,7 +70,7 @@ struct SnapshotManagerTests {
 
     @Test
     func should_create_directory_if_not_existing_before_saving_snapshot() async throws {
-        let snapshot = Snapshot.fixture(imageFilePath: pathFactory.referenceSnapshotFilePath)
+        let snapshot = Snapshot.fixture(filePath: pathFactory.referenceSnapshotFilePath)
         try manager.saveSnapshot(snapshot)
 
         #expect(fileManager.createdDirectories == [snapshot.filePath.directoryPath])
@@ -151,9 +150,9 @@ struct SnapshotManagerTests {
 
     @Test
     func should_create_diff_dir_when_saving_failing_snapshot_artifacts() throws {
-        let failureSnap = FailureSnapshot(original: .fixture(imageFilePath: pathFactory.failureOriginalSnapshotFilePath),
-                                          failed: .fixture(imageFilePath: pathFactory.failureFailedSnapshotFilePath),
-                                          diff: .fixture(imageFilePath: pathFactory.failureDiffSnapshotFilePath))
+        let failureSnap = FailureSnapshot(original: .fixture(filePath: pathFactory.failureOriginalSnapshotFilePath),
+                                          failed: .fixture(filePath: pathFactory.failureFailedSnapshotFilePath),
+                                          diff: .fixture(filePath: pathFactory.failureDiffSnapshotFilePath))
 
         try manager.saveFailureSnapshot(failureSnap)
 
@@ -162,9 +161,9 @@ struct SnapshotManagerTests {
 
     @Test
     func should_save_failure_diff_artifacts_on_filesystem() throws {
-        let original = Snapshot.fixture(imageFilePath: pathFactory.failureOriginalSnapshotFilePath)
-        let failed = Snapshot.fixture(imageFilePath: pathFactory.failureFailedSnapshotFilePath)
-        let diff = Snapshot.fixture(imageFilePath: pathFactory.failureDiffSnapshotFilePath)
+        let original = Snapshot.fixture(filePath: pathFactory.failureOriginalSnapshotFilePath)
+        let failed = Snapshot.fixture(filePath: pathFactory.failureFailedSnapshotFilePath)
+        let diff = Snapshot.fixture(filePath: pathFactory.failureDiffSnapshotFilePath)
         let failureSnap = FailureSnapshot(original: original,
                                           failed: failed,
                                           diff: diff)

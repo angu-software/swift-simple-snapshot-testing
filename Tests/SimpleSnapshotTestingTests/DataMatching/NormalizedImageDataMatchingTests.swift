@@ -14,17 +14,15 @@ struct NormalizedImageDataMatchingTests {
 
     @Test
     func whenNormalizedImageDataIsIdentical_itMatches() async throws {
-        let data1 = NormalizedImageData.fixture(imageData: makeImageDataFixture())
+        let data1 = NormalizedImageData.fixture()
 
         #expect(data1.isMatching(data1, precision: 1.0))
     }
 
     @Test
     func whenDataIsEqual_whenBufferInfoDiffers_itDoesNotMatch() async throws {
-        let imageData = makeImageDataFixture()
-        let data1 = NormalizedImageData.fixture(imageData: imageData)
-        let data2 = NormalizedImageData.fixture(imageData: imageData,
-                                                height: 2)
+        let data1 = NormalizedImageData.fixture()
+        let data2 = NormalizedImageData.fixture(size: CGSize(width: 1, height: 2))
 
         #expect(data1.isMatching(data2, precision: 0.0) == false)
     }
@@ -37,25 +35,11 @@ struct NormalizedImageDataMatchingTests {
 
         #expect(data1.isMatching(data2, precision: 0.0) == false)
     }
-
-    private func makeImageDataFixture() -> Data {
-        return Data([0, 255, 0, 255])
-    }
 }
 
 import UIKit
 
 extension NormalizedImageData {
-
-    static func fixture(imageData: Data,
-                        width: Int = 1,
-                        height: Int = 1,
-                        scale: Int = 1) -> Self {
-        return NormalizedImageData(data: imageData,
-                                   pixelBufferInfo: PixelBufferInfo(width: width,
-                                                                    height: height,
-                                                                    scale: scale))
-    }
 
     @MainActor
     static func fixture(uiImage: UIImage) -> Self? {

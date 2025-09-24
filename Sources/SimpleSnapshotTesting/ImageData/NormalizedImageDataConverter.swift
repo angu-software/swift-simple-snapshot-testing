@@ -10,19 +10,22 @@ import UIKit
 
 final class NormalizedImageDataConverter {
 
+    typealias PNGImageData = (data: Data, scale: Int)
+    typealias CGImageData = (cgImage: CGImage, scale: Int)
+
     private let isOpaque = false
 
     // MARK: Conversions from NormalizedImageData
 
     // TODO: account for scale
-    func makeCGImage(from normalizedData: NormalizedImageData) -> CGImage? {
+    func makeCGImage(from normalizedData: NormalizedImageData) -> CGImageData? {
         guard let dataProvider = CGDataProvider(data: normalizedData.data as CFData) else {
             return nil
         }
 
         let pixelBufferInfo = normalizedData.pixelBufferInfo
 
-        return CGImage(width: pixelBufferInfo.width,
+        guard let cgImage = CGImage(width: pixelBufferInfo.width,
                        height: pixelBufferInfo.height,
                        bitsPerComponent: pixelBufferInfo.bitsPerComponent,
                        bitsPerPixel: pixelBufferInfo.bitsPerPixel,
@@ -32,7 +35,11 @@ final class NormalizedImageDataConverter {
                        provider: dataProvider,
                        decode: nil,
                        shouldInterpolate: false,
-                       intent: .defaultIntent)
+                                    intent: .defaultIntent) else {
+            return nil
+        }
+
+        return (cgImage, normalizedData.pixelBufferInfo.scale)
     }
 
     // TODO: generate image with correct scale
@@ -41,12 +48,18 @@ final class NormalizedImageDataConverter {
             return nil
         }
 
-        return UIImage(cgImage: cgImage)
+        return UIImage(cgImage: cgImage.cgImage,
+                       scale: CGFloat(cgImage.scale),
+                       orientation: .up)
     }
 
-    // TODO: account for scale of the Data
-    func makePNGData(from normalizedData: NormalizedImageData) -> Data? {
-        return makeUIImage(from: normalizedData)?.pngData()
+    func makePNGImageData(from normalizedData: NormalizedImageData) -> PNGImageData? {
+        guard let uiImage = makeUIImage(from: normalizedData),
+              let data = uiImage.pngData()else {
+            return nil
+        }
+
+        return (data, Int(uiImage.scale))
     }
 
     // MARK: Conversion to NormalizedImageData
@@ -94,19 +107,25 @@ final class NormalizedImageDataConverter {
                                        scale: Int(scale))
     }
 
-    // TODO: forward scale information to the buffer info to not loose that information
     // TODO: name the methods labels correctly
 
-    /// - Note: Assumes the `pngData` is @1x scale
+    func makeNormalizedImageData(pngImageData: PNGImageData) -> NormalizedImageData? {
+        return makeNormalizedImageData(from: pngImageData.data, scale: pngImageData.scale)
+    }
+
     func makeNormalizedImageData(from pngData: Data, scale: Int) -> NormalizedImageData? {
         guard let imageSource = CGImageSourceCreateWithData(pngData as CFData, nil),
               let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else {
             return nil
         }
 
-        return makeNormalizedImageData(cgImage: cgImage, scale: scale)
+        return makeNormalizedImageData(cgImageData: (cgImage, scale))
     }
-    
+
+    private func makeNormalizedImageData(cgImageData: CGImageData) -> NormalizedImageData? {
+        return makeNormalizedImageData(cgImage: cgImageData.cgImage, scale: cgImageData.scale)
+    }
+
     private func makeNormalizedImageData(cgImage: CGImage, scale: Int) -> NormalizedImageData? {
         let bufferInfo = PixelBufferInfo(width: cgImage.width, height: cgImage.height, scale: scale)
         var rawData = Data(count: bufferInfo.byteCount)

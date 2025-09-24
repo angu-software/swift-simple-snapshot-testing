@@ -20,18 +20,18 @@ struct NormalizedImageDataConverterTests {
     func whenGivenNormalizedImageData_itConvertsToPNGDataAndBack() async throws {
         let normalized = expectedNormalizedImageData()
 
-        let pngData = try #require(converter.makePNGData(from: normalized))
+        let pngData = try #require(converter.makePNGImageData(from: normalized))
 
-        let decoded = try #require(converter.makeNormalizedImageData(from: pngData, scale: 1))
+        let decoded = try #require(converter.makeNormalizedImageData(pngImageData: pngData))
         #expect(decoded == normalized)
     }
 
     @Test
     func whenGivenScaledPNGData_itConvertsToNormalizedImageData() async throws {
         let scale = 2
-        let pngData = try #require(converter.makePNGData(from: expectedNormalizedImageData(scale: scale)))
+        let pngImageData = try #require(converter.makePNGImageData(from: expectedNormalizedImageData(scale: scale)))
 
-        let normalized = try #require(converter.makeNormalizedImageData(from: pngData, scale: scale))
+        let normalized = try #require(converter.makeNormalizedImageData(pngImageData: pngImageData))
 
         #expect(normalized == expectedNormalizedImageData(scale: scale))
     }
@@ -39,9 +39,9 @@ struct NormalizedImageDataConverterTests {
     @Test
     func whenGivenScaledPNGData_itPreservesTheScaleInformation() async throws {
         let scale = 2
-        let pngData = try #require(converter.makePNGData(from: expectedNormalizedImageData(scale: scale)))
+        let pngImageData = try #require(converter.makePNGImageData(from: expectedNormalizedImageData(scale: scale)))
 
-        let normalized = try #require(converter.makeNormalizedImageData(from: pngData, scale: scale))
+        let normalized = try #require(converter.makeNormalizedImageData(pngImageData: pngImageData))
 
         #expect(normalized.pixelBufferInfo.scale == scale)
     }

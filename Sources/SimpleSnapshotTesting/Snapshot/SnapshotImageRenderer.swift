@@ -18,50 +18,6 @@ enum SnapshotImageRenderer {
     private static let diffAlpha: CGFloat = 0.75
 
     @MainActor
-    static func makeImage<UIKitView: UIView>(view: UIKitView) -> SnapshotImage? {
-        let renderer = UIGraphicsImageRenderer(bounds: view.bounds,
-                                               format: makeFormat())
-
-        return renderer.image { ctx in
-            view.layer.render(in: ctx.cgContext)
-        }
-    }
-
-    @MainActor
-    static func makePNGData<UIKitView: UIView>(view: UIKitView) -> SnapshotImageData? {
-        guard let image = makeImage(view: view) else {
-            return nil
-        }
-
-        return makePNGData(image: image)
-    }
-
-    @MainActor
-    static func makeImage<SwiftUIView: View>(view: SwiftUIView) -> SnapshotImage? {
-        let renderer = ImageRenderer(content: view)
-        renderer.scale = defaultImageScale
-
-        return renderer.uiImage
-    }
-
-    @MainActor
-    static func makePNGData<SwiftUIView: View>(view: SwiftUIView) -> SnapshotImageData? {
-        guard let image = makeImage(view: view) else {
-            return nil
-        }
-
-        return makePNGData(image: image)
-    }
-
-    static func makePNGData(image: SnapshotImage) -> SnapshotImageData? {
-        return image.pngData()
-    }
-
-    static func makeImage(data: Data, scale: CGFloat = Self.defaultImageScale) -> SnapshotImage? {
-        return SnapshotImage(data: data, scale: scale)
-    }
-
-    @MainActor
     static func makeDiffImage(_ image1: SnapshotImage, _ image2: SnapshotImage) -> SnapshotImage? {
         let size = makeCanvasSize(size1: image1.size, size2: image2.size)
 

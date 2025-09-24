@@ -32,8 +32,7 @@ struct SimpleSnapshotTests_SwiftUI {
         }
 
         #expect(
-            fileExists(at: SnapshotFilePathFactory(testLocation: makeLocation())
-                .referenceSnapshotFilePath)
+            fileExists(at: makePathFactory(testLocation: makeLocation()).referenceSnapshotFilePath)
         )
         
         removeSnapshotFolder()
@@ -54,7 +53,7 @@ struct SimpleSnapshotTests_SwiftUI {
 
     @Test
     func should_save_snapshot_diff_artifacts_when_snapshot_not_matching() {
-        let pathFactory = SnapshotFilePathFactory(testLocation: makeLocation())
+        let pathFactory = makePathFactory(testLocation: makeLocation())
         record(Rectangle())
 
         withKnownIssue {
@@ -111,10 +110,7 @@ struct SimpleSnapshotTests_SwiftUI {
     }
 
     private func removeSnapshotFolder() {
-        let pathFactory = SnapshotFilePathFactory(testLocation: SnapshotTestLocation(testFunction: #function,
-                                                                                     testFilePath: #filePath,
-                                                                                     testFileID: #fileID,
-                                                                                     testTag: ""))
+        let pathFactory = makePathFactory(testLocation: makeLocation())
         let snapshotFolderURL = pathFactory.referenceSnapshotFilePath.directoryURL.deletingLastPathComponent()
         do {
             if FileManager.default.fileExists(atPath: snapshotFolderURL.path()) {
@@ -123,5 +119,10 @@ struct SimpleSnapshotTests_SwiftUI {
         } catch {
             assertionFailure()
         }
+    }
+
+    private func makePathFactory(testLocation: SnapshotTestLocation) -> SnapshotFilePathFactory {
+        return SnapshotFilePathFactory(testLocation: testLocation,
+                                       deviceScale: SnapshotImageRenderer.defaultImageScale)
     }
 }

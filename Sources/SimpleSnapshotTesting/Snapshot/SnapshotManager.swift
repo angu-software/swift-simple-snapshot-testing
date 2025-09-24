@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import UIKit
 
 enum SnapshotComparisonResult {
     case matching
@@ -27,7 +28,8 @@ final class SnapshotManager {
     init(testLocation: SnapshotTestLocation,
          fileManager: FileManaging = .default) {
         self.testLocation = testLocation
-        self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
+        self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation,
+                                                   deviceScale: SnapshotImageRenderer.defaultImageScale)
         self.fileManager = fileManager
         self.snapshotFactory = SnapshotFactory(fileManager: fileManager, pathFactory: pathFactory)
     }

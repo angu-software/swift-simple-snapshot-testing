@@ -10,7 +10,7 @@ import UniformTypeIdentifiers
 struct SnapshotFilePathFactory: Equatable {
 
     private let testSourceFile: URL
-    private let scale: CGFloat
+    private let deviceScale: CGFloat
     private let fileExtension = UTType.png
     private let snapshotsRootFolderName = "__Snapshots__"
     private let failureDiffsRootFolderName = "FailureDiffs"
@@ -87,18 +87,18 @@ struct SnapshotFilePathFactory: Equatable {
     }
 
     private var scaleSuffix: String {
-        if scale < 2 {
+        if deviceScale < 2 {
             return ""
         }
 
-        return "@\(Int(scale))x"
+        return "@\(Int(deviceScale))x"
     }
 
     init(testLocation: SnapshotTestLocation,
-         scale: CGFloat = SnapshotImageRenderer.defaultImageScale){
+         deviceScale: CGFloat){
         self.testLocation = testLocation
         self.testSourceFile = URL(filePath: "\(testLocation.testFilePath)")
-        self.scale = scale
+        self.deviceScale = deviceScale
     }
 
     private func appendDir(named dirName: String,

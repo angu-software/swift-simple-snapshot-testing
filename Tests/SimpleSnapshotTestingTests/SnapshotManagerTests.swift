@@ -21,7 +21,7 @@ struct SnapshotManagerTests {
 
     init() {
         self.testLocation = SnapshotTestLocation.fixture(testFunction: "some_test_function()")
-        self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation)
+        self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation, deviceScale: SnapshotImageRenderer.defaultImageScale)
         self.manager = SnapshotManager(testLocation: testLocation,
                                        fileManager: fileManager)
     }
@@ -187,7 +187,10 @@ struct SnapshotManagerTests {
         return snapshot.filePath
     }
 
-    private func createRefImage() -> SnapshotFilePath {
-        return setSnapshotAsReference(.fixture())
+    private func createRefImage(scale: Int = Int(SnapshotImageRenderer.defaultImageScale)) -> SnapshotFilePath {
+        let snapshotFilePath = SnapshotFilePathFactory(testLocation: .fixture(), deviceScale: CGFloat(scale)).referenceSnapshotFilePath
+        let snapshot = Snapshot.fixture(imageData: .fixture(scale: scale),
+                                        filePath: snapshotFilePath)
+        return setSnapshotAsReference(snapshot)
     }
 }

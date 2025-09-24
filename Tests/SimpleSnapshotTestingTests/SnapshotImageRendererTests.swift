@@ -44,7 +44,6 @@ struct SnapshotImageRendererTests {
 
     @Test
     func should_create_diff_image() throws {
-        #warning("Fails when tests run on iPad")
         let refDiffImage = try #require(TestFixtures.image(named: "fixture_image_diff"))
         let image1 = try #require(makeSnapshotImage(view: FixtureView()))
         let image2 = try #require(makeSnapshotImage(view: FixtureView(isChanged: true)))
@@ -60,12 +59,17 @@ struct SnapshotImageRendererTests {
     // MARK: Test DSL
 
     private func makeSnapshotImage<SwiftUIView: SwiftUI.View>(view: SwiftUIView) -> SnapshotImage? {
-        return SnapshotImageRenderer.makeImage(view: view)
+        let converter = NormalizedImageDataConverter()
+        guard let imageData = converter.makeNormalizedImageData(view: view, scale: Int(defaultScale)) else {
+            return nil
+        }
+
+        return converter.makeUIImage(normalizedImageData: imageData)
     }
 
     private func recordFixtureImage(_ image: UIImage) throws {
         let location = SnapshotTestLocation.fixture()
-        let path = SnapshotFilePathFactory(testLocation: location)
+        let path = SnapshotFilePathFactory(testLocation: location, deviceScale: defaultScale)
         let diffSnapshot = try #require (Snapshot(image: image,
                                                   filePath: SnapshotFilePath(fileURL: path.testFixtureImagePath(for: "fixture_image_diff"))))
         let manager = SnapshotManager(testLocation: location)

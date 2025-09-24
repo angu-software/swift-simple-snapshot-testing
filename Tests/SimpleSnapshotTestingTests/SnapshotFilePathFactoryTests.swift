@@ -5,6 +5,7 @@
 //  Created by Andreas Guenther on 22.01.25.
 //
 
+import Foundation
 import Testing
 
 @testable import SimpleSnapshotTesting
@@ -19,7 +20,7 @@ struct SnapshotFilePathFactoryTests {
         let location = SnapshotTestLocation.fixture()
         let testName = location.testIdentifier
 
-        let path = SnapshotFilePathFactory(testLocation: location)
+        let path = makePathFactory(testLocation: location)
 
         #expect(
             path.referenceSnapshotFilePath.fullPath
@@ -27,13 +28,12 @@ struct SnapshotFilePathFactoryTests {
         )
     }
 
-
     @Test
     func should_resolve_failure_diff_original_snapshot_file_path() {
         let location = SnapshotTestLocation.fixture()
         let testName = location.testIdentifier
 
-        let path = SnapshotFilePathFactory(testLocation: location)
+        let path = makePathFactory(testLocation: location)
 
         #expect(
             path.failureOriginalSnapshotFilePath.fullPath
@@ -46,7 +46,7 @@ struct SnapshotFilePathFactoryTests {
         let location = SnapshotTestLocation.fixture()
         let testName = location.testIdentifier
 
-        let path = SnapshotFilePathFactory(testLocation: location)
+        let path = makePathFactory(testLocation: location)
 
         #expect(
             path.failureFailedSnapshotFilePath.fullPath
@@ -59,7 +59,7 @@ struct SnapshotFilePathFactoryTests {
         let location = SnapshotTestLocation.fixture()
         let testName = location.testIdentifier
 
-        let path = SnapshotFilePathFactory(testLocation: location)
+        let path = makePathFactory(testLocation: location)
 
         #expect(
             path.failureDiffSnapshotFilePath.fullPath
@@ -69,23 +69,29 @@ struct SnapshotFilePathFactoryTests {
 
     @Test
     func should_have_file_name_according_to_test_method_name() async throws {
-        let path = SnapshotFilePathFactory(testLocation: .fixture())
+        let path = makePathFactory(testLocation: .fixture())
 
         #expect(path.referenceSnapshotFilePath.fileName == "should_have_file_name_according_to_test_method_name@2x.png")
     }
 
     @Test
     func snapshot_should_append_identifier_to_filename_when_specified() async throws {
-        let path = SnapshotFilePathFactory(testLocation: .fixture(testTag: "someIdentifier"))
+        let path = makePathFactory(testLocation: .fixture(testTag: "someIdentifier"))
 
         #expect(path.referenceSnapshotFilePath.fileName == "snapshot_should_append_identifier_to_filename_when_specified_someIdentifier@2x.png")
     }
 
     @Test
     func whenScaleIsOne_itOmitsTheScaleSuffixInTheFileName() {
-        let path = SnapshotFilePathFactory(testLocation: .fixture(), scale: 1)
+        let path = makePathFactory(testLocation: .fixture(), scale: 1)
 
         #expect(path.referenceSnapshotFilePath.fileName == "whenScaleIsOne_itOmitsTheScaleSuffixInTheFileName.png")
+    }
+
+    private func makePathFactory(testLocation: SnapshotTestLocation,
+                                 scale: CGFloat = 2) -> SnapshotFilePathFactory {
+        SnapshotFilePathFactory(testLocation: testLocation,
+                                deviceScale: scale)
     }
 }
 

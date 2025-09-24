@@ -41,7 +41,12 @@ struct SnapshotImageRendererTests_UIKit {
     // MARK: Test DSL
 
     private func makeSnapshotImage<UIKitView: UIView>(view: UIKitView) -> SnapshotImage? {
-        return SnapshotImageRenderer.makeImage(view: view)
+        let converter = NormalizedImageDataConverter()
+        guard let imageData = converter.makeNormalizedImageData(view: view, scale: Int(defaultScale)) else {
+            return nil
+        }
+
+        return converter.makeUIImage(normalizedImageData: imageData)
     }
 
     private func makeText(_ string: String, size: CGSize = CGSize(width: 40, height: 20)) -> UILabel {
@@ -53,7 +58,7 @@ struct SnapshotImageRendererTests_UIKit {
 
     private func recordFixtureImage(_ image: UIImage) throws {
         let location = SnapshotTestLocation.fixture()
-        let path = SnapshotFilePathFactory(testLocation: location)
+        let path = SnapshotFilePathFactory(testLocation: location, deviceScale: defaultScale)
         let diffSnapshot = try #require (Snapshot(image: image,
                                                   filePath: SnapshotFilePath(fileURL: path.testFixtureImagePath(for: "fixture_image_diff"))))
         let manager = SnapshotManager(testLocation: location)

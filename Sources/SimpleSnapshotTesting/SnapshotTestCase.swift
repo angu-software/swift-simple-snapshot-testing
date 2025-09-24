@@ -9,11 +9,14 @@ import Foundation
 import SwiftUI
 import UIKit
 
+@MainActor
 struct SnapshotTestCase {
 
     let isRecordingReference: Bool
     let sourceLocation: SnapshotTestLocation
     let precision: Double
+
+    private let manager: SnapshotManager
 
     init(isRecordingReference: Bool,
          sourceLocation: SnapshotTestLocation,
@@ -21,11 +24,11 @@ struct SnapshotTestCase {
         self.isRecordingReference = isRecordingReference
         self.sourceLocation = sourceLocation
         self.precision = precision
+
+        self.manager = SnapshotManager(testLocation: sourceLocation)
     }
 
-    @MainActor
     func evaluate<View: SwiftUI.View>(_ view: View) -> Result<Void, any Error> {
-        let manager = SnapshotManager(testLocation: sourceLocation)
 
         do {
             let takenSnapshot = try manager.snapshot(from: view)
@@ -37,9 +40,7 @@ struct SnapshotTestCase {
 
             let referenceSnapshot = try manager.referenceSnapshot(from: takenSnapshot.filePath)
 
-            switch manager.compareSnapshot(takenSnapshot,
-                                           with: referenceSnapshot,
-                                           precision: precision) {
+            switch compare(takenSnapshot, with: referenceSnapshot) {
                 case .matching:
                     return .success(())
                 case .different:
@@ -56,8 +57,6 @@ struct SnapshotTestCase {
 
     @MainActor
     func evaluate<View: UIView>(_ view: View) -> Result<Void, any Error> {
-        let manager = SnapshotManager(testLocation: sourceLocation)
-
         do {
             let takenSnapshot = try manager.snapshot(from: view)
 
@@ -68,9 +67,7 @@ struct SnapshotTestCase {
 
             let referenceSnapshot = try manager.referenceSnapshot(from: takenSnapshot.filePath)
 
-            switch manager.compareSnapshot(takenSnapshot,
-                                           with: referenceSnapshot,
-                                           precision: precision) {
+            switch compare(takenSnapshot, with: referenceSnapshot) {
                 case .matching:
                     return .success(())
                 case .different:
@@ -85,4 +82,9 @@ struct SnapshotTestCase {
         }
     }
 
+    private func compare(_ snapshot: Snapshot, with reference: Snapshot) -> SnapshotComparisonResult {
+        return manager.compareSnapshot(snapshot,
+                                       with: reference,
+                                       precision: precision)
+    }
 }

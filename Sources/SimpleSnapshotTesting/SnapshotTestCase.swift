@@ -31,7 +31,7 @@ struct SnapshotTestCase {
     func evaluate<View: SwiftUI.View>(_ view: View) -> Result<Void, any Error> {
 
         do {
-            let takenSnapshot = try manager.snapshot(from: view)
+            let takenSnapshot = try snapshot(for: view)
 
             if isRecordingReference {
                 try manager.saveSnapshot(takenSnapshot)
@@ -58,7 +58,7 @@ struct SnapshotTestCase {
     @MainActor
     func evaluate<View: UIView>(_ view: View) -> Result<Void, any Error> {
         do {
-            let takenSnapshot = try manager.snapshot(from: view)
+            let takenSnapshot = try snapshot(for: view)
 
             if isRecordingReference {
                 try manager.saveSnapshot(takenSnapshot)
@@ -80,6 +80,14 @@ struct SnapshotTestCase {
         } catch {
             return .failure(error)
         }
+    }
+
+    private func snapshot<View: SwiftUI.View>(for view: View) throws -> Snapshot {
+        return try manager.snapshot(from: view)
+    }
+
+    private func snapshot(for view: UIView) throws -> Snapshot {
+        return try manager.snapshot(from: view)
     }
 
     private func compare(_ snapshot: Snapshot, with reference: Snapshot) -> SnapshotComparisonResult {

@@ -24,7 +24,7 @@ struct Snapshot {
 
 extension Snapshot: Equatable {
 
-    var pngData: SnapshotImageData {
+    var pngData: SnapshotImageData? {
         guard let data = NormalizedImageDataConverter().makePNGImageData(normalizedImageData: imageData)?.data else {
             return Data()
         }

@@ -11,6 +11,9 @@ extension Snapshot {
 
     @available(*, deprecated)
     var image: SnapshotImage? {
+        guard let pngData else {
+            return nil
+        }
         return SnapshotImageRenderer.makeImage(data: pngData,
                                                scale: scale)
     }

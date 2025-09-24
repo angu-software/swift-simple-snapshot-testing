@@ -45,13 +45,14 @@ final class SnapshotManager {
     }
 
     func saveSnapshot(_ snapshot: Snapshot) throws {
-        guard snapshot.isValid else {
+        guard snapshot.isValid,
+            let pngData = snapshot.pngData else {
             throw Error.malformedSnapshotImage
         }
 
         try createSnapshotDirectory(snapshot)
 
-        try fileManager.write(snapshot.pngData,
+        try fileManager.write(pngData,
                               to: snapshot.filePath.fileURL)
     }
 

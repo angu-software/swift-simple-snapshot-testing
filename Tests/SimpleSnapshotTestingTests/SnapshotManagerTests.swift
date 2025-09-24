@@ -184,7 +184,7 @@ struct SnapshotManagerTests {
     }
 
     private func setSnapshotAsReference(_ snapshot: Snapshot) -> SnapshotFilePath {
-        fileManager.stubbedFileData = [snapshot.filePath.fullPath: snapshot.pngData]
+        fileManager.stubbedFileData = [snapshot.filePath.fullPath: snapshot.pngData!]
         return snapshot.filePath
     }
 
@@ -192,5 +192,3 @@ struct SnapshotManagerTests {
         return setSnapshotAsReference(.fixture())
     }
 }
-
-

@@ -85,17 +85,13 @@ struct SimpleSnapshotTests_UIKit {
     public func record<View: UIView>(_ view: View,
                                      function: StaticString = #function,
                                      filePath: StaticString = #filePath,
-                                     fileID: StaticString = #fileID,
-                                     line: Int = #line,
-                                     column: Int = #column) {
+                                     sourceLocation: SourceLocation = #_sourceLocation) {
         withKnownIssue {
             evaluate(view,
                      record: true,
                      function: function,
                      filePath: filePath,
-                     fileID: fileID,
-                     line: line,
-                     column: column)
+                     sourceLocation: sourceLocation)
         }
     }
 

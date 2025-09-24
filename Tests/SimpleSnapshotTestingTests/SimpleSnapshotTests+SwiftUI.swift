@@ -82,17 +82,13 @@ struct SimpleSnapshotTests_SwiftUI {
     public func record<View: SwiftUI.View>(_ view: View,
                                            function: StaticString = #function,
                                            filePath: StaticString = #filePath,
-                                           fileID: StaticString = #fileID,
-                                           line: Int = #line,
-                                           column: Int = #column) {
+                                           sourceLocation: SourceLocation = #_sourceLocation) {
         withKnownIssue {
             evaluate(view,
-                      record: true,
-                      function: function,
-                      filePath: filePath,
-                      fileID: fileID,
-                      line: line,
-                      column: column)
+                     record: true,
+                     function: function,
+                     filePath: filePath,
+                     sourceLocation: sourceLocation)
         }
     }
 

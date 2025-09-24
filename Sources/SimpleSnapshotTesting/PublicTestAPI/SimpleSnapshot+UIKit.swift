@@ -15,17 +15,15 @@ public func evaluate<View: UIView>(_ view: View,
                                    record: Bool = false,
                                    function: StaticString = #function,
                                    filePath: StaticString = #filePath,
-                                   fileID: StaticString = #fileID,
-                                   line: Int = #line,
-                                   column: Int = #column) {
+                                   sourceLocation: SourceLocation = #_sourceLocation) {
 
-    let sourceLocation = SnapshotTestLocation(testFunction: function,
-                                              testFilePath: filePath,
-                                              testFileID: fileID,
+    let testLocation = SnapshotTestLocation(testFunction: "\(function)",
+                                              testFilePath: "\(filePath)",
+                                              testFileID: sourceLocation.fileID,
                                               testTag: testTag)
 
     let testCase = SnapshotTestCase(isRecordingReference: record,
-                                    sourceLocation: sourceLocation,
+                                    sourceLocation: testLocation,
                                     precision: precision)
     let testResult = testCase.evaluate(view)
 
@@ -35,9 +33,6 @@ public func evaluate<View: UIView>(_ view: View,
         case let .failure(error):
             Issue.record(error,
                          "\(error.localizedDescription)",
-                         sourceLocation: SourceLocation(fileID: "\(fileID)",
-                                                        filePath: "\(filePath)",
-                                                        line: line,
-                                                        column: column))
+                         sourceLocation: sourceLocation)
     }
 }

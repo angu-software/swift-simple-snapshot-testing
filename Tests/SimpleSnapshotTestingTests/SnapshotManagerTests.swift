@@ -99,6 +99,16 @@ struct SnapshotManagerTests {
     }
 
     @Test
+    func whenLoadingReferenceImage_whenImagePathIsNotReferencingAnValidImage_itThrowsAnError() async throws {
+        let referencePath = SnapshotFilePath(fileURL: URL(filePath: "/some/file.txt"))
+        fileManager.stubbedFileData = [referencePath.fullPath: Data([255])]
+
+        #expect(throws: SnapshotManager.Error.failedToLoadSnapshotFromFile) {
+            try manager.referenceSnapshot(from: referencePath)
+        }
+    }
+
+    @Test
     func should_load_snapshot_from_ref_file() async throws {
         let refFilePath = createRefImage()
 

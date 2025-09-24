@@ -58,9 +58,14 @@ final class SnapshotFactory {
 
         // TODO: we currently assume the image is png data
         let rawData = try fileManager.load(contentsOf: fileURL)
-        let snapshot =  Snapshot(pngData: rawData, // TODO: ensure the data is really png data from the loaded snapshot
-                                 scale: filePath.scale,
-                                 filePath: filePath)!
+        guard let uiImage = UIImage(data: rawData, scale: filePath.scale),
+              let imageData = uiImage.pngData() else {
+            throw Error.failedToLoadSnapshotFromFile
+        }
+        
+        let snapshot = Snapshot(pngData: imageData,
+                                scale: filePath.scale,
+                                filePath: filePath)!
 
         return snapshot
     }

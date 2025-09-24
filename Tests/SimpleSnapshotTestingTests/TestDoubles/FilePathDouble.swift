@@ -27,7 +27,7 @@ extension SnapshotFilePath {
     }
 
     var fullPath: String {
-        return fileURL.path()
+        return fileURL.filePath
     }
 
     private init(fullPath: String) {

@@ -53,4 +53,36 @@ struct SnapshotTestCase {
             return .failure(error)
         }
     }
+
+    @MainActor
+    func evaluate<View: UIView>(_ view: View) -> Result<Void, any Error> {
+        let manager = SnapshotManager(testLocation: sourceLocation)
+
+        do {
+            let takenSnapshot = try manager.snapshot(from: view)
+
+            if isRecordingReference {
+                try manager.saveSnapshot(takenSnapshot)
+                throw EvaluationError.didRecordReference
+            }
+
+            let referenceSnapshot = try manager.referenceSnapshot(from: takenSnapshot.filePath)
+
+            switch manager.compareSnapshot(takenSnapshot,
+                                           with: referenceSnapshot,
+                                           precision: precision) {
+                case .matching:
+                    return .success(())
+                case .different:
+                    let failureSnapshot = try manager.makeFailureSnapshot(taken: takenSnapshot,
+                                                                          reference: referenceSnapshot)
+                    try manager.saveFailureSnapshot(failureSnapshot)
+
+                    throw EvaluationError.notMatchingReference
+            }
+        } catch {
+            return .failure(error)
+        }
+    }
+
 }

@@ -19,7 +19,6 @@ public func evaluate<View: SwiftUI.View>(_ view: View,
                                          fileID: StaticString = #fileID,
                                          line: Int = #line,
                                          column: Int = #column) {
-
     let sourceLocation = SnapshotTestLocation(testFunction: function,
                                          testFilePath: filePath,
                                          testFileID: fileID,

@@ -20,12 +20,14 @@ struct SnapshotTestCase {
 
     init(isRecordingReference: Bool,
          sourceLocation: SnapshotTestLocation,
-         precision: Double ) {
+         precision: Double,
+         fileManager: FileManaging = .default) {
         self.isRecordingReference = isRecordingReference
         self.sourceLocation = sourceLocation
         self.precision = precision
 
-        self.manager = SnapshotManager(testLocation: sourceLocation)
+        self.manager = SnapshotManager(testLocation: sourceLocation,
+                                       fileManager: fileManager)
     }
 
     func evaluate<View: SwiftUI.View>(_ view: View) -> Result<Void, any Error> {

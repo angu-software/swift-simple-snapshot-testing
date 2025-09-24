@@ -1,5 +1,5 @@
 //
-//  SimpleSnapshotTests+SwiftUI.swift
+//  SnapshotTestCaseTests.swift
 //  SimpleSnapshotTesting
 //
 //  Created by Andreas Guenther on 23.01.25.
@@ -12,17 +12,22 @@ import Testing
 
 @MainActor
 @Suite(.tags(.acceptanceTest))
-struct SimpleSnapshotTests_SwiftUI {
+struct SnapshotTestCaseTests {
 
     @Test
-    func should_fail_when_recording_reference_snapshot() async throws {
-        withKnownIssue() {
-            evaluate(Rectangle(), record: true)
-        } matching: { issue in
-            (issue.error as? EvaluationError) == .didRecordReference
-        }
+    func whenRecordingReference_itThrowsDidRecordReferenceError() async throws {
+        let fileManager = FileManagerDouble()
+        let testCase = SnapshotTestCase(isRecordingReference: true,
+                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
+                                                                             testFilePath: "SnapshotTest/TestCase.swift",
+                                                                             testFileID: "SnapshotTest/TestCase.swift",
+                                                                             testTag: ""),
+                                        precision: 0.0,
+                                        fileManager: fileManager)
 
-        removeSnapshotFolder()
+        #expect(throws: EvaluationError.didRecordReference) {
+            try testCase.evaluate(Rectangle()).get()
+        }
     }
 
     @Test

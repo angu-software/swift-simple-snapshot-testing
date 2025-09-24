@@ -56,10 +56,10 @@ final class SnapshotFactory {
             throw Error.fileDoesNotExist
         }
 
-        let data = try fileManager.load(contentsOf: fileURL)
-        let scale = DiffImageFactory.defaultImageScale
-        let snapshot =  Snapshot(pngData: data, // TODO: ensure the data is really png data from the loaded snapshot
-                                 scale: scale,
+        // TODO: we currently assume the image is png data
+        let rawData = try fileManager.load(contentsOf: fileURL)
+        let snapshot =  Snapshot(pngData: rawData, // TODO: ensure the data is really png data from the loaded snapshot
+                                 scale: filePath.scale,
                                  filePath: filePath)!
 
         return snapshot

@@ -89,6 +89,15 @@ struct SnapshotManagerTests {
 
     // MARK: Load snapshot from file
 
+    @Test(arguments: [1, 2, 3])
+    func whenLoadingReferenceImage_with2xScale_itHasCorrectScale(scale: Int) async throws {
+        let path = createRefImage(scale: scale)
+
+        let snapshot = try manager.referenceSnapshot(from: path)
+
+        #expect(snapshot.scale == CGFloat(scale))
+    }
+
     @Test
     func should_load_snapshot_from_ref_file() async throws {
         let refFilePath = createRefImage()

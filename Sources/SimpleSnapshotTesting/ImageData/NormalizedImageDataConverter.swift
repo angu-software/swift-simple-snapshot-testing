@@ -17,8 +17,7 @@ final class NormalizedImageDataConverter {
 
     // MARK: Conversions from NormalizedImageData
 
-    // TODO: account for scale
-    func makeCGImage(from normalizedData: NormalizedImageData) -> CGImageData? {
+    func makeCGImageData(normalizedData: NormalizedImageData) -> CGImageData? {
         guard let dataProvider = CGDataProvider(data: normalizedData.data as CFData) else {
             return nil
         }
@@ -43,8 +42,9 @@ final class NormalizedImageDataConverter {
     }
 
     // TODO: generate image with correct scale
-    func makeUIImage(from normalizedData: NormalizedImageData) -> UIImage? {
-        guard let cgImage = makeCGImage(from: normalizedData) else {
+    // TODO: are there dedicated tests?
+    func makeUIImage(normalizedImageData normalizedData: NormalizedImageData) -> UIImage? {
+        guard let cgImage = makeCGImageData(normalizedData: normalizedData) else {
             return nil
         }
 
@@ -53,8 +53,8 @@ final class NormalizedImageDataConverter {
                        orientation: .up)
     }
 
-    func makePNGImageData(from normalizedData: NormalizedImageData) -> PNGImageData? {
-        guard let uiImage = makeUIImage(from: normalizedData),
+    func makePNGImageData(normalizedImageData normalizedData: NormalizedImageData) -> PNGImageData? {
+        guard let uiImage = makeUIImage(normalizedImageData: normalizedData),
               let data = uiImage.pngData()else {
             return nil
         }
@@ -65,7 +65,7 @@ final class NormalizedImageDataConverter {
     // MARK: Conversion to NormalizedImageData
 
     @MainActor
-    func makeNormalizedImageData<SwiftUIView: SwiftUI.View>(from view: SwiftUIView, scale: Int) -> NormalizedImageData? {
+    func makeNormalizedImageData<SwiftUIView: SwiftUI.View>(view: SwiftUIView, scale: Int) -> NormalizedImageData? {
         let renderer = makeImageRenderer(content: view, scale: scale)
 
         guard let cgImage = renderer.cgImage else {
@@ -75,21 +75,19 @@ final class NormalizedImageDataConverter {
         return makeNormalizedImageData(cgImage: cgImage, scale: scale)
     }
 
-    // TODO: make scale an Int
-
     @MainActor
-    func makeNormalizedImageData(from uiView: UIView, scale: Int) -> NormalizedImageData? {
+    func makeNormalizedImageData(view uiView: UIView, scale: Int) -> NormalizedImageData? {
         let renderer = makeImageRenderer(imageSize: uiView.bounds.size, scale: scale)
 
         let normalizedImage = renderer.image { context in
             uiView.layer.render(in: context.cgContext)
         }
 
-        return makeNormalizedImageData(from: normalizedImage)
+        return makeNormalizedImageData(uiImage: normalizedImage)
     }
 
     @MainActor
-    func makeNormalizedImageData(from uiImage: UIImage) -> NormalizedImageData? {
+    func makeNormalizedImageData(uiImage: UIImage) -> NormalizedImageData? {
         let imageBounds = CGRect(origin: .zero, size: uiImage.size)
         let scale = Int(uiImage.scale)
         let renderer = makeImageRenderer(imageSize: imageBounds.size,
@@ -107,23 +105,21 @@ final class NormalizedImageDataConverter {
                                        scale: Int(scale))
     }
 
-    // TODO: name the methods labels correctly
-
     func makeNormalizedImageData(pngImageData: PNGImageData) -> NormalizedImageData? {
-        return makeNormalizedImageData(from: pngImageData.data, scale: pngImageData.scale)
+        return makeNormalizedImageData(pngData: pngImageData.data, scale: pngImageData.scale)
     }
 
-    func makeNormalizedImageData(from pngData: Data, scale: Int) -> NormalizedImageData? {
+    private func makeNormalizedImageData(cgImageData: CGImageData) -> NormalizedImageData? {
+        return makeNormalizedImageData(cgImage: cgImageData.cgImage, scale: cgImageData.scale)
+    }
+
+    private func makeNormalizedImageData(pngData: Data, scale: Int) -> NormalizedImageData? {
         guard let imageSource = CGImageSourceCreateWithData(pngData as CFData, nil),
               let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else {
             return nil
         }
 
         return makeNormalizedImageData(cgImageData: (cgImage, scale))
-    }
-
-    private func makeNormalizedImageData(cgImageData: CGImageData) -> NormalizedImageData? {
-        return makeNormalizedImageData(cgImage: cgImageData.cgImage, scale: cgImageData.scale)
     }
 
     private func makeNormalizedImageData(cgImage: CGImage, scale: Int) -> NormalizedImageData? {

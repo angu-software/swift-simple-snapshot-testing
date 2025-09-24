@@ -20,7 +20,7 @@ struct NormalizedImageDataConverterTests {
     func whenGivenNormalizedImageData_itConvertsToPNGDataAndBack() async throws {
         let normalized = expectedNormalizedImageData()
 
-        let pngData = try #require(converter.makePNGImageData(from: normalized))
+        let pngData = try #require(converter.makePNGImageData(normalizedImageData: normalized))
 
         let decoded = try #require(converter.makeNormalizedImageData(pngImageData: pngData))
         #expect(decoded == normalized)
@@ -29,7 +29,7 @@ struct NormalizedImageDataConverterTests {
     @Test
     func whenGivenScaledPNGData_itConvertsToNormalizedImageData() async throws {
         let scale = 2
-        let pngImageData = try #require(converter.makePNGImageData(from: expectedNormalizedImageData(scale: scale)))
+        let pngImageData = try #require(converter.makePNGImageData(normalizedImageData: expectedNormalizedImageData(scale: scale)))
 
         let normalized = try #require(converter.makeNormalizedImageData(pngImageData: pngImageData))
 
@@ -39,7 +39,7 @@ struct NormalizedImageDataConverterTests {
     @Test
     func whenGivenScaledPNGData_itPreservesTheScaleInformation() async throws {
         let scale = 2
-        let pngImageData = try #require(converter.makePNGImageData(from: expectedNormalizedImageData(scale: scale)))
+        let pngImageData = try #require(converter.makePNGImageData(normalizedImageData: expectedNormalizedImageData(scale: scale)))
 
         let normalized = try #require(converter.makeNormalizedImageData(pngImageData: pngImageData))
 
@@ -48,7 +48,7 @@ struct NormalizedImageDataConverterTests {
 
     @Test
     func whenGivenUIImage_itConvertsToNormalizedImageData() async throws {
-        let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture()))
+        let normalized = try #require(converter.makeNormalizedImageData(uiImage: imageFixture()))
 
         #expect(normalized == expectedNormalizedImageData())
     }
@@ -56,7 +56,7 @@ struct NormalizedImageDataConverterTests {
     @Test
     func whenGivenUIImage_whenImageIsScaled_itTakesImageScaleIntoAccount() async throws {
         let scale = 2
-        let normalized = try #require(converter.makeNormalizedImageData(from: imageFixture(scale: scale)))
+        let normalized = try #require(converter.makeNormalizedImageData(uiImage: imageFixture(scale: scale)))
 
         #expect(normalized == expectedNormalizedImageData(scale: 2))
     }
@@ -68,7 +68,7 @@ struct NormalizedImageDataConverterTests {
                                                          height: 1)))
         rectView.backgroundColor = .red
 
-        let normalized = converter.makeNormalizedImageData(from: rectView, scale: 2)
+        let normalized = converter.makeNormalizedImageData(view: rectView, scale: 2)
 
         #expect(normalized == expectedNormalizedImageData(scale: 2))
     }
@@ -80,7 +80,7 @@ struct NormalizedImageDataConverterTests {
             .fill(Color(red: 1, green: 0, blue: 0))
             .frame(width: 1, height: 1)
 
-        let normalized = converter.makeNormalizedImageData(from: rectView, scale: scale)
+        let normalized = converter.makeNormalizedImageData(view: rectView, scale: scale)
 
         #expect(normalized == expectedNormalizedImageData(scale: scale))
     }

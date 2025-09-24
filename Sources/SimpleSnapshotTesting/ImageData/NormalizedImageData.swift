@@ -40,3 +40,14 @@ struct PixelBufferInfo: Equatable {
         return CGRect(origin: .zero, size: CGSize(width: width, height: height))
     }
 }
+
+extension NormalizedImageData {
+    func isMatching(_ other: Self, precision: Double) -> Bool {
+        guard pixelBufferInfo == other.pixelBufferInfo else {
+            return false
+        }
+        
+        return data.isMatching(other.data,
+                               precision: precision)
+    }
+}

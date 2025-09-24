@@ -16,7 +16,7 @@ struct NormalizedImageDataMatchingTests {
     func whenNormalizedImageDataIsIdentical_itMatches() async throws {
         let data1 = NormalizedImageData.fixture(imageData: makeImageDataFixture())
 
-        #expect(data1.isMatching(data1, precession: 1.0))
+        #expect(data1.isMatching(data1, precision: 1.0))
     }
 
     @Test
@@ -26,7 +26,7 @@ struct NormalizedImageDataMatchingTests {
         let data2 = NormalizedImageData.fixture(imageData: imageData,
                                                 height: 2)
 
-        #expect(data1.isMatching(data2, precession: 0.0) == false)
+        #expect(data1.isMatching(data2, precision: 0.0) == false)
     }
 
     @Test
@@ -35,7 +35,7 @@ struct NormalizedImageDataMatchingTests {
         let data1 = try #require(NormalizedImageData.fixture(uiImage: .fixture(scale: 1)))
         let data2 = try #require(NormalizedImageData.fixture(uiImage: .fixture(scale: 2)))
 
-        #expect(data1.isMatching(data2, precession: 0.0) == false)
+        #expect(data1.isMatching(data2, precision: 0.0) == false)
     }
 
     private func makeImageDataFixture() -> Data {
@@ -60,17 +60,5 @@ extension NormalizedImageData {
     @MainActor
     static func fixture(uiImage: UIImage) -> Self? {
         return NormalizedImageDataConverter().makeNormalizedImageData(uiImage: uiImage)
-    }
-}
-
-extension NormalizedImageData {
-
-    func isMatching(_ other: Self, precession: Double) -> Bool {
-        guard pixelBufferInfo == other.pixelBufferInfo else {
-            return false
-        }
-
-        return data.isMatching(other.data,
-                               precision: precession)
     }
 }

@@ -52,6 +52,6 @@ extension Snapshot: Equatable {
 extension Snapshot {
 
     func matches(_ other: Self, precision: Double) -> Bool {
-        return pngData.isMatching(other.pngData, precision: precision)
+        return imageData.isMatching(other.imageData, precision: precision)
     }
 }

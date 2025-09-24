@@ -52,8 +52,8 @@ final class NormalizedImageDataConverter {
     // MARK: Conversion to NormalizedImageData
 
     @MainActor
-    func makeNormalizedImageData<SwiftUIView: SwiftUI.View>(from view: SwiftUIView) -> NormalizedImageData? {
-        let renderer = makeImageRenderer(content: view, scale: 1)
+    func makeNormalizedImageData<SwiftUIView: SwiftUI.View>(from view: SwiftUIView, scale: CGFloat) -> NormalizedImageData? {
+        let renderer = makeImageRenderer(content: view, scale: scale)
 
         guard let cgImage = renderer.cgImage else {
             return nil

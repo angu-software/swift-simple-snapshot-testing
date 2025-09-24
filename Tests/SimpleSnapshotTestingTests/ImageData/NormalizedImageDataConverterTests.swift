@@ -66,13 +66,14 @@ struct NormalizedImageDataConverterTests {
 
     @Test
     func whenGivenASwiftUIView_itConvertsToNormalizedImageData() async throws {
+        let scale: CGFloat = 2
         let rectView = Rectangle()
             .fill(Color(red: 1, green: 0, blue: 0))
             .frame(width: 1, height: 1)
 
-        let normalized = converter.makeNormalizedImageData(from: rectView)
+        let normalized = converter.makeNormalizedImageData(from: rectView, scale: scale)
 
-        #expect(normalized == expectedNormalizedImageData())
+        #expect(normalized == expectedNormalizedImageData(scale: scale))
     }
 
     // MARK: Test Support

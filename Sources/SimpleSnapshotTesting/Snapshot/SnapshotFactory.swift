@@ -34,7 +34,7 @@ final class SnapshotFactory {
 
         return Snapshot(pngData: imageData,
                         scale: SnapshotImageRenderer.defaultImageScale,
-                        filePath: pathFactory.referenceSnapshotFilePath)
+                        filePath: pathFactory.referenceSnapshotFilePath)!
     }
 
     func snapshot<SwiftUIView: SwiftUI.View>(from view: SwiftUIView) throws -> Snapshot {
@@ -44,7 +44,7 @@ final class SnapshotFactory {
 
         return Snapshot(pngData: imageData,
                         scale: SnapshotImageRenderer.defaultImageScale,
-                        filePath: pathFactory.referenceSnapshotFilePath)
+                        filePath: pathFactory.referenceSnapshotFilePath)!
     }
 
     func referenceSnapshot(from filePath: SnapshotFilePath) throws -> Snapshot {
@@ -57,7 +57,7 @@ final class SnapshotFactory {
         let scale = SnapshotImageRenderer.defaultImageScale
         let snapshot =  Snapshot(pngData: data, // TODO: ensure the data is really png data from the loaded snapshot
                                  scale: scale,
-                                 filePath: filePath)
+                                 filePath: filePath)!
         guard snapshot.isValid else {
             throw Error.failedToLoadSnapshotFromFile
         }

@@ -20,6 +20,6 @@ extension Snapshot {
                         imageFilePath: SnapshotFilePath = .dummy()) -> Self {
         Self(pngData: imageData,
              scale: scale,
-             filePath: imageFilePath)
+             filePath: imageFilePath)!
     }
 }

@@ -9,15 +9,18 @@ import UIKit
 
 extension Snapshot {
 
+    @available(*, deprecated)
     var image: SnapshotImage? {
         return SnapshotImageRenderer.makeImage(data: pngData,
                                                scale: scale)
     }
 
+    @available(*, deprecated)
     var isValid: Bool {
         return image != nil
     }
 
+    @available(*, deprecated, message: "Use Snapshot(imageData:filePath:) instead")
     init?(image: UIImage,
           imageFilePath: SnapshotFilePath) {
         guard let pngData = SnapshotImageRenderer.makePNGData(image: image) else {

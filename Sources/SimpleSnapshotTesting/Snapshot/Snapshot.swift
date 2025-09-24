@@ -14,6 +14,24 @@ struct Snapshot: Equatable {
     let pngData: SnapshotImageData
     let scale: CGFloat
     let filePath: SnapshotFilePath
+
+    @available(*, deprecated, message: "Use init(imageData: filePath:)")
+    init?(pngData: SnapshotImageData, scale: CGFloat, filePath: SnapshotFilePath) {
+        self.pngData = pngData
+        self.scale = scale
+        self.filePath = filePath
+    }
+}
+
+extension Snapshot {
+
+    init(imageData: NormalizedImageData,
+         filePath: SnapshotFilePath) {
+
+        self.pngData = imageData.data
+        self.scale = CGFloat(imageData.pixelBufferInfo.scale)
+        self.filePath = filePath
+    }
 }
 
 extension Snapshot {

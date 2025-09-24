@@ -10,8 +10,12 @@ import UIKit
 
 final class NormalizedImageDataConverter {
 
-    private let scale: CGFloat = 1
+    private let scale: CGFloat
     private let isOpaque = false
+
+    init(scale: CGFloat = 1) {
+        self.scale = scale
+    }
 
     // MARK: Conversions from NormalizedImageData
 

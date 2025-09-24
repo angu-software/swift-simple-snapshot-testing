@@ -1,5 +1,5 @@
 //
-//  Test.swift
+//  NormalizedImageDataMatchingTests.swift
 //  SimpleSnapshotTesting
 //
 //  Created by Andreas Günther on 24.09.25.
@@ -10,7 +10,7 @@ import Testing
 
 @testable import SimpleSnapshotTesting
 
-struct Test {
+struct NormalizedImageDataMatchingTests {
 
     @Test
     func whenNormalizedImageDataIsIdentical_itMatches() async throws {
@@ -26,11 +26,20 @@ struct Test {
         let data2 = NormalizedImageData.fixture(imageData: imageData,
                                                 height: 2)
 
-        #expect(data1.isMatching(data2, precession: 1.0) == false)
+        #expect(data1.isMatching(data2, precession: 0.0) == false)
+    }
+
+    @Test
+    @MainActor
+    func whenDataHasDifferentScale_itDoesNotMatch() async throws {
+        let data1 = try #require(NormalizedImageData.fixture(uiImage: .fixture(scale: 1)))
+        let data2 = try #require(NormalizedImageData.fixture(uiImage: .fixture(scale: 2)))
+
+        #expect(data1.isMatching(data2, precession: 0.0) == false)
     }
 
     private func makeImageDataFixture() -> Data {
-        return Data([255, 255, 255, 255])
+        return Data([0, 255, 0, 255])
     }
 }
 
@@ -48,7 +57,7 @@ extension NormalizedImageData {
 
     @MainActor
     static func fixture(uiImage: UIImage) -> Self? {
-        return NormalizedImageDataConverter().makeNormalizedImageData(from: uiImage)
+        return NormalizedImageDataConverter(scale: uiImage.scale).makeNormalizedImageData(from: uiImage)
     }
 }
 

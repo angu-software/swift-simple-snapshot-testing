@@ -62,7 +62,7 @@ struct NormalizedImageDataConverterTests {
     }
 
     @Test
-    func whenGivenAUIView_itConvertsToNormalizedImageData() async throws {
+    func whenGivenUIView_itConvertsToNormalizedImageData() async throws {
         let rectView = UIView(frame: CGRect(origin: .zero,
                                             size: CGSize(width: 1,
                                                          height: 1)))
@@ -83,6 +83,16 @@ struct NormalizedImageDataConverterTests {
         let normalized = converter.makeNormalizedImageData(view: rectView, scale: scale)
 
         #expect(normalized == expectedNormalizedImageData(scale: scale))
+    }
+
+    @Test
+    func whenConvertingToUIView_itSizesUIImageCorrectly() async throws {
+        let normalizedData = expectedNormalizedImageData(scale: 3)
+
+        let uiImage = try #require(converter.makeUIImage(normalizedImageData: normalizedData))
+
+        #expect(uiImage.scale == 3)
+        #expect(uiImage.size == CGSize(width: 1, height: 1))
     }
 
     // MARK: Test Support

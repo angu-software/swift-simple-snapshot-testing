@@ -25,15 +25,15 @@ final class NormalizedImageDataConverter {
         let pixelBufferInfo = normalizedData.pixelBufferInfo
 
         guard let cgImage = CGImage(width: pixelBufferInfo.width,
-                       height: pixelBufferInfo.height,
-                       bitsPerComponent: pixelBufferInfo.bitsPerComponent,
-                       bitsPerPixel: pixelBufferInfo.bitsPerPixel,
-                       bytesPerRow: pixelBufferInfo.bytesPerRow,
-                       space: pixelBufferInfo.colorSpace,
-                       bitmapInfo: pixelBufferInfo.bitmapInfo,
-                       provider: dataProvider,
-                       decode: nil,
-                       shouldInterpolate: false,
+                                    height: pixelBufferInfo.height,
+                                    bitsPerComponent: pixelBufferInfo.bitsPerComponent,
+                                    bitsPerPixel: pixelBufferInfo.bitsPerPixel,
+                                    bytesPerRow: pixelBufferInfo.bytesPerRow,
+                                    space: pixelBufferInfo.colorSpace,
+                                    bitmapInfo: pixelBufferInfo.bitmapInfo,
+                                    provider: dataProvider,
+                                    decode: nil,
+                                    shouldInterpolate: false,
                                     intent: .defaultIntent) else {
             return nil
         }

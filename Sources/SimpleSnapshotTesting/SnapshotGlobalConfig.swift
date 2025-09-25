@@ -18,6 +18,9 @@ public enum SnapshotGlobalConfig {
 
     private static var _isRecordingReference: Bool?
 
+    // TODO: ENV var for this setting
+    // the current approach relied on where the enableReferenceRecoding is called. It may not affect all tests. hence ENV var is recommended to use
+
     /// Returns `true` if snapshot reference recording is globally enabled. Default `false`
     public static var isRecordingReference: Bool {
         return _isRecordingReference ?? false
@@ -28,8 +31,6 @@ public enum SnapshotGlobalConfig {
     /// - Note: Can only be set **once** per runtime. Calling this method
     ///   multiple times will trigger a runtime `precondition` failure.
     public static func enableReferenceRecoding() {
-        precondition(_isRecordingReference == nil, "SnapshotConfig.enableReferenceRecoding() can only be set once")
-
         _isRecordingReference = true
     }
 

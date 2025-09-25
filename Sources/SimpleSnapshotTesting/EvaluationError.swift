@@ -7,7 +7,9 @@
 
 import Foundation
 
+// Rename EvaluationResult
 public enum EvaluationError: Swift.Error {
-    case didRecordReference
-    case notMatchingReference // TODO: rename Snapshot did not match reference
+    case didRecordReferenceSnapshot
+    case noReferenceSnapshotFound
+    case snapshotNotMatchingReference
 }

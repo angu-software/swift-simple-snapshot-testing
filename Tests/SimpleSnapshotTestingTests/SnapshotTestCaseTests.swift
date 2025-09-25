@@ -27,7 +27,7 @@ struct SnapshotTestCaseTests {
                                         precision: 0.0,
                                         fileManager: fileManager)
 
-        #expect(throws: EvaluationError.didRecordReference) {
+        #expect(throws: EvaluationError.didRecordReferenceSnapshot) {
             try testCase.evaluate(Rectangle()).get()
         }
     }
@@ -81,7 +81,23 @@ struct SnapshotTestCaseTests {
         fileManager.stubbedFileData = fileManager.writtenData
         testCase.isRecordingReference = false
 
-        #expect(throws: EvaluationError.notMatchingReference) {
+        #expect(throws: EvaluationError.snapshotNotMatchingReference) {
+            try testCase.evaluate(Text("Hello")).get()
+        }
+    }
+
+    @Test
+    func whenComparingSnapshot_whenReferenceNotExisting_itThrowsReferenceNotFoundError() async throws {
+        let fileManager = FileManagerDouble()
+        let testCase = SnapshotTestCase(isRecordingReference: false,
+                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
+                                                                             testFilePath: "SnapshotTest/TestCase.swift",
+                                                                             testFileID: "SnapshotTest/TestCase.swift",
+                                                                             testTag: ""),
+                                        precision: 0.0,
+                                        fileManager: fileManager)
+
+        #expect(throws: EvaluationError.noReferenceSnapshotFound) {
             try testCase.evaluate(Text("Hello")).get()
         }
     }

@@ -59,23 +59,34 @@ struct SnapshotTestCase {
 
     private func evaluateSnapshot(_ takenSnapshot: Snapshot) throws {
         if isRecordingReference {
-            try manager.saveSnapshot(takenSnapshot)
-            throw EvaluationError.didRecordReference
+            try recordReferenceSnapshot(takenSnapshot)
+        } else {
+            try evaluateSnapshot(takenSnapshot,
+                                 withReferenceSnapshot: try referenceSnapshot(for: takenSnapshot))
         }
+    }
 
-        let referenceSnapshot = try referenceSnapshot(for: takenSnapshot)
+    private func recordReferenceSnapshot(_ takenSnapshot: Snapshot) throws {
+        try manager.saveSnapshot(takenSnapshot)
+        throw EvaluationError.didRecordReferenceSnapshot
+    }
 
+    private func referenceSnapshot(for snapshot: Snapshot) throws -> Snapshot {
+        do {
+            return try manager.referenceSnapshot(from: snapshot.filePath)
+        } catch {
+            throw EvaluationError.noReferenceSnapshotFound
+        }
+    }
+
+    private func evaluateSnapshot(_ takenSnapshot: Snapshot, withReferenceSnapshot referenceSnapshot: Snapshot) throws {
         switch compare(takenSnapshot, with: referenceSnapshot) {
             case .matching:
                 return
             case .different:
                 try recordFailure(takenSnapshot, referenceSnapshot)
-                throw EvaluationError.notMatchingReference
+                throw EvaluationError.snapshotNotMatchingReference
         }
-    }
-
-    private func referenceSnapshot(for snapshot: Snapshot) throws -> Snapshot {
-        return try manager.referenceSnapshot(from: snapshot.filePath)
     }
 
     private func compare(_ snapshot: Snapshot, with reference: Snapshot) -> SnapshotComparisonResult {

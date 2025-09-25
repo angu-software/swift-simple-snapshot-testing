@@ -16,11 +16,11 @@ enum DiffImageFactory {
     private static let diffAlpha: CGFloat = 0.75
 
     @MainActor
-    static func makeDiffImage(_ image1: UIImage, _ image2: UIImage) -> UIImage? {
+    static func makeDiffImage(_ image1: UIImage, _ image2: UIImage, scale: CGFloat = 2) -> UIImage? {
         let size = makeCanvasSize(size1: image1.size, size2: image2.size)
 
-        let renderer = UIGraphicsImageRenderer(size: size,
-                                               format: makeFormat())
+        let renderer = GraphicsRendererFactory.makeImageRenderer(imageSize: size,
+                                                                 scale: scale)
 
         let image = renderer.image { context in
             image1.draw(at: .zero)

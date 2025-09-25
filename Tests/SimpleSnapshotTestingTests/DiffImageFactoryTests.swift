@@ -13,7 +13,6 @@ import Testing
 @testable import SimpleSnapshotTesting
 
 @MainActor
-@Suite
 struct DiffImageFactoryTests {
 
     private var defaultScale: CGFloat {
@@ -32,6 +31,26 @@ struct DiffImageFactoryTests {
 
         #expect(diffImage.scale == defaultScale)
         #expect(diffImage.pngData() == refDiffImage.pngData())
+    }
+
+    @Test
+    func whenCreatingDiffImages_itItRendersInSpecifiedScale() async throws {
+        let image1 = try #require(makeSnapshotImage(view: Rectangle()))
+        let image2 = try #require(makeSnapshotImage(view: Rectangle()))
+
+        let diffImage = try #require(DiffImageFactory.makeDiffImage(image1, image2, scale: 1))
+
+        #expect(diffImage.scale == 1)
+    }
+
+    @Test
+    func whenCreatingDiffImages_fromDifferentSizedImages_itRetrunsDiffImageWithBiggestSize() async throws {
+        let image1 = try #require(makeSnapshotImage(view: Rectangle().frame(width: 20, height: 20)))
+        let image2 = try #require(makeSnapshotImage(view: Rectangle()))
+
+        let diffImage = try #require(DiffImageFactory.makeDiffImage(image1, image2))
+
+        #expect(diffImage.size == CGSize(width: 20, height: 20))
     }
 
     // MARK: Test DSL

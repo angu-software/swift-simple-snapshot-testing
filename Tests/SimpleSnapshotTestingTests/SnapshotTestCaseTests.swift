@@ -14,18 +14,14 @@ import Testing
 @Suite(.tags(.acceptanceTest))
 struct SnapshotTestCaseTests {
 
+    private let fileManager = FileManagerDouble()
+
     // MARK: Recording Reference
 
     @Test
     func whenRecordingReference_itThrowsDidRecordReferenceError() async throws {
-        let fileManager = FileManagerDouble()
-        let testCase = SnapshotTestCase(isRecordingReference: true,
-                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
-                                                                             testFilePath: "SnapshotTest/TestCase.swift",
-                                                                             testFileID: "SnapshotTest/TestCase.swift",
-                                                                             testTag: ""),
-                                        precision: 0.0,
-                                        fileManager: fileManager)
+        let testCase = makeTestCase(isRecordingReference: true,
+                                    precision: 0.0)
 
         #expect(throws: EvaluationError.didRecordReferenceSnapshot) {
             try testCase.evaluate(Rectangle()).get()
@@ -34,14 +30,8 @@ struct SnapshotTestCaseTests {
 
     @Test
     func whenRecordingReference_itStoresTheReferenceImageInFileSystem() async throws {
-        let fileManager = FileManagerDouble()
-        let testCase = SnapshotTestCase(isRecordingReference: true,
-                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
-                                                                             testFilePath: "SnapshotTest/TestCase.swift",
-                                                                             testFileID: "SnapshotTest/TestCase.swift",
-                                                                             testTag: ""),
-                                        precision: 0.0,
-                                        fileManager: fileManager)
+        let testCase = makeTestCase(isRecordingReference: true,
+                                    precision: 0.0)
 
         try? testCase.evaluate(RectangleView()).get()
 
@@ -52,51 +42,24 @@ struct SnapshotTestCaseTests {
 
     @Test
     func whenComparingSnapshot_whenReferenceMatches_itThrowsNoError() async throws {
-        let fileManager = FileManagerDouble()
-        var testCase = SnapshotTestCase(isRecordingReference: true,
-                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
-                                                                             testFilePath: "SnapshotTest/TestCase.swift",
-                                                                             testFileID: "SnapshotTest/TestCase.swift",
-                                                                             testTag: ""),
-                                        precision: 1.0,
-                                        fileManager: fileManager)
-        try? testCase.evaluate(Rectangle()).get()
-        fileManager.stubbedFileData = fileManager.writtenData
-        testCase.isRecordingReference = false
+        setReferenceSnapshot(Rectangle())
+        let testCase = makeTestCase(precision: 1.0)
 
         #expect(try testCase.evaluate(Rectangle()).get() == ())
     }
 
     @Test
     func whenComparingSnapshot_whenReferenceMatchesWithinPrecision_itThrowsNoError() async throws {
-        let fileManager = FileManagerDouble()
-        var testCase = SnapshotTestCase(isRecordingReference: true,
-                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
-                                                                             testFilePath: "SnapshotTest/TestCase.swift",
-                                                                             testFileID: "SnapshotTest/TestCase.swift",
-                                                                             testTag: ""),
-                                        precision: 0.2,
-                                        fileManager: fileManager)
-        try? testCase.evaluate(Rectangle().fill(.red)).get()
-        fileManager.stubbedFileData = fileManager.writtenData
-        testCase.isRecordingReference = false
+        setReferenceSnapshot(Rectangle().fill(.red))
+        let testCase = makeTestCase(precision: 0.2)
 
         #expect(try testCase.evaluate(Rectangle().fill(.green)).get() == ())
     }
 
     @Test
     func whenComparingSnapshot_whenReferenceNotMatching_itThrowsNotMatchingError() async throws {
-        let fileManager = FileManagerDouble()
-        var testCase = SnapshotTestCase(isRecordingReference: true,
-                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
-                                                                             testFilePath: "SnapshotTest/TestCase.swift",
-                                                                             testFileID: "SnapshotTest/TestCase.swift",
-                                                                             testTag: ""),
-                                        precision: 1.0,
-                                        fileManager: fileManager)
-        try? testCase.evaluate(Rectangle().fill(.red)).get()
-        fileManager.stubbedFileData = fileManager.writtenData
-        testCase.isRecordingReference = false
+        setReferenceSnapshot(Rectangle().fill(.red))
+        let testCase = makeTestCase(precision: 1.0)
 
         #expect(throws: EvaluationError.snapshotNotMatchingReference) {
             try testCase.evaluate(Rectangle().fill(.green)).get()
@@ -105,14 +68,7 @@ struct SnapshotTestCaseTests {
 
     @Test
     func whenComparingSnapshot_whenReferenceNotExisting_itThrowsReferenceNotFoundError() async throws {
-        let fileManager = FileManagerDouble()
-        let testCase = SnapshotTestCase(isRecordingReference: false,
-                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
-                                                                             testFilePath: "SnapshotTest/TestCase.swift",
-                                                                             testFileID: "SnapshotTest/TestCase.swift",
-                                                                             testTag: ""),
-                                        precision: 1.0,
-                                        fileManager: fileManager)
+        let testCase = makeTestCase(precision: 1.0)
 
         #expect(throws: EvaluationError.noReferenceSnapshotFound) {
             try testCase.evaluate(Text("Hello")).get()
@@ -121,23 +77,31 @@ struct SnapshotTestCaseTests {
 
     @Test
     func whenComparingSnapshot_whenSnapshotNotMatchingReference_itStoresAFailureDiffReport() async throws {
-        let fileManager = FileManagerDouble()
-        var testCase = SnapshotTestCase(isRecordingReference: true,
-                                        sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
-                                                                             testFilePath: "SnapshotTest/TestCase.swift",
-                                                                             testFileID: "SnapshotTest/TestCase.swift",
-                                                                             testTag: ""),
-                                        precision: 0.0,
-                                        fileManager: fileManager)
-        try? testCase.evaluate(Rectangle()).get()
-        fileManager.stubbedFileData = fileManager.writtenData
-        testCase.isRecordingReference = false
+        setReferenceSnapshot(Rectangle())
+        let testCase = makeTestCase(precision: 0.0)
 
         try? testCase.evaluate(Text("Hello")).get()
-
 
         #expect(fileManager.writtenData.keys.contains(where: { $0.contains(#/FailureDiffs.*ORIG.*\.png/#) }))
         #expect(fileManager.writtenData.keys.contains(where: { $0.contains(#/FailureDiffs.*FAIL.*\.png/#) }))
         #expect(fileManager.writtenData.keys.contains(where: { $0.contains(#/FailureDiffs.*DIFF.*\.png/#) }))
+    }
+
+    private func makeTestCase(isRecordingReference: Bool = false, precision: Double, recordedReference: ((SnapshotTestCase) throws -> Void)? = nil) -> SnapshotTestCase {
+        return SnapshotTestCase(isRecordingReference: isRecordingReference,
+                                sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
+                                                                     testFilePath: "SnapshotTest/TestCase.swift",
+                                                                     testFileID: "SnapshotTest/TestCase.swift",
+                                                                     testTag: ""),
+                                precision: precision,
+                                fileManager: fileManager)
+    }
+
+    private func setReferenceSnapshot<View: SwiftUI.View>(_ view: View) {
+        let testCase = makeTestCase(isRecordingReference: true, precision: 0.0)
+
+        _ = testCase.evaluate(view)
+
+        fileManager.stubbedFileData = fileManager.writtenData
     }
 }

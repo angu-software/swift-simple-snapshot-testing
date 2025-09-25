@@ -18,9 +18,9 @@ struct SnapshotManagerTests {
     private let testLocation: SnapshotTestLocation
     private let pathFactory: SnapshotFilePathFactory
     private let manager: SnapshotManager
+    private let scale: CGFloat = 2
 
     init() {
-        let scale = DiffImageFactory.defaultImageScale
         self.testLocation = SnapshotTestLocation.fixture(testFunction: "some_test_function()")
         self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation,
                                                    deviceScale: scale)
@@ -93,7 +93,7 @@ struct SnapshotManagerTests {
     // MARK: Load snapshot from file
 
     @Test(arguments: [1, 2, 3])
-    func whenLoadingReferenceImage_with2xScale_itHasCorrectScale(scale: Int) async throws {
+    func whenLoadingReferenceImage_withSpecificScale_itHasCorrectScale(scale: CGFloat) async throws {
         let path = createRefImage(scale: scale)
 
         let snapshot = try manager.referenceSnapshot(from: path)
@@ -113,7 +113,7 @@ struct SnapshotManagerTests {
 
     @Test
     func should_load_snapshot_from_ref_file() async throws {
-        let refFilePath = createRefImage()
+        let refFilePath = createRefImage(scale: scale)
 
         let snapshot = try manager.referenceSnapshot(from: refFilePath)
 
@@ -156,7 +156,7 @@ struct SnapshotManagerTests {
         let takenSnap = Snapshot.fixture(imageData: .fixture(color: .blue))
         let takenImage = try #require(takenSnap.image)
         let refImage = try #require(refSnap.image)
-        let diffImage = try #require(DiffImageFactory.makeDiffImage(takenImage, refImage))
+        let diffImage = try #require(DiffImageFactory(recordingScale: scale).makeDiffImage(takenImage, refImage))
 
         let orignialSnap = refSnap.with(filePath: pathFactory.failureOriginalSnapshotFilePath)
         let failedSnap = takenSnap.with(filePath: pathFactory.failureFailedSnapshotFilePath)
@@ -202,7 +202,7 @@ struct SnapshotManagerTests {
     private func makeSnapshotManager(testLocation: SnapshotTestLocation) -> SnapshotManager {
         return SnapshotManager(testLocation: testLocation,
                                fileManager: fileManager,
-                               recordingScale: DiffImageFactory.defaultImageScale)
+                               recordingScale: scale)
     }
 
     private func setSnapshotAsReference(_ snapshot: Snapshot) -> SnapshotFilePath {
@@ -210,9 +210,10 @@ struct SnapshotManagerTests {
         return snapshot.filePath
     }
 
-    private func createRefImage(scale: Int = Int(DiffImageFactory.defaultImageScale)) -> SnapshotFilePath {
-        let snapshotFilePath = SnapshotFilePathFactory(testLocation: .fixture(), deviceScale: CGFloat(scale)).referenceSnapshotFilePath
-        let snapshot = Snapshot.fixture(imageData: .fixture(scale: scale),
+    private func createRefImage(scale: CGFloat) -> SnapshotFilePath {
+        let snapshotFilePath = SnapshotFilePathFactory(testLocation: .fixture(),
+                                                       deviceScale: scale).referenceSnapshotFilePath
+        let snapshot = Snapshot.fixture(imageData: .fixture(scale: Int(scale)),
                                         filePath: snapshotFilePath)
         return setSnapshotAsReference(snapshot)
     }

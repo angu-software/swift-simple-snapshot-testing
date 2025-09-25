@@ -24,6 +24,7 @@ final class SnapshotManager {
     private let pathFactory: SnapshotFilePathFactory
 
     private let snapshotFactory: SnapshotFactory
+    private let diffFactory: DiffImageFactory
 
     init(testLocation: SnapshotTestLocation,
          fileManager: FileManaging = .default,
@@ -35,6 +36,7 @@ final class SnapshotManager {
         self.snapshotFactory = SnapshotFactory(fileManager: fileManager,
                                                pathFactory: pathFactory,
                                                recordingScale: recordingScale)
+        self.diffFactory = DiffImageFactory(recordingScale: recordingScale)
     }
 
     func snapshot<UIKitView: UIView>(from view: UIKitView) throws -> Snapshot {
@@ -82,8 +84,8 @@ final class SnapshotManager {
 
         guard let takenImage = taken.image,
               let referenceImage = reference.image,
-              let diffImage = DiffImageFactory.makeDiffImage(takenImage,
-                                                                  referenceImage),
+              let diffImage = diffFactory.makeDiffImage(takenImage,
+                                                        referenceImage),
               let diffSnapshot = Snapshot(image: diffImage,
                                           filePath: pathFactory.failureDiffSnapshotFilePath) else {
             throw Error.malformedSnapshotImage

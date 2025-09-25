@@ -35,7 +35,6 @@ func handleResult(_ result: Result<Void, any Error>, sourceLocation: SourceLocat
             break
         case let .failure(error):
             Issue.record(error,
-                         "\(error)",
                          sourceLocation: sourceLocation)
     }
 }

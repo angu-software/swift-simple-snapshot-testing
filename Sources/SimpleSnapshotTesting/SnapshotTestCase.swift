@@ -12,7 +12,7 @@ import UIKit
 @MainActor
 struct SnapshotTestCase {
 
-    var isRecordingReference: Bool
+    let isRecordingReference: Bool
     let sourceLocation: SnapshotTestLocation
     let precision: Double
 
@@ -22,7 +22,7 @@ struct SnapshotTestCase {
          sourceLocation: SnapshotTestLocation,
          precision: Double,
          fileManager: FileManaging = .default) {
-        self.isRecordingReference = isRecordingReference
+        self.isRecordingReference = isRecordingReference || SnapshotGlobalConfig.isRecordingReference
         self.sourceLocation = sourceLocation
         self.precision = precision
 

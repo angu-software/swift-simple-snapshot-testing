@@ -38,6 +38,19 @@ struct SnapshotTestCaseTests {
         #expect(fileManager.writtenData.isEmpty == false)
     }
 
+    @Test
+    func whenGloballySettingRecordMode_itRecordsReference() {
+        SnapshotGlobalConfig.enableReferenceRecoding()
+
+        let testCase = makeTestCase(isRecordingReference: false, precision: 0.0)
+
+        try? testCase.evaluate(RectangleView()).get()
+
+        #expect(fileManager.writtenData.isEmpty == false)
+
+        SnapshotGlobalConfig.disableReferenceRecoding()
+    }
+
     // MARK: Comparing Snapshot
 
     @Test

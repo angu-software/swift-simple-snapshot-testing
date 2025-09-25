@@ -12,6 +12,8 @@ import UIKit
 @MainActor
 struct SnapshotTestCase {
 
+    static let defaultRecordingScale = UIScreen.main.scale
+
     let isRecordingReference: Bool
     let sourceLocation: SnapshotTestLocation
     let precision: Double
@@ -19,7 +21,7 @@ struct SnapshotTestCase {
     private let manager: SnapshotManager
 
     init(isRecordingReference: Bool,
-         recordingScale: @autoclosure @MainActor () -> CGFloat = UIScreen.main.scale,
+         recordingScale: @autoclosure @MainActor () -> CGFloat = defaultRecordingScale,
          matchingPrecision: Double,
          sourceLocation: SnapshotTestLocation,
          fileManager: FileManaging = .default) {

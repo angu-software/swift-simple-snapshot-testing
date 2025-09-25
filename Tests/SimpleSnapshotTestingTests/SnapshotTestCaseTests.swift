@@ -50,6 +50,17 @@ struct SnapshotTestCaseTests {
     }
 
     @Test
+    func whenRecordingReference_withCustomRecordingScale_itRecordsWithSpecifiedSalce() async throws {
+        let testCase = makeTestCase(isRecordingReference: true,
+                                    precision: 0.0,
+                                    recordingScale: 2)
+
+        try? testCase.evaluate(RectangleView()).get()
+
+        #expect(fileManager.writtenData.keys.allSatisfy({ $0.contains("@2x.png")}))
+    }
+
+    @Test
     func whenGloballySettingRecordMode_itRecordsReference() {
         SnapshotGlobalConfig.enableReferenceRecoding()
 
@@ -111,8 +122,21 @@ struct SnapshotTestCaseTests {
         #expect(fileManager.writtenData.keys.contains(where: { $0.contains(#/FailureDiffs.*DIFF.*\.png/#) }))
     }
 
-    private func makeTestCase(isRecordingReference: Bool = false, precision: Double, recordedReference: ((SnapshotTestCase) throws -> Void)? = nil) -> SnapshotTestCase {
+    @Test
+    func whenComparingSnapshot_whenSnapshotNotMatchingReference_withSpecifiedRecordingScale_itRecordsDiffReportImagesInRecordingScale() async throws {
+        setReferenceSnapshot(Rectangle())
+        let testCase = makeTestCase(precision: 0.0)
+
+        try? testCase.evaluate(Text("Hello")).get()
+
+        #expect(fileManager.writtenData.keys.contains(where: { $0.contains(#/FailureDiffs.*ORIG.*\@3x.png/#)}))
+        #expect(fileManager.writtenData.keys.contains(where: { $0.contains(#/FailureDiffs.*FAIL.*\@3x.png/#)}))
+        #expect(fileManager.writtenData.keys.contains(where: { $0.contains(#/FailureDiffs.*DIFF.*\@3x.png/#)}))
+    }
+
+    private func makeTestCase(isRecordingReference: Bool = false, precision: Double, recordingScale: CGFloat? = nil) -> SnapshotTestCase {
         return SnapshotTestCase(isRecordingReference: isRecordingReference,
+                                recordingScale: recordingScale ?? SnapshotTestCase.defaultRecordingScale,
                                 matchingPrecision: precision,
                                 sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
                                                                      testFilePath: "SnapshotTest/TestCase.swift",
@@ -121,8 +145,8 @@ struct SnapshotTestCaseTests {
                                 fileManager: fileManager)
     }
 
-    private func setReferenceSnapshot<View: SwiftUI.View>(_ view: View) {
-        let testCase = makeTestCase(isRecordingReference: true, precision: 0.0)
+    private func setReferenceSnapshot<View: SwiftUI.View>(_ view: View, recordingScale: CGFloat? = nil) {
+        let testCase = makeTestCase(isRecordingReference: true, precision: 0.0, recordingScale: recordingScale)
 
         _ = testCase.evaluate(view)
 

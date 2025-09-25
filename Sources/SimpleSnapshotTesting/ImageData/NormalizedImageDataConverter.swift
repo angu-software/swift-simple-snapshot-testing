@@ -152,20 +152,13 @@ final class NormalizedImageDataConverter {
 
     @MainActor
     private func makeImageRenderer(imageSize: CGSize, scale: Int) -> UIGraphicsImageRenderer {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = CGFloat(scale)
-        format.opaque = isOpaque
-
-        return UIGraphicsImageRenderer(size: imageSize,
-                                       format: format)
+        return GraphicsRendererFactory.makeImageRenderer(imageSize: imageSize, scale: CGFloat(scale))
     }
 
     @MainActor
     private func makeImageRenderer<Content: View>(content: Content, scale: Int) -> ImageRenderer<Content> {
-        let renderer = ImageRenderer(content: content)
-        renderer.scale = CGFloat(scale)
-        renderer.isOpaque = isOpaque
-
-        return renderer
+        return GraphicsRendererFactory.makeImageRenderer(content: content, scale: CGFloat(scale))
     }
 }
+
+

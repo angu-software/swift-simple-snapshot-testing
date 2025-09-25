@@ -25,14 +25,17 @@ public func evaluate<View: UIView>(_ view: View,
     let testCase = SnapshotTestCase(isRecordingReference: record,
                                     matchingPrecision: precision,
                                     sourceLocation: testLocation)
-    let testResult = testCase.evaluate(view)
+    handleResult(testCase.evaluate(view),
+           sourceLocation: sourceLocation)
+}
 
-    switch testResult {
+func handleResult(_ result: Result<Void, any Error>, sourceLocation: SourceLocation) {
+    switch result {
         case .success(()):
             break
         case let .failure(error):
             Issue.record(error,
-                         "\(error.localizedDescription)",
+                         "\(error)",
                          sourceLocation: sourceLocation)
     }
 }

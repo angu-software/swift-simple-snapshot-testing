@@ -46,7 +46,7 @@ extension NormalizedImageData {
         guard pixelBufferInfo == other.pixelBufferInfo else {
             return false
         }
-        
+
         return data.isMatching(other.data,
                                precision: precision)
     }

@@ -26,12 +26,15 @@ final class SnapshotManager {
     private let snapshotFactory: SnapshotFactory
 
     init(testLocation: SnapshotTestLocation,
-         fileManager: FileManaging = .default) {
+         fileManager: FileManaging = .default,
+         recordingScale: CGFloat) {
         self.testLocation = testLocation
         self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation,
-                                                   deviceScale: DiffImageFactory.defaultImageScale)
+                                                   deviceScale: recordingScale)
         self.fileManager = fileManager
-        self.snapshotFactory = SnapshotFactory(fileManager: fileManager, pathFactory: pathFactory)
+        self.snapshotFactory = SnapshotFactory(fileManager: fileManager,
+                                               pathFactory: pathFactory,
+                                               recordingScale: recordingScale)
     }
 
     func snapshot<UIKitView: UIView>(from view: UIKitView) throws -> Snapshot {

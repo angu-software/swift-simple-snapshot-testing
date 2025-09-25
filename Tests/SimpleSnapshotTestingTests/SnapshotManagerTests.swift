@@ -20,10 +20,13 @@ struct SnapshotManagerTests {
     private let manager: SnapshotManager
 
     init() {
+        let scale = DiffImageFactory.defaultImageScale
         self.testLocation = SnapshotTestLocation.fixture(testFunction: "some_test_function()")
-        self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation, deviceScale: DiffImageFactory.defaultImageScale)
+        self.pathFactory = SnapshotFilePathFactory(testLocation: testLocation,
+                                                   deviceScale: scale)
         self.manager = SnapshotManager(testLocation: testLocation,
-                                       fileManager: fileManager)
+                                       fileManager: fileManager,
+                                       recordingScale: scale)
     }
 
     // MARK: Create snapshot from view
@@ -198,7 +201,8 @@ struct SnapshotManagerTests {
 
     private func makeSnapshotManager(testLocation: SnapshotTestLocation) -> SnapshotManager {
         return SnapshotManager(testLocation: testLocation,
-                               fileManager: fileManager)
+                               fileManager: fileManager,
+                               recordingScale: DiffImageFactory.defaultImageScale)
     }
 
     private func setSnapshotAsReference(_ snapshot: Snapshot) -> SnapshotFilePath {

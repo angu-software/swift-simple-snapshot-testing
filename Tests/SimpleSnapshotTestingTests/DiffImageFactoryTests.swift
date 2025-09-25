@@ -50,7 +50,8 @@ struct DiffImageFactoryTests {
         let path = SnapshotFilePathFactory(testLocation: location, deviceScale: defaultScale)
         let diffSnapshot = try #require (Snapshot(image: image,
                                                   filePath: SnapshotFilePath(fileURL: path.testFixtureImagePath(for: "fixture_image_diff"))))
-        let manager = SnapshotManager(testLocation: location)
+        let manager = SnapshotManager(testLocation: location,
+                                      recordingScale: 2)
         try manager.saveSnapshot(diffSnapshot)
     }
 }

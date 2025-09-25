@@ -10,35 +10,10 @@ Snapshot and tests your views
 * Fast
 * ~~Device agnostic; decoupled from running simulator device~~
 
-## Abstract refactoring plan
+## Planed features
 
-### Record
-
-```text
-SwiftUI View / UIKit View
-        ↓ render
-   CGImage / UIImage
-        ↓ normalize (scale = 1, fixed color space, RGBA8)
-NormalizedImageData
-        ↓ persist
- Reference File (.png on disk)
- ```
-
-### Compare
-
-```text
-SwiftUI View / UIKit View
-        ↓ render
-   CGImage / UIImage
-        ↓ normalize
-NormalizedImageData (candidate)
-        ↓
-Load Reference PNG
-        ↓ decode
-   CGImage
-        ↓ normalize
-NormalizedImageData (reference)
-        ↓ compare
-  Equal? -> ✅ pass
-  Diff?  -> ❌ generate Diff Image → save as PNG for inspection
-```
+* By default record in current device scale
+* Global configuration settings using ENV
+* GlobalConfig to delete all ref images (before recording them again)
+* Better error message reporting
+* Grouping Reference images per device/os

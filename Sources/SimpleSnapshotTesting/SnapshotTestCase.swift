@@ -19,15 +19,17 @@ struct SnapshotTestCase {
     private let manager: SnapshotManager
 
     init(isRecordingReference: Bool,
+         recordingScale: @autoclosure @MainActor () -> CGFloat = UIScreen.main.scale,
+         matchingPrecision: Double,
          sourceLocation: SnapshotTestLocation,
-         precision: Double,
          fileManager: FileManaging = .default) {
         self.isRecordingReference = isRecordingReference || SnapshotGlobalConfig.isRecordingReference
         self.sourceLocation = sourceLocation
-        self.precision = precision
+        self.precision = matchingPrecision
 
         self.manager = SnapshotManager(testLocation: sourceLocation,
-                                       fileManager: fileManager)
+                                       fileManager: fileManager,
+                                       recordingScale: recordingScale())
     }
 
     func evaluate<View: SwiftUI.View>(_ view: View) -> Result<Void, any Error> {

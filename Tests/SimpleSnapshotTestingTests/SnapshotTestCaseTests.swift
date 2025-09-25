@@ -39,6 +39,17 @@ struct SnapshotTestCaseTests {
     }
 
     @Test
+    func whenRecordingReference_itRecordsWithTheCurrentDeviceScreenScale() async throws {
+        let currentScreenScale = Int(UIScreen.main.scale)
+        let testCase = makeTestCase(isRecordingReference: true,
+                                    precision: 0.0)
+
+        try? testCase.evaluate(RectangleView()).get()
+
+        #expect(fileManager.writtenData.keys.allSatisfy({ $0.contains("@\(currentScreenScale)x.png")}))
+    }
+
+    @Test
     func whenGloballySettingRecordMode_itRecordsReference() {
         SnapshotGlobalConfig.enableReferenceRecoding()
 
@@ -102,11 +113,11 @@ struct SnapshotTestCaseTests {
 
     private func makeTestCase(isRecordingReference: Bool = false, precision: Double, recordedReference: ((SnapshotTestCase) throws -> Void)? = nil) -> SnapshotTestCase {
         return SnapshotTestCase(isRecordingReference: isRecordingReference,
+                                matchingPrecision: precision,
                                 sourceLocation: SnapshotTestLocation(testFunction: "testFunction",
                                                                      testFilePath: "SnapshotTest/TestCase.swift",
                                                                      testFileID: "SnapshotTest/TestCase.swift",
                                                                      testTag: ""),
-                                precision: precision,
                                 fileManager: fileManager)
     }
 

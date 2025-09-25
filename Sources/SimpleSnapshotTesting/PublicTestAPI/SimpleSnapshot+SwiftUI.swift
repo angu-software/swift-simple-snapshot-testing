@@ -22,8 +22,8 @@ public func evaluate<View: SwiftUI.View>(_ view: View,
                                               testTag: testTag)
 
     let testCase = SnapshotTestCase(isRecordingReference: record,
-                                    sourceLocation: testLocation,
-                                    precision: precision)
+                                    matchingPrecision: precision,
+                                    sourceLocation: testLocation)
     let testResult = testCase.evaluate(view)
 
     switch testResult {

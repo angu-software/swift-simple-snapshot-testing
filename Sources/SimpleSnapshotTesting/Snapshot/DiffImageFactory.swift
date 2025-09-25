@@ -9,6 +9,7 @@ import SwiftUI
 
 enum DiffImageFactory {
 
+    @available(*, deprecated)
     static let defaultImageScale: CGFloat = 2
 
     private static let diffBlendMode: CGBlendMode = .difference

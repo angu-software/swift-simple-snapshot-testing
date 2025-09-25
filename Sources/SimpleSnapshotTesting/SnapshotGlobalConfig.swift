@@ -34,7 +34,7 @@ public enum SnapshotGlobalConfig {
         _isRecordingReference = true
     }
 
-    public static func disableReferenceRecoding() {
+    static func disableReferenceRecoding() {
         _isRecordingReference = nil
     }
 }

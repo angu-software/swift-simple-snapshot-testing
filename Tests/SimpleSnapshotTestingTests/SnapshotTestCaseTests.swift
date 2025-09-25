@@ -43,7 +43,7 @@ struct SnapshotTestCaseTests {
                                         precision: 0.0,
                                         fileManager: fileManager)
 
-        try? testCase.evaluate(Rectangle()).get()
+        try? testCase.evaluate(RectangleView()).get()
 
         #expect(fileManager.writtenData.isEmpty == false)
     }

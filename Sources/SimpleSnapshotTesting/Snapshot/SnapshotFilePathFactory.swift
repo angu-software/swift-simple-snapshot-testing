@@ -41,6 +41,11 @@ struct SnapshotFilePathFactory: Equatable {
         return testLocation.testIdentifier.appending(scaleSuffix)
     }
 
+    private var testTargetSnapshotsDeviceDir: URL {
+        return appendDir(named: deviceFolderName,
+                         at: testTargetSnapshotsDir)
+    }
+
     private var testTargetSnapshotsDir: URL {
         return appendDir(named: snapshotsRootFolderName,
                          at: testTargetDir)
@@ -48,12 +53,12 @@ struct SnapshotFilePathFactory: Equatable {
 
     private var testTargetFailureDiffsDir: URL {
         return appendDir(named: failureDiffsRootFolderName,
-                         at: testTargetSnapshotsDir)
+                         at: testTargetSnapshotsDeviceDir)
     }
 
     private var testSuiteSnapshotsDir: URL {
         return appendDir(named: testSourceFileName,
-                         at: testTargetSnapshotsDir)
+                         at: testTargetSnapshotsDeviceDir)
     }
 
     private var testSuiteFailureDiffsDir: URL {
@@ -76,6 +81,10 @@ struct SnapshotFilePathFactory: Equatable {
     private var testTargetDir: URL {
         return testSourceFile
             .deletingLastPathComponent()
+    }
+
+    private var deviceFolderName: String {
+        return testLocation.device.description.replacingOccurrences(of: " ", with: "-")
     }
 
     private var testTargetName: String {

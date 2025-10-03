@@ -5,6 +5,35 @@
 //  Created by Andreas Guenther on 22.01.25.
 //
 
+struct SnapshotDevice: Equatable, CustomStringConvertible {
+
+    let name: String
+    let osName: String
+    let osVersion: String
+
+    // MARK: - CustomStringConvertible
+
+    var description: String {
+        return [name,
+                osName,
+                osVersion]
+            .joined(separator: " ")
+    }
+}
+
+import UIKit
+
+extension SnapshotDevice {
+
+    static let current = Self(uiDevice: .current)
+
+    init(uiDevice: UIDevice) {
+        self.init(name: uiDevice.name,
+                  osName: uiDevice.systemName,
+                  osVersion: uiDevice.systemVersion)
+    }
+}
+
 struct SnapshotTestLocation: Equatable {
 
     var testIdentifier: String {
@@ -36,6 +65,8 @@ struct SnapshotTestLocation: Equatable {
     let testFileID: String
     let testTag: String
 
+    let device: SnapshotDevice
+
     private let idSeparator = "_"
 }
 
@@ -46,10 +77,12 @@ extension SnapshotTestLocation {
     init(testFunction: StaticString,
          testFilePath: StaticString,
          testFileID: StaticString,
-         testTag: String = "") {
+         testTag: String = "",
+         device: SnapshotDevice = .current) {
         self.init(testFunction: "\(testFunction)",
                   testFilePath: "\(testFilePath)",
                   testFileID: "\(testFileID)",
-                  testTag: testTag)
+                  testTag: testTag,
+                  device: device)
     }
 }

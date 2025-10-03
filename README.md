@@ -19,3 +19,4 @@ Snapshot and tests your views
 * Provide additional information about the test in the error reporting
 * Grouping Reference images per device/os
 * Make public API for XCTest.Issue (may include snapshot images)
+* Check frame != .zero for UIViews

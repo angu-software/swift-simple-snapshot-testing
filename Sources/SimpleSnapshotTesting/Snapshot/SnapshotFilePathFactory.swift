@@ -13,7 +13,7 @@ struct SnapshotFilePathFactory: Equatable {
     private let deviceScale: CGFloat
     private let fileExtension = UTType.png
     private let snapshotsRootFolderName = "__Snapshots__"
-    private let failureDiffsRootFolderName = "FailureDiffs"
+    private let failureDiffsRootFolderName = "__FailureDiffs__"
 
     private let testLocation: SnapshotTestLocation
 

@@ -37,7 +37,7 @@ struct SnapshotFilePathFactoryTests {
 
         #expect(
             path.failureOriginalSnapshotFilePath.fullPath
-                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/iPhone-16-iOS-18.4/FailureDiffs/\(testSourceFileName)/ORIG_\(testName)@2x.png")
+                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/iPhone-16-iOS-18.4/__FailureDiffs__/\(testSourceFileName)/ORIG_\(testName)@2x.png")
         )
     }
 
@@ -50,7 +50,7 @@ struct SnapshotFilePathFactoryTests {
 
         #expect(
             path.failureFailedSnapshotFilePath.fullPath
-                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/iPhone-16-iOS-18.4/FailureDiffs/\(testSourceFileName)/FAIL_\(testName)@2x.png")
+                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/iPhone-16-iOS-18.4/__FailureDiffs__/\(testSourceFileName)/FAIL_\(testName)@2x.png")
         )
     }
 
@@ -63,7 +63,7 @@ struct SnapshotFilePathFactoryTests {
 
         #expect(
             path.failureDiffSnapshotFilePath.fullPath
-                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/iPhone-16-iOS-18.4/FailureDiffs/\(testSourceFileName)/DIFF_\(testName)@2x.png")
+                .hasSuffix("swift-simple-snapshot-testing/Tests/\(moduleName)/__Snapshots__/iPhone-16-iOS-18.4/__FailureDiffs__/\(testSourceFileName)/DIFF_\(testName)@2x.png")
         )
     }
 
